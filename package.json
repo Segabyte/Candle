@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "A faith-centered focus companion. Light a candle, study in peace.",
   "author": "Sharv <sharv.vishveshwar@gmail.com>",
+  "license": "UNLICENSED",
   "private": true,
   "main": "dist-electron/main.js",
   "scripts": {

@@ -1,7 +1,7 @@
 {
   "name": "candle",
   "productName": "Candle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A faith-centered focus companion. Light a candle, study in peace.",
   "author": "Sharv <sharv.vishveshwar@gmail.com>",
   "license": "UNLICENSED",
@@ -15,6 +15,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "electron-updater": "^6.3.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.169.0",

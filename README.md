@@ -1,7 +1,7 @@
 # Candle 🕯
 
 [![Build](https://github.com/Segabyte/Candle/actions/workflows/build.yml/badge.svg)](https://github.com/Segabyte/Candle/actions/workflows/build.yml)
-![Version](https://img.shields.io/badge/version-0.1.0-6b4fbb)
+![Version](https://img.shields.io/badge/version-0.1.1-6b4fbb)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078d6?logo=windows&logoColor=white)
 ![Electron](https://img.shields.io/badge/Electron-33-47848f?logo=electron&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=black)
@@ -101,6 +101,21 @@ stub for future cloud sync (Google / Facebook / email / Microsoft / Apple).
 The packaged installer (`release/Candle-Setup-<version>.exe`) can be uploaded
 to https://jesus-lovesyou.ca/#candles as a direct download. See
 `docs/INTEGRATION.md` for the planned website/API integration.
+
+## Auto-update
+
+Installed builds check for updates via [`electron-updater`](https://www.electron.build/auto-update)
+against the project's GitHub Releases (`publish` in `electron-builder.yml`).
+A new version downloads quietly in the background and installs the next time
+Candle is closed — sessions are never interrupted. To ship an update, bump the
+`version` in `package.json` and push a `v*` tag; CI builds and publishes the
+release (with `latest.yml`) that clients pick up.
+
+> **Note:** while this repository is **private**, `electron-updater` cannot read
+> the release feed without an embedded token, so end-user auto-update is
+> effectively disabled. Make the repo public, or switch `publish` to a
+> `generic` provider pointing at a web host (e.g. jesus-lovesyou.ca) that serves
+> `latest.yml` + the installer, to enable updates in the wild.
 
 ## Roadmap
 

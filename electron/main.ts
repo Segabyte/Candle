@@ -22,6 +22,7 @@ import {
   startDailyReminderLoop,
   maybeStreakReminder,
 } from "./notifications";
+import { initAutoUpdate } from "./updater";
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
@@ -36,6 +37,7 @@ if (!gotLock) {
     createTray();
     startDailyReminderLoop();
     setTimeout(maybeStreakReminder, 4000);
+    initAutoUpdate();
 
     registerIpc();
 

@@ -20,7 +20,13 @@ export default defineConfig({
           resolve: {
             alias: { "@shared": path.resolve(__dirname, "src/shared") },
           },
-          build: { outDir: "dist-electron" },
+          build: {
+            outDir: "dist-electron",
+            // Keep electron-updater external so it's required from node_modules
+            // at runtime (electron-builder bundles production deps) rather than
+            // being pulled into the main bundle by Rollup.
+            rollupOptions: { external: ["electron-updater"] },
+          },
         },
       },
       preload: {

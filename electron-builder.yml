@@ -5,6 +5,10 @@ directories:
 files:
   - dist/**
   - dist-electron/**
+publish:
+  provider: github
+  owner: Segabyte
+  repo: Candle
 win:
   target:
     - target: nsis

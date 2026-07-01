@@ -5,6 +5,7 @@
  */
 import { app } from "electron";
 import { autoUpdater } from "electron-updater";
+import log from "electron-log";
 import { notify } from "./notifications";
 
 let started = false;
@@ -13,6 +14,10 @@ export function initAutoUpdate(): void {
   // Updates only apply to an installed (packaged) build, not `npm run dev`.
   if (!app.isPackaged || started) return;
   started = true;
+
+  // Write update activity to {userData}/logs/main.log for support/diagnosis.
+  log.transports.file.level = "info";
+  autoUpdater.logger = log;
 
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;

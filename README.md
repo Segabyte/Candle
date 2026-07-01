@@ -1,5 +1,6 @@
 # Candle 🕯
 
+[![Build](https://github.com/Segabyte/Candle/actions/workflows/build.yml/badge.svg)](https://github.com/Segabyte/Candle/actions/workflows/build.yml)
 ![Version](https://img.shields.io/badge/version-0.1.0-6b4fbb)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078d6?logo=windows&logoColor=white)
 ![Electron](https://img.shields.io/badge/Electron-33-47848f?logo=electron&logoColor=white)

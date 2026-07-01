@@ -1,5 +1,15 @@
 # Candle 🕯
 
+![Version](https://img.shields.io/badge/version-0.1.0-6b4fbb)
+![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078d6?logo=windows&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-33-47848f?logo=electron&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-r169-000000?logo=three.js&logoColor=white)
+![License](https://img.shields.io/badge/license-proprietary-lightgrey)
+
+**A faith-centered focus companion for Windows — light a candle, study in peace.**
+
 A faith-centered focus companion for Windows. Light a candle for a study
 session; instead of a stressful countdown, a realistic 3D candle slowly melts
 as your time passes. When the session ends, the flame goes out gently, smoke

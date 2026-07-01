@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>JLU · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FAF4E9;--paper:#FFFCF6;--rose:#C98B89;--rose-deep:#B06D6B;--ink:#42382F;--ink-soft:#7C6F63;
+    --sage:#9FAE94;--gold:#EFC878;--line:rgba(66,56,47,.12);--danger:#C0584F;--ok:#5B8A5B;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:'Lora',Georgia,serif;}
+  a{color:var(--rose-deep);}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px clamp(16px,4vw,36px);}
+  header.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px clamp(16px,4vw,36px);background:color-mix(in srgb,var(--cream) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Caveat',cursive;font-size:26px;font-weight:700;}
+  .brand .mark{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--rose-deep);
+    color:#FFF9F4;font-size:15px;transform:rotate(-6deg);}
+  .btn{cursor:pointer;border:none;border-radius:10px;padding:9px 16px;font-family:'Lora',serif;font-size:14px;font-weight:500;transition:.15s;}
+  .btn-p{background:var(--rose-deep);color:#FFF9F4;}
+  .btn-p:hover{filter:brightness(1.06);}
+  .btn-g{background:transparent;border:1.5px solid var(--rose);color:var(--ink);}
+  .btn-g:hover{background:#F6E7E4;}
+  .btn-d{background:transparent;border:1.5px solid var(--danger);color:var(--danger);padding:6px 12px;border-radius:8px;font-size:13px;cursor:pointer;}
+  .btn-d:hover{background:var(--danger);color:#fff;}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 22px rgba(66,56,47,.06);}
+  input,select{font-family:'Lora',serif;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);color:var(--ink);outline:none;}
+  /* login */
+  .login{max-width:400px;margin:8vh auto;padding:30px 28px;}
+  .login h1{font-family:'Caveat',cursive;font-size:34px;margin:0 0 4px;}
+  .login p{color:var(--ink-soft);font-size:14px;margin:0 0 18px;}
+  .login form{display:flex;flex-direction:column;gap:12px;}
+  .msg{min-height:18px;font-size:13px;margin-top:4px;}
+  .msg.err{color:var(--danger);} .msg.ok{color:var(--ok);}
+  /* dashboard */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:18px 0;}
+  .stat{padding:16px 18px;}
+  .stat .n{font-family:'Caveat',cursive;font-size:40px;line-height:1;color:var(--rose-deep);}
+  .stat .l{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 10px;}
+  .toolbar input[type=search]{flex:1;min-width:180px;}
+  .tabs{display:flex;gap:8px;margin:6px 0 14px;}
+  .tab{cursor:pointer;border:1.5px solid var(--rose);background:transparent;color:var(--ink);border-radius:999px;padding:8px 18px;font-family:'Caveat',cursive;font-size:18px;}
+  .tab.on{background:var(--rose-deep);color:#FFF9F4;border-color:var(--rose-deep);}
+  .row{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;padding:14px 16px;border-bottom:1px solid var(--line);}
+  .row:last-child{border-bottom:none;}
+  .row .body{min-width:0;}
+  .row .txt{font-size:15px;line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+  .row .meta{font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .pill{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--rose-deep);
+    background:#F6E7E4;border-radius:999px;padding:2px 8px;margin-right:6px;}
+  .empty{padding:26px;text-align:center;color:var(--ink-soft);font-family:'Caveat',cursive;font-size:22px;}
+  .hidden{display:none!important;}
+  .bulkbar{display:flex;gap:10px;align-items:center;padding:10px 16px;background:#F6E7E4;border-radius:10px;margin-bottom:10px;font-size:14px;}
+  .note-sec{color:var(--ink-soft);font-size:12px;line-height:1.6;margin-top:26px;padding-top:14px;border-top:1px dashed var(--line);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView">
+  <div class="card login">
+    <div class="brand" style="margin-bottom:14px;"><span class="mark">JLU</span> Admin</div>
+    <h1>Welcome back</h1>
+    <p>Sign in to govern the prayer wall. This area is for site guardians only.</p>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="admin email" autocomplete="username" required>
+      <input id="password" type="password" placeholder="password" autocomplete="current-password" required>
+      <button class="btn btn-p" type="submit">Sign in</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminView" class="hidden">
+  <header class="bar">
+    <div class="brand"><span class="mark">JLU</span> Admin</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span id="who" style="font-size:13px;color:var(--ink-soft);"></span>
+      <button class="btn btn-g" id="refreshBtn">Refresh</button>
+      <button class="btn btn-g" id="exportBtn">Export backup</button>
+      <button class="btn btn-g" id="signout">Sign out</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="card stat"><div class="n" id="stNotes">–</div><div class="l">notes on the wall</div></div>
+      <div class="card stat"><div class="n" id="stCandles">–</div><div class="l">candles lit</div></div>
+      <div class="card stat"><div class="n" id="stToday">–</div><div class="l">new today</div></div>
+      <div class="card stat"><div class="n" id="stFlagged">–</div><div class="l">need a look</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="notes">Notes</button>
+      <button class="tab" data-tab="candles">Candles</button>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search text, name, tag…">
+      <label style="font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="onlyFlagged"> only ones that need a look
+      </label>
+    </div>
+
+    <div class="bulkbar hidden" id="bulkbar">
+      <span id="bulkCount">0 selected</span>
+      <button class="btn-d" id="bulkDelete">Delete selected</button>
+      <button class="btn btn-g" id="bulkClear" style="padding:5px 12px;font-size:13px;">Clear</button>
+    </div>
+
+    <div class="card" id="list"><div class="empty">Loading…</div></div>
+    <div class="msg" id="adminMsg" style="margin-top:10px;"></div>
+
+    <div class="note-sec">
+      <strong>Guarding notes.</strong> Deleting is permanent and affects the live wall immediately.
+      "Need a look" flags posts that contain a link or a word from the watch-list. Use “Export backup”
+      regularly to keep a copy. Security: only signed-in guardians can delete — the public site key cannot.
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+/* ---- config: same PUBLIC project + publishable key as the site (safe to include) ---- */
+const SUPABASE_URL = "https://yfneguzcuisfwebzyrun.supabase.co";
+const SUPABASE_KEY = "sb_publishable__NVjXUEHxF5aerYOVc3I2w_0VSAXyMc";
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* watch-list for the "need a look" flag (does not block anything, only highlights) */
+const WATCH = ['http','www.','viagra','casino','porn','xxx','crypto','free money','loan','.com','.net','.ru'];
+
+const $ = id => document.getElementById(id);
+let TAB = 'notes', NOTES = [], CANDLES = [], selected = new Set();
+
+/* ---------- auth ---------- */
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg = $('loginMsg'); msg.textContent = 'Signing in…'; msg.className = 'msg';
+  const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
+  if (error) { msg.textContent = error.message; msg.className = 'msg err'; }
+  else { msg.textContent = ''; }
+});
+$('signout').onclick = () => sb.auth.signOut();
+
+sb.auth.onAuthStateChange((_e, session) => {
+  if (session) { showAdmin(session); } else { showLogin(); }
+});
+sb.auth.getSession().then(({ data }) => { if (data.session) showAdmin(data.session); });
+
+function showLogin(){ $('loginView').classList.remove('hidden'); $('adminView').classList.add('hidden'); }
+async function showAdmin(session){
+  $('loginView').classList.add('hidden'); $('adminView').classList.remove('hidden');
+  $('who').textContent = session.user.email;
+  await loadAll();
+}
+
+/* ---------- data ---------- */
+async function loadAll(){
+  setMsg('');
+  try{
+    const [n, c] = await Promise.all([
+      sb.from('notes').select('*').order('created_at', { ascending:false }).limit(1000),
+      sb.from('candles').select('*').order('created_at', { ascending:false }).limit(1000)
+    ]);
+    if(n.error) throw n.error; if(c.error) throw c.error;
+    NOTES = n.data || []; CANDLES = c.data || [];
+    selected.clear(); renderStats(); render();
+  }catch(err){ setMsg(err.message + ' — if this says permission denied, run ADMIN-SETUP.md’s SQL.', true); }
+}
+function renderStats(){
+  $('stNotes').textContent = NOTES.length;
+  $('stCandles').textContent = CANDLES.length;
+  const today = new Date().toISOString().slice(0,10);
+  const t = [...NOTES,...CANDLES].filter(x => (x.created_at||'').slice(0,10)===today).length;
+  $('stToday').textContent = t;
+  $('stFlagged').textContent = [...NOTES,...CANDLES].filter(flagged).length;
+}
+function flagged(x){
+  const s = ((x.text||'')+' '+(x.intention||'')+' '+(x.author||'')+' '+(x.name||'')).toLowerCase();
+  return WATCH.some(w => s.includes(w));
+}
+
+/* ---------- render ---------- */
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on'); TAB = t.dataset.tab; selected.clear(); render();
+});
+$('search').oninput = render;
+$('onlyFlagged').onchange = render;
+
+function currentRows(){
+  const rows = TAB==='notes' ? NOTES : CANDLES;
+  const q = $('search').value.trim().toLowerCase();
+  const onlyF = $('onlyFlagged').checked;
+  return rows.filter(r => {
+    if (onlyF && !flagged(r)) return false;
+    if (!q) return true;
+    return JSON.stringify(r).toLowerCase().includes(q);
+  });
+}
+function render(){
+  const rows = currentRows();
+  const list = $('list');
+  updateBulk();
+  if(!rows.length){ list.innerHTML = '<div class="empty">Nothing here.</div>'; return; }
+  list.innerHTML = rows.map(r => {
+    const id = r.id;
+    const main = TAB==='notes'
+      ? `<div class="txt">${esc(r.text||'')}</div>
+         <div class="meta"><span class="pill">${esc(r.tag||'note')}</span> ${esc(r.author||'A friend')} · ${when(r.created_at)} ${flagged(r)?'· <b style="color:var(--danger)">needs a look</b>':''}</div>`
+      : `<div class="txt">${esc(r.intention||'(no words)')}</div>
+         <div class="meta"><span class="pill">${esc(r.type||'Prayer')}</span> ${esc(r.name||'a friend')} · ${when(r.created_at)} ${flagged(r)?'· <b style="color:var(--danger)">needs a look</b>':''}</div>`;
+    return `<div class="row">
+      <input type="checkbox" class="sel" data-id="${id}" ${selected.has(id)?'checked':''}>
+      <div class="body">${main}</div>
+      <button class="btn-d" data-del="${id}">Delete</button>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.sel').forEach(cb => cb.onchange = () => {
+    cb.checked ? selected.add(cb.dataset.id) : selected.delete(cb.dataset.id); updateBulk();
+  });
+  list.querySelectorAll('[data-del]').forEach(b => b.onclick = () => delOne(b.dataset.del));
+}
+function updateBulk(){
+  const bb = $('bulkbar');
+  if(selected.size){ bb.classList.remove('hidden'); $('bulkCount').textContent = selected.size+' selected'; }
+  else bb.classList.add('hidden');
+}
+$('bulkClear').onclick = () => { selected.clear(); render(); };
+$('bulkDelete').onclick = async () => {
+  if(!confirm('Delete '+selected.size+' selected item(s)? This is permanent.')) return;
+  await delMany([...selected]);
+};
+
+/* ---------- delete ---------- */
+async function delOne(id){
+  const label = TAB==='notes' ? 'this note' : 'this candle';
+  if(!confirm('Permanently delete '+label+'?')) return;
+  await delMany([id]);
+}
+async function delMany(ids){
+  setMsg('Deleting…');
+  const table = TAB;
+  const { error } = await sb.from(table).delete().in('id', ids);
+  if(error){ setMsg('Could not delete: '+error.message, true); return; }
+  setMsg('Deleted '+ids.length+' item(s).');
+  selected.clear(); await loadAll();
+}
+
+/* ---------- export ---------- */
+$('exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify({ exported:new Date().toISOString(), notes:NOTES, candles:CANDLES }, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'jlu-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+};
+$('refreshBtn').onclick = loadAll;
+
+/* ---------- utils ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+function when(d){ if(!d) return ''; const t=new Date(d); return t.toLocaleDateString()+' '+t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+function setMsg(t, err){ const m=$('adminMsg'); m.textContent=t||''; m.className='msg'+(err?' err':(t?' ok':'')); }
+</script>
+</body>
+</html>

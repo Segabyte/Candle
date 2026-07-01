@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 640" width="600" height="640" role="img" aria-label="An illustration of Jesus with open arms, surrounded by warm light, a descending dove, and floating hearts, expressing unconditional love.">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#FBEFC9"/>
+      <stop offset="42%" stop-color="#F6E7E4"/>
+      <stop offset="100%" stop-color="#FAF4E9"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F7DE9B"/>
+      <stop offset="70%" stop-color="#F2CE86"/>
+      <stop offset="100%" stop-color="#F2CE86" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFCF6"/>
+      <stop offset="100%" stop-color="#F1E7D6"/>
+    </linearGradient>
+    <linearGradient id="sash" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C98B89"/>
+      <stop offset="100%" stop-color="#B06D6B"/>
+    </linearGradient>
+    <radialGradient id="heartglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FBE3CF"/>
+      <stop offset="100%" stop-color="#F2CE86" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="600" height="640" fill="url(#glow)" rx="28"/>
+
+  <g opacity="0.55" fill="#F4D79A">
+    <g transform="translate(300,250)">
+      <polygon points="-7,0 7,0 26,-300 -26,-300"/>
+      <polygon points="-7,0 7,0 26,300 -26,300"/>
+      <polygon points="0,-7 0,7 300,26 300,-26"/>
+      <polygon points="0,-7 0,7 -300,26 -300,-26"/>
+      <polygon transform="rotate(45)" points="-6,0 6,0 22,-300 -22,-300"/>
+      <polygon transform="rotate(45)" points="-6,0 6,0 22,300 -22,300"/>
+      <polygon transform="rotate(45)" points="0,-6 0,6 300,22 300,-22"/>
+      <polygon transform="rotate(45)" points="0,-6 0,6 -300,22 -300,-22"/>
+      <polygon transform="rotate(22.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(67.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(112.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(157.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(202.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(247.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(292.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+      <polygon transform="rotate(337.5)" points="-4,0 4,0 16,-290 -16,-290"/>
+    </g>
+  </g>
+
+  <g transform="translate(300,86)">
+    <ellipse cx="0" cy="40" rx="46" ry="46" fill="#FBEFC9" opacity="0.7"/>
+    <path d="M0,18 C-12,18 -20,26 -20,38 C-20,30 -36,26 -48,34 C-38,34 -30,42 -22,46 C-18,54 -8,58 0,58 C10,58 20,50 20,40 C28,44 36,42 40,36 C32,38 26,34 24,28 C18,22 9,18 0,18 Z" fill="#FFFFFF" stroke="#EADfCB" stroke-width="1.5"/>
+    <circle cx="-12" cy="30" r="2.4" fill="#42382F"/>
+    <path d="M16,42 q10,2 18,-4" stroke="#9FAE94" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="40" r="2.6" fill="#9FAE94"/>
+    <circle cx="35" cy="37" r="2.2" fill="#B5C4A6"/>
+  </g>
+
+  <circle cx="300" cy="252" r="92" fill="url(#halo)"/>
+  <circle cx="300" cy="252" r="64" fill="none" stroke="#EFC878" stroke-width="3" opacity="0.85"/>
+
+  <g>
+    <path d="M300,300 C262,300 232,322 224,360 L196,520 C190,548 210,560 236,560 L364,560 C390,560 410,548 404,520 L376,360 C368,322 338,300 300,300 Z" fill="url(#robe)" stroke="#E7D8C2" stroke-width="2"/>
+    <path d="M236,332 C196,344 150,392 120,452 C112,468 128,482 144,474 C190,452 226,410 252,372 Z" fill="url(#robe)" stroke="#E7D8C2" stroke-width="2"/>
+    <path d="M364,332 C404,344 450,392 480,452 C488,468 472,482 456,474 C410,452 374,410 348,372 Z" fill="url(#robe)" stroke="#E7D8C2" stroke-width="2"/>
+    <ellipse cx="132" cy="466" rx="15" ry="12" fill="#EAC8AE" transform="rotate(-28 132 466)"/>
+    <ellipse cx="468" cy="466" rx="15" ry="12" fill="#EAC8AE" transform="rotate(28 468 466)"/>
+    <path d="M252,372 q48,28 96,0 l-6,150 q-42,16 -84,0 Z" fill="url(#sash)" opacity="0.92"/>
+    <circle cx="300" cy="408" r="40" fill="url(#heartglow)"/>
+    <path d="M300,424 c-16,-12 -28,-22 -28,-34 c0,-9 7,-15 15,-15 c6,0 11,4 13,8 c2,-4 7,-8 13,-8 c8,0 15,6 15,15 c0,12 -12,22 -28,34 Z" fill="#B06D6B"/>
+    <rect x="288" y="286" width="24" height="30" rx="10" fill="#EAC8AE"/>
+    <path d="M256,250 C256,210 274,188 300,188 C326,188 344,210 344,250 C344,278 332,300 332,300 L268,300 C268,300 256,278 256,250 Z" fill="#7C6F63"/>
+    <path d="M300,212 C322,212 336,232 336,258 C336,286 320,304 300,304 C280,304 264,286 264,258 C264,232 278,212 300,212 Z" fill="#F0D2BA"/>
+    <path d="M300,206 C278,206 264,224 262,250 C270,238 282,232 300,232 C318,232 330,238 338,250 C336,224 322,206 300,206 Z" fill="#6E6155"/>
+    <path d="M262,250 C258,286 268,312 276,322 L284,300 C272,292 266,272 266,252 Z" fill="#6E6155"/>
+    <path d="M338,250 C342,286 332,312 324,322 L316,300 C328,292 334,272 334,252 Z" fill="#6E6155"/>
+    <path d="M281,258 q7,5 14,0" stroke="#5E5043" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M305,258 q7,5 14,0" stroke="#5E5043" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M289,286 q11,9 22,0" stroke="#B06D6B" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M276,278 C276,300 286,318 300,318 C314,318 324,300 324,278 C320,294 312,302 300,302 C288,302 280,294 276,278 Z" fill="#7C6F63" opacity="0.92"/>
+    <path d="M286,280 q14,8 28,0" stroke="#6E6155" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#C98B89">
+    <path d="M150,250 c-7,-6 -13,-10 -13,-16 c0,-4 3,-7 7,-7 c3,0 5,2 6,4 c1,-2 3,-4 6,-4 c4,0 7,3 7,7 c0,6 -6,10 -13,16 Z" opacity="0.85"/>
+    <path d="M452,230 c-6,-5 -11,-9 -11,-14 c0,-3 3,-6 6,-6 c2,0 4,1 5,3 c1,-2 3,-3 5,-3 c3,0 6,3 6,6 c0,5 -5,9 -11,14 Z" opacity="0.7"/>
+    <path d="M118,340 c-5,-4 -9,-7 -9,-11 c0,-3 2,-5 5,-5 c2,0 3,1 4,2 c1,-1 2,-2 4,-2 c3,0 5,2 5,5 c0,4 -4,7 -9,11 Z" opacity="0.6"/>
+    <path d="M486,338 c-5,-4 -9,-7 -9,-11 c0,-3 2,-5 5,-5 c2,0 3,1 4,2 c1,-1 2,-2 4,-2 c3,0 5,2 5,5 c0,4 -4,7 -9,11 Z" opacity="0.55"/>
+  </g>
+
+  <path d="M0,560 C120,520 220,548 300,548 C380,548 480,520 600,560 L600,640 L0,640 Z" fill="#EDF0E6"/>
+  <path d="M0,592 C140,560 240,584 300,584 C360,584 460,560 600,592 L600,640 L0,640 Z" fill="#D9E2CC"/>
+</svg>

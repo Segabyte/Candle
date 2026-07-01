@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jesus Loves You — a handwritten prayer wall</title>
+<meta name="description" content="A warm, handwritten notebook for the faithful. Write prayers and gratitude, light a candle, and pin notes of hope to a shared wall. You are loved.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23B06D6B'/%3E%3Ctext x='50' y='66' font-size='44' font-family='Georgia' fill='%23FFF9F4' text-anchor='middle'%3EJLU%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Kalam:wght@300;400;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF4E9; --cream2:#F1E7D6; --paper:#FFFCF6; --rose:#C98B89; --rose-deep:#B06D6B;
+    --ink:#42382F; --ink-soft:#7C6F63; --sage:#9FAE94; --rose-tint:#F6E7E4; --sage-tint:#EDF0E6;
+    --gold:#EFC878; --tape:rgba(201,139,137,0.30);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--cream);color:var(--ink);font-family:'Lora',Georgia,serif;overflow-x:hidden;}
+  ::selection{background:rgba(201,139,137,0.32);}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  input::placeholder,textarea::placeholder{color:#b8a99b;}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+  @keyframes flicker{0%,100%{transform:scale(1) translateY(0);opacity:1;}50%{transform:scale(1.06,0.94) translateY(-1px);opacity:0.92;}}
+  @keyframes dove{0%,100%{transform:translate(0,0) rotate(0);}50%{transform:translate(6px,-8px) rotate(-3deg);}}
+  .reveal{opacity:0;transition:opacity .8s ease,transform .8s ease;transform:translateY(26px);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,52px);}
+  .btn-primary{background:var(--rose-deep);color:#FFF9F4;text-decoration:none;border:none;cursor:pointer;
+    padding:15px 30px;border-radius:999px;font-family:'Caveat',cursive;font-size:25px;
+    box-shadow:0 8px 20px rgba(176,109,107,0.32);transition:transform .15s,box-shadow .15s;display:inline-block;}
+  .btn-primary:hover{transform:translateY(-2px) rotate(-1deg);box-shadow:0 12px 26px rgba(176,109,107,0.4);}
+  .btn-ghost{background:none;border:2px solid var(--rose);color:var(--ink);cursor:pointer;
+    padding:11px 22px;border-radius:999px;font-family:'Caveat',cursive;font-size:20px;transition:background .15s;}
+  .btn-ghost:hover{background:var(--rose-tint);}
+  nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+    padding:16px clamp(20px,5vw,52px);background:color-mix(in srgb,var(--cream) 86%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--ink) 9%,transparent);}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
+  .logo span.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--rose-deep);
+    color:#FFF9F4;font-family:'Caveat',cursive;font-size:18px;font-weight:700;transform:rotate(-6deg);
+    box-shadow:0 4px 12px rgba(176,109,107,0.35);}
+  .navlinks{display:flex;align-items:center;gap:clamp(12px,2.5vw,28px);}
+  .navlinks a{text-decoration:none;color:var(--ink-soft);font-size:16px;}
+  .navlinks a.cta{color:#FFF9F4;background:var(--rose-deep);padding:9px 18px;border-radius:999px;
+    font-family:'Caveat',cursive;font-size:19px;transform:rotate(-2deg);box-shadow:0 5px 14px rgba(176,109,107,0.3);}
+  h1,h2,h3{font-family:'Caveat',cursive;font-weight:700;}
+  .eyebrow{font-family:'Kalam',cursive;color:var(--rose-deep);font-size:17px;}
+  .sticker{position:absolute;cursor:grab;user-select:none;touch-action:none;
+    box-shadow:0 6px 14px rgba(66,56,47,0.16);transition:box-shadow .2s,transform .2s;}
+  .sticker.word{padding:8px 16px;border-radius:999px;font-family:'Caveat',cursive;font-size:24px;font-weight:700;border:2px solid var(--paper);}
+  .sticker.glyph{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-size:24px;border:3px solid var(--paper);}
+  .card{background:var(--paper);border-radius:14px;box-shadow:0 10px 28px rgba(66,56,47,0.08);}
+  .modal-bg{position:fixed;inset:0;background:rgba(66,56,47,0.45);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+  .modal-bg.open{display:flex;}
+  /* flip polaroids */
+  .flips{position:absolute;inset:0;pointer-events:none;}
+  .flip-pos{position:absolute;perspective:1300px;pointer-events:auto;}
+  .polaroid{width:210px;height:264px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.2,.7,.2,1);}
+  .polaroid.flipped{transform:rotateY(180deg);}
+  .pface{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper);border-radius:6px;box-shadow:0 14px 34px rgba(66,56,47,.2);padding:15px 15px 0;display:flex;flex-direction:column;}
+  .pback{transform:rotateY(180deg);padding:18px;justify-content:center;gap:11px;}
+  .pnote{flex:1;border-radius:3px;padding:18px 16px;display:flex;align-items:center;font-family:'Kalam',cursive;font-size:20px;line-height:1.45;color:var(--ink);}
+  .pmeta{padding:11px 4px 13px;display:flex;justify-content:space-between;align-items:center;font-family:'Caveat',cursive;font-size:20px;color:var(--ink-soft);}
+  .candle{cursor:pointer;}
+  .candle-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;width:88px;text-align:center;}
+  .ctype{font-family:'Lora',serif;font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--paper);box-shadow:0 2px 5px rgba(66,56,47,.12);}
+  .flame{width:18px;height:26px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    background:radial-gradient(circle at 50% 70%,#FFF3C4,#F2A33C 60%,#E5732B);
+    box-shadow:0 0 14px 4px rgba(242,163,60,0.55);animation:flicker 1.6s ease-in-out infinite;transform-origin:center bottom;}
+  .stick{width:14px;height:34px;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#FBF3EF,#E9DCCB);box-shadow:inset 0 -3px 5px rgba(0,0,0,0.06);}
+  .cname{font-family:'Caveat',cursive;font-size:17px;color:var(--ink-soft);max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cpop{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-6px);width:180px;background:var(--ink);color:#FFF9F4;
+    font-family:'Kalam',cursive;font-size:13px;line-height:1.45;padding:10px 12px;border-radius:11px;box-shadow:0 10px 24px rgba(66,56,47,.34);
+    z-index:40;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;}
+  .candle-wrap.show .cpop{opacity:1;transform:translateX(-50%) translateY(-10px);}
+  .cpop:after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);}
+  .cpop b{font-family:'Caveat',cursive;font-size:17px;color:var(--gold);display:block;margin-bottom:2px;}
+  /* live CTA chips + blessing */
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  @keyframes bobR{0%,100%{transform:translateY(0) rotate(-1.5deg);}50%{transform:translateY(-5px) rotate(-1.5deg);}}
+  .bob{animation:bobR 2.6s ease-in-out infinite;}
+  .cta-row{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start;}
+  .cta-stack{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+  .lightlink{color:var(--ink);text-decoration:none;padding:14px 16px;font-size:17px;border-bottom:2px solid var(--rose);}
+  .livechip{display:inline-flex;align-items:center;gap:8px;max-width:290px;text-decoration:none;cursor:pointer;
+    background:var(--paper);border:1px solid rgba(66,56,47,.08);border-radius:999px;padding:7px 14px 7px 10px;
+    box-shadow:0 6px 16px rgba(66,56,47,.12);font-family:'Kalam',cursive;font-size:13px;color:var(--ink);
+    animation:bob 3.2s ease-in-out infinite;transition:transform .15s,box-shadow .15s;}
+  .livechip:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 24px rgba(66,56,47,.2);}
+  .livechip .chip-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:176px;}
+  .livechip .chip-by{color:var(--ink-soft);font-family:'Caveat',cursive;font-size:16px;flex:none;}
+  .livechip .chip-pin{width:10px;height:10px;border-radius:50%;background:var(--rose-deep);flex:none;box-shadow:inset 0 -1px 2px rgba(0,0,0,.25);}
+  .livechip .chip-flame{width:11px;height:16px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;flex:none;
+    background:radial-gradient(circle at 50% 70%,#FFF3C4,#F2A33C 60%,#E5732B);box-shadow:0 0 8px 2px rgba(242,163,60,.6);animation:flicker 1.5s ease-in-out infinite;}
+  .livechip b{font-family:'Lora',serif;font-size:10px;letter-spacing:.4px;text-transform:uppercase;color:var(--rose-deep);}
+  .tagline{margin-top:18px;font-family:'Caveat',cursive;font-size:clamp(24px,3vw,33px);color:var(--ink);}
+  .tagline u{text-decoration:none;border-bottom:3px solid var(--rose);color:var(--rose-deep);}
+  footer{background:var(--rose-deep);color:#FBEEEC;text-align:center;padding:clamp(46px,6vw,78px) clamp(20px,5vw,52px);margin-top:40px;}
+  @media(max-width:840px){ #heroGrid{grid-template-columns:1fr!important;} #heroRight{min-height:430px;margin-top:10px;} .navlinks a:not(.cta){display:none;} }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<nav>
+  <a href="#top" class="logo">
+    <span class="mark">JLU</span>
+    <span style="font-family:'Caveat',cursive;font-size:27px;font-weight:700;letter-spacing:0.3px;">Jesus loves you</span>
+  </a>
+  <div class="navlinks">
+    <a href="#candles">Candles</a>
+    <a href="#verses">Verses</a>
+    <a href="#wall">The Wall</a>
+    <a href="#write" class="cta">Write a note</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="top" style="position:relative;">
+  <div id="heroGrid" class="wrap" style="display:grid;grid-template-columns:1.02fr 0.98fr;gap:36px;align-items:center;
+    padding-top:clamp(28px,5vw,60px);padding-bottom:clamp(34px,6vw,68px);min-height:540px;">
+    <div id="dragLayer" style="position:absolute;inset:0;pointer-events:none;z-index:30;"></div>
+    <div style="position:relative;z-index:10;">
+      <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Kalam',cursive;font-size:17px;color:var(--rose-deep);transform:rotate(-1.5deg);margin-bottom:14px;">
+        <span style="width:26px;height:2px;background:var(--rose);display:inline-block;"></span>
+        a handwritten notebook for the faithful
+      </div>
+      <h1 style="font-size:clamp(52px,8vw,92px);line-height:0.95;margin:0 0 8px;letter-spacing:0.5px;">
+        Jesus loves<br><span style="color:var(--rose-deep);">you.</span>
+      </h1>
+      <p style="font-size:clamp(17px,1.7vw,20px);line-height:1.65;color:var(--ink-soft);max-width:32ch;margin:0 0 26px;">
+        Keep your prayers, your gratitude, and the words worth holding onto. Write them by hand,
+        light a candle, and pin them to a wall that fills with grace. Whoever you are — child,
+        grandparent, seeker — His love is for you.
+      </p>
+      <div class="cta-row">
+        <div class="cta-stack">
+          <a href="#write" class="btn-primary bob">Write your first note</a>
+          <a href="#write" class="livechip" id="lastNoteChip" title="the latest note — click to add yours"></a>
+        </div>
+        <div class="cta-stack">
+          <a href="#candles" class="lightlink">Light a candle &rarr;</a>
+          <a href="#candles" class="livechip" id="lastCandleChip" title="the last candle lit — click to light one"></a>
+        </div>
+      </div>
+      <div class="tagline">You are loved. You matter. <u>Jesus loves you.</u></div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;font-family:'Kalam',cursive;color:var(--ink-soft);font-size:15px;">
+        <span style="font-size:20px;">&#10022;</span> psst — the little stickers are draggable, and the cards flip. go on.
+      </div>
+    </div>
+
+    <!-- BOOK + FLIP CARDS -->
+    <div id="heroRight" style="position:relative;z-index:20;min-height:480px;display:flex;align-items:center;justify-content:center;">
+      <div id="heroArt" style="width:min(100%,560px);animation:floaty 6s ease-in-out infinite;"></div>
+      <div class="flips" id="flips"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CANDLES -->
+<section id="candles" class="reveal" style="background:var(--cream2);padding:clamp(44px,6vw,76px) 0;position:relative;">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:18px;">
+      <div class="eyebrow">a quiet light</div>
+      <h2 style="font-size:clamp(38px,5vw,58px);margin:6px 0 0;">Light a candle when you pray</h2>
+      <p style="color:var(--ink-soft);font-size:17px;line-height:1.6;max-width:54ch;margin:12px auto 0;">
+        Carry someone to the Lord. Light a candle, choose its kind, and name your prayer — then
+        tap any candle to read the prayer it holds. <span id="candleCount" style="color:var(--rose-deep);font-weight:600;"></span>
+      </p>
+    </div>
+    <div style="text-align:center;margin:22px 0 30px;">
+      <button class="btn-primary" id="openCandle" style="transform:rotate(-1deg);">Light a candle</button>
+    </div>
+    <div id="candleWall" style="display:flex;flex-wrap:wrap;gap:26px 16px;justify-content:center;align-items:flex-end;min-height:130px;"></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="reveal wrap" style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,52px);">
+  <div style="text-align:center;margin-bottom:40px;">
+    <div class="eyebrow">three small steps</div>
+    <h2 style="font-size:clamp(38px,5vw,58px);margin:6px 0 0;">A quiet practice, kept by hand</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;" id="howGrid"></div>
+</section>
+
+<!-- VERSE TEMPLATES -->
+<section id="verses" class="reveal" style="background:var(--sage-tint);padding:clamp(44px,6vw,80px) 0;">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:14px;">
+      <div class="eyebrow">begin with the Word</div>
+      <h2 style="font-size:clamp(38px,5vw,58px);margin:6px 0 6px;">Bible verse note cards</h2>
+      <p style="color:var(--ink-soft);font-size:17px;max-width:52ch;margin:0 auto;">
+        Tap any verse to open a fresh note already wrapped around it (KJV). Add your own words underneath, then pin it to the wall.
+      </p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:22px 0;" id="verseFilters"></div>
+    <div id="verseGrid" style="columns:3 260px;column-gap:20px;"></div>
+  </div>
+</section>
+
+<!-- WRITE A NOTE -->
+<section id="write" class="reveal wrap" style="padding:clamp(46px,6vw,86px) clamp(20px,5vw,52px);">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;">
+    <div>
+      <div class="eyebrow">your own hand</div>
+      <h2 style="font-size:clamp(38px,5.2vw,62px);margin:6px 0 14px;line-height:1;">Write a note,<br>pin it to the wall</h2>
+      <p style="font-size:18px;line-height:1.65;color:var(--ink-soft);max-width:34ch;margin:0 0 18px;">
+        A prayer, a thanks, a verse that found you. When you pin it, watch it flip to a word of
+        Scripture for you — then it joins the wall.
+      </p>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+        <li style="display:flex;gap:11px;align-items:center;font-size:16px;"><span style="color:var(--rose-deep);font-size:19px;">&#10003;</span> Free, and yours — no account needed</li>
+        <li style="display:flex;gap:11px;align-items:center;font-size:16px;"><span style="color:var(--rose-deep);font-size:19px;">&#10003;</span> Saved and searchable on the wall</li>
+        <li style="display:flex;gap:11px;align-items:center;font-size:16px;"><span style="color:var(--rose-deep);font-size:19px;">&#10003;</span> Built for churches, families &amp; small groups</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:clamp(22px,3vw,34px);transform:rotate(0.6deg);position:relative;">
+      <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%) rotate(-3deg);width:120px;height:28px;background:var(--tape);border-radius:2px;"></div>
+      <form id="noteForm" style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font-family:'Caveat',cursive;font-size:30px;margin-bottom:2px;">Pin a note to the wall</div>
+        <label style="font-size:14px;color:var(--ink-soft);margin-top:8px;">Your note</label>
+        <textarea id="noteText" rows="4" placeholder="Lord, thank You for carrying me this week..." style="padding:12px 14px;border-radius:10px;font-family:'Kalam',cursive;font-size:18px;line-height:1.5;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;resize:vertical;"></textarea>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+          <div style="flex:1;min-width:140px;">
+            <label style="font-size:14px;color:var(--ink-soft);">Your name</label>
+            <input id="noteAuthor" placeholder="Hannah from Grace Chapel" style="width:100%;padding:11px 13px;border-radius:10px;font-family:'Lora',serif;font-size:16px;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;">
+          </div>
+          <div style="min-width:140px;">
+            <label style="font-size:14px;color:var(--ink-soft);">Pin it to</label>
+            <select id="noteTag" style="width:100%;padding:11px 13px;border-radius:10px;font-family:'Lora',serif;font-size:16px;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;">
+              <option>Gratitude</option><option>Prayer</option><option>Praise</option><option>Hope</option>
+            </select>
+          </div>
+        </div>
+        <div id="noteErr" style="font-size:13px;color:#C0584F;min-height:17px;font-family:'Kalam',cursive;margin-top:4px;"></div>
+        <button type="submit" class="btn-primary" style="margin-top:8px;border-radius:12px;width:100%;">Pin my note &#9825;</button>
+        <p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:10px 0 0;">No spam, ever. Just a quiet place to write.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY WALL -->
+<section id="wall" class="reveal" style="background:var(--cream2);padding:clamp(44px,6vw,82px) 0;position:relative;">
+  <div class="wrap">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px;">
+      <div>
+        <div class="eyebrow">from the community</div>
+        <h2 style="font-size:clamp(38px,5vw,58px);margin:6px 0 0;">The gratitude wall</h2>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;" id="wallFilters"></div>
+    </div>
+    <div id="wallGrid" style="columns:3 240px;column-gap:22px;"></div>
+  </div>
+</section>
+
+<footer>
+  <p style="font-family:'Caveat',cursive;font-size:clamp(30px,4vw,46px);max-width:20ch;margin:0 auto 8px;line-height:1.15;color:#FFF9F4;">
+    &ldquo;For God so loved the world, that he gave his only begotten Son.&rdquo;
+  </p>
+  <div style="font-family:'Kalam',cursive;font-size:17px;opacity:0.85;margin-bottom:30px;">John 3:16</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;">
+    <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(255,249,244,0.16);font-family:'Caveat',cursive;font-size:15px;font-weight:700;transform:rotate(-6deg);">JLU</span>
+    <span style="font-family:'Caveat',cursive;font-size:24px;">Jesus loves you</span>
+  </div>
+  <div style="font-size:13px;opacity:0.7;">You are loved. You matter. &middot; Made with grace &middot; &copy; 2026 Jesus loves you</div>
+</footer>
+
+<!-- CANDLE MODAL -->
+<div class="modal-bg" id="candleModal">
+  <div class="card" style="max-width:430px;width:100%;padding:30px 28px;position:relative;transform:rotate(-0.6deg);">
+    <button id="closeCandle" aria-label="Close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;color:var(--ink-soft);cursor:pointer;">&times;</button>
+    <div style="text-align:center;margin-bottom:8px;">
+      <div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="flame"></div><div class="stick" style="height:40px;"></div>
+      </div>
+    </div>
+    <h3 style="font-size:30px;text-align:center;margin:6px 0 14px;">Light a candle</h3>
+    <form id="candleForm" style="display:flex;flex-direction:column;gap:10px;">
+      <label style="font-size:14px;color:var(--ink-soft);">What kind of candle?</label>
+      <select id="candleType" style="padding:12px 14px;border-radius:10px;font-family:'Lora',serif;font-size:16px;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;">
+        <option>Prayer</option><option>Gratitude</option><option>Praise</option><option>Hope</option>
+      </select>
+      <input id="candleName" placeholder="Your name (or leave blank)" style="padding:12px 14px;border-radius:10px;font-family:'Lora',serif;font-size:16px;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;">
+      <textarea id="candleIntention" rows="3" placeholder="Who or what are you praying for?" style="padding:12px 14px;border-radius:10px;font-family:'Kalam',cursive;font-size:17px;line-height:1.5;background:var(--cream);color:var(--ink);border:2px solid rgba(66,56,47,0.14);outline:none;resize:vertical;"></textarea>
+      <div id="candleErr" style="font-size:13px;color:#C0584F;min-height:16px;font-family:'Kalam',cursive;"></div>
+      <button type="submit" class="btn-primary" style="border-radius:12px;width:100%;">Light it &#128367;</button>
+    </form>
+  </div>
+</div>
+
+<!-- NOTE FLIP CELEBRATION -->
+<div class="modal-bg" id="flipModal">
+  <div style="perspective:1400px;">
+    <div id="flipPolaroid" class="polaroid" style="width:300px;height:368px;">
+      <div class="pface" id="flipFront"></div>
+      <div class="pface pback" id="flipBack"></div>
+    </div>
+    <div style="text-align:center;color:#FFF9F4;font-family:'Caveat',cursive;font-size:24px;margin-top:18px;opacity:0.9;" id="flipCaption">a word for you…</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   Jesus Loves You — prayer wall.  Works instantly with the browser's own
+   storage. To switch the wall + candles to a SHARED cloud (every visitor sees
+   the same notes), paste your Wix Headless OAuth Client ID into WIX.clientId
+   and follow DEPLOY.md. Empty = local storage (still fully functional).
+   ============================================================================ */
+const WIX = { clientId: "" /* <-- paste Wix Headless Client ID to enable shared cloud wall */ };
+
+/* ---- SHARED WALL via Supabase (recommended for GoDaddy hosting) ----
+   Paste your Supabase Project URL + anon public key here, then run the SQL in
+   SUPABASE-SETUP.md. Once both are filled, the wall + candles become SHARED across
+   every visitor. Leave blank to use each visitor's own browser storage. ---- */
+const SUPA = { url: "https://yfneguzcuisfwebzyrun.supabase.co", key: "sb_publishable__NVjXUEHxF5aerYOVc3I2w_0VSAXyMc" };
+
+const Local = {
+  async getNotes(){ return JSON.parse(localStorage.getItem('jlu_notes')||'null') || SEED_NOTES.slice(); },
+  async addNote(n){ const a = await this.getNotes(); a.unshift(n); localStorage.setItem('jlu_notes', JSON.stringify(a)); return n; },
+  async getCandles(){ return JSON.parse(localStorage.getItem('jlu_candles')||'null') || SEED_CANDLES.slice(); },
+  async addCandle(c){ const a = await this.getCandles(); a.unshift(c); localStorage.setItem('jlu_candles', JSON.stringify(a)); return c; }
+};
+async function makeWix(){
+  try{
+    const { createClient, OAuthStrategy } = await import('https://esm.sh/@wix/sdk');
+    const { items } = await import('https://esm.sh/@wix/data');
+    const wix = createClient({ modules:{ items }, auth: OAuthStrategy({ clientId: WIX.clientId }) });
+    const map = (it)=>it.data || it;
+    return {
+      async getNotes(){ const r = await wix.items.queryDataItems({dataCollectionId:'Notes'}).descending('_createdDate').find(); return r.items.map(map); },
+      async addNote(n){ await wix.items.insertDataItem({dataCollectionId:'Notes', dataItem:{data:n}}); return n; },
+      async getCandles(){ const r = await wix.items.queryDataItems({dataCollectionId:'Candles'}).descending('_createdDate').find(); return r.items.map(map); },
+      async addCandle(c){ await wix.items.insertDataItem({dataCollectionId:'Candles', dataItem:{data:c}}); return c; }
+    };
+  }catch(e){ console.warn('Wix unavailable, using local storage:', e); return Local; }
+}
+/* Supabase REST adapter — works from a plain static page, no build needed. */
+function makeSupa(){
+  const base = SUPA.url.replace(/\/$/,'') + '/rest/v1';
+  /* Legacy anon keys are JWTs (start with "eyJ") and want an Authorization header.
+     New publishable keys (sb_publishable_...) authenticate via apikey alone. */
+  const isJwt = /^eyJ/.test(SUPA.key);
+  const H = isJwt
+    ? { 'apikey':SUPA.key, 'Authorization':'Bearer '+SUPA.key, 'Content-Type':'application/json' }
+    : { 'apikey':SUPA.key, 'Content-Type':'application/json' };
+  async function getRows(table){
+    const r = await fetch(`${base}/${table}?select=*&order=created_at.desc&limit=300`, {headers:H});
+    if(!r.ok) throw new Error(table+' read '+r.status);
+    return await r.json();
+  }
+  async function addRow(table,row){
+    const r = await fetch(`${base}/${table}`, {method:'POST', headers:{...H,'Prefer':'return=minimal'}, body:JSON.stringify([row])});
+    if(!r.ok) throw new Error(table+' insert '+r.status);
+  }
+  return {
+    async getNotes(){ try{ const a=await getRows('notes'); return a.map(n=>({text:n.text,author:n.author,tag:n.tag,_createdDate:n.created_at})); }catch(e){ console.warn(e); return Local.getNotes(); } },
+    async addNote(n){ try{ await addRow('notes',{text:n.text,author:n.author,tag:n.tag}); }catch(e){ console.warn(e); await Local.addNote(n); } return n; },
+    async getCandles(){ try{ const a=await getRows('candles'); return a.map(c=>({name:c.name,type:c.type,intention:c.intention,_createdDate:c.created_at})); }catch(e){ console.warn(e); return Local.getCandles(); } },
+    async addCandle(c){ try{ await addRow('candles',{name:c.name,type:c.type,intention:c.intention}); }catch(e){ console.warn(e); await Local.addCandle(c); } return c; }
+  };
+}
+let Store = Local;
+
+const SEED_NOTES = [
+  {text:'Thank You, Lord, for another sunrise and a quiet house before the day begins.',author:'Ruth K.',tag:'Gratitude'},
+  {text:'Praying for Mom’s surgery on Thursday. Peace over fear, in Jesus’ name.',author:'Dani',tag:'Prayer'},
+  {text:'He did it again. The job came through right when we’d run out of options.',author:'Samuel O.',tag:'Praise'},
+  {text:'So grateful for this little church family. I never knew I could be this held.',author:'Priya',tag:'Gratitude'},
+  {text:'Lord, give me patience with the kids today, and grace with myself.',author:'Beth',tag:'Prayer'},
+  {text:'Healed and whole. The scans came back clear. Thank You, Jesus.',author:'Marcus T.',tag:'Praise'},
+  {text:'For my neighbor who lives alone — that she would feel seen this week.',author:'Joel',tag:'Prayer'},
+  {text:'Found the exact verse I needed the very morning I needed it.',author:'Aimee',tag:'Hope'},
+  {text:'Baby girl arrived safe at 3am. Our hearts are overflowing.',author:'The Okafors',tag:'Praise'}
+];
+const SEED_CANDLES = [
+  {name:'Grace', type:'Prayer', intention:'For everyone who feels alone tonight.'},
+  {name:'Thomas', type:'Hope', intention:'For my brother’s heart to soften.'},
+  {name:'', type:'Gratitude', intention:'Thank You for our healthy baby.'},
+  {name:'Lydia', type:'Praise', intention:'He answered — the surgery went well!'}
+];
+
+const VERSES = [
+  {ref:'John 3:16', cat:'Love', text:'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.'},
+  {ref:'Matthew 11:28', cat:'Peace', text:'Come unto me, all ye that labour and are heavy laden, and I will give you rest.'},
+  {ref:'Psalm 23:1', cat:'Strength', text:'The Lord is my shepherd; I shall not want.'},
+  {ref:'Philippians 4:13', cat:'Strength', text:'I can do all things through Christ which strengtheneth me.'},
+  {ref:'Jeremiah 29:11', cat:'Hope', text:'For I know the thoughts that I think toward you, saith the Lord, thoughts of peace, and not of evil, to give you an expected end.'},
+  {ref:'Romans 8:28', cat:'Hope', text:'And we know that all things work together for good to them that love God, to them who are the called according to his purpose.'},
+  {ref:'Proverbs 3:5-6', cat:'Guidance', text:'Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.'},
+  {ref:'Isaiah 41:10', cat:'Strength', text:'Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee.'},
+  {ref:'Psalm 46:10', cat:'Peace', text:'Be still, and know that I am God.'},
+  {ref:'Joshua 1:9', cat:'Strength', text:'Be strong and of a good courage; be not afraid, neither be thou dismayed: for the Lord thy God is with thee whithersoever thou goest.'},
+  {ref:'2 Timothy 1:7', cat:'Strength', text:'For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.'},
+  {ref:'Philippians 4:6-7', cat:'Peace', text:'Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.'},
+  {ref:'Isaiah 40:31', cat:'Strength', text:'But they that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles.'},
+  {ref:'Matthew 6:25', cat:'Peace', text:'Therefore I say unto you, Take no thought for your life, what ye shall eat, or what ye shall drink; nor yet for your body, what ye shall put on. Is not the life more than meat, and the body than raiment?'},
+  {ref:'Matthew 6:27', cat:'Peace', text:'Which of you by taking thought can add one cubit unto his stature?'},
+  {ref:'Matthew 6:33', cat:'Guidance', text:'But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.'},
+  {ref:'1 Corinthians 13:4', cat:'Love', text:'Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up.'},
+  {ref:'1 John 4:8', cat:'Love', text:'He that loveth not knoweth not God; for God is love.'},
+  {ref:'Romans 5:8', cat:'Love', text:'But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us.'},
+  {ref:'Ephesians 2:8', cat:'Love', text:'For by grace are ye saved through faith; and that not of yourselves: it is the gift of God.'},
+  {ref:'Psalm 118:24', cat:'Hope', text:'This is the day which the Lord hath made; we will rejoice and be glad in it.'},
+  {ref:'Psalm 119:105', cat:'Guidance', text:'Thy word is a lamp unto my feet, and a light unto my path.'},
+  {ref:'Micah 6:8', cat:'Guidance', text:'He hath shewed thee, O man, what is good; and what doth the Lord require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?'},
+  {ref:'Galatians 5:22-23', cat:'Love', text:'But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance.'},
+  {ref:'1 Thessalonians 5:18', cat:'Gratitude', text:'In every thing give thanks: for this is the will of God in Christ Jesus concerning you.'},
+  {ref:'Luke 15:10', cat:'Praise', text:'There is joy in the presence of the angels of God over one sinner that repenteth.'}
+];
+
+const TAG_BG = {Gratitude:'var(--rose-tint)', Prayer:'var(--sage-tint)', Praise:'var(--cream2)', Hope:'#FBEFD6'};
+const TYPE_COLOR = {Prayer:'var(--sage)', Gratitude:'var(--rose)', Praise:'var(--gold)', Hope:'var(--rose-deep)'};
+const HUES = {rose:['var(--rose)','#FFF9F4'], sage:['var(--sage)','#FFF9F4'], paper:['var(--paper)','var(--ink)'], ink:['var(--ink)','#FFF9F4']};
+/* a Bible verse to flip to, based on the note's tag */
+const TAG_VERSE = {Gratitude:'1 Thessalonians 5:18', Prayer:'Philippians 4:6-7', Praise:'Luke 15:10', Hope:'Jeremiah 29:11'};
+
+/* ---- light spam guard (kind, client-side) ---- */
+const MAXLEN = 600, COOLDOWN = 8000;
+const BANNED = ['viagra','cialis','casino','porn','xxx','sex cam','bitcoin giveaway','crypto airdrop','free money','make money fast','loan offer','weight loss pill','seo service','buy followers'];
+function spamCheck(text){
+  const t = (text||'').trim();
+  const now = Date.now(), last = +(localStorage.getItem('jlu_last')||0);
+  if(now - last < COOLDOWN) return 'One moment — please wait a few seconds before posting again. 🕊️';
+  if(t.length > MAXLEN) return 'Let’s keep it under '+MAXLEN+' characters. 💛';
+  if(t.length){
+    if(/(https?:\/\/|www\.)/i.test(t) || /\b[\w-]+\.(com|net|org|info|biz|xyz|ru|top|click|shop|link)\b/i.test(t))
+      return 'Links aren’t allowed on the wall — just your words and prayers. 💛';
+    const low = t.toLowerCase();
+    if(BANNED.some(w=>low.includes(w))) return 'Let’s keep this a gentle, encouraging space — please rephrase. 💛';
+    if(localStorage.getItem('jlu_lasttext') === low) return 'Looks like that one’s already shared. 💛';
+  }
+  return '';
+}
+function markPosted(text){
+  localStorage.setItem('jlu_last', String(Date.now()));
+  const t=(text||'').trim().toLowerCase();
+  if(t) localStorage.setItem('jlu_lasttext', t);
+}
+
+/* ===== HERO illustration: open gratitude book + dove ===== */
+document.getElementById('heroArt').innerHTML = BOOK_SVG();
+
+/* ===== flip cards layered on the book ===== */
+const FLIPCARDS = [
+  { pos:'top:0%; left:-2%;', rot:-7, bg:'var(--rose-tint)', note:'Lord, thank You for carrying me through this week.', who:'— Hannah, Tues', pin:'Gratitude', verse:'“Give thanks in all circumstances.”', ref:'1 Thessalonians 5:18' },
+  { pos:'top:30%; right:-3%;', rot:5, bg:'var(--sage-tint)', note:'Praying for Dad’s heart. Steady hands for the doctors.', who:'— Marcus', pin:'Prayer', verse:'“Do not be anxious about anything.”', ref:'Philippians 4:6' },
+  { pos:'bottom:-2%; left:14%;', rot:-2, bg:'var(--cream2)', note:'She said yes to Jesus today. Heaven’s rejoicing.', who:'— Tabitha', pin:'Praise', verse:'“There is joy over one sinner who repents.”', ref:'Luke 15:10' }
+];
+(function buildFlips(){
+  const root = document.getElementById('flips');
+  FLIPCARDS.forEach((c,i)=>{
+    const holder = document.createElement('div');
+    holder.className='flip-pos';
+    holder.style.cssText += c.pos + 'z-index:'+(3-i)+';';
+    holder.innerHTML = `
+      <div class="polaroid" style="transform:rotate(${c.rot}deg);" data-rot="${c.rot}">
+        <div class="pface">
+          <div class="pnote" style="background:${c.bg};">${c.note}</div>
+          <div class="pmeta"><span>${c.who}</span><span style="font-size:13px;font-family:'Lora',serif;color:var(--rose);">tap to flip</span></div>
+        </div>
+        <div class="pface pback">
+          <div style="font-family:'Caveat',cursive;font-size:26px;color:var(--rose-deep);">Pinned to: ${c.pin}</div>
+          <p style="margin:0;font-style:italic;font-size:15px;line-height:1.6;color:var(--ink-soft);">${c.verse}</p>
+          <div style="font-family:'Kalam',cursive;font-size:15px;color:var(--ink);">${c.ref}</div>
+        </div>
+      </div>`;
+    const card = holder.querySelector('.polaroid');
+    card.addEventListener('click', ()=>{
+      const r = card.dataset.rot;
+      card.classList.toggle('flipped');
+      card.style.transform = card.classList.contains('flipped') ? `rotate(${r}deg) rotateY(180deg)` : `rotate(${r}deg)`;
+    });
+    root.appendChild(holder);
+  });
+})();
+
+/* ===== draggable stickers ===== */
+const DOVE_MINI = `<svg width="42" height="32" viewBox="-40 22 134 58" xmlns="http://www.w3.org/2000/svg" aria-label="dove">
+  <path d="M30,30 C14,28 4,36 2,50 C2,40 -18,36 -34,46 C-22,46 -12,56 -2,60 C4,70 18,74 30,72 C44,70 56,60 56,48 C66,52 76,50 82,42 C72,44 64,40 60,32 C52,24 42,30 30,30 Z" fill="#FFFFFF" stroke="#D9C9B0" stroke-width="2"/>
+  <circle cx="14" cy="44" r="2.6" fill="#42382F"/>
+  <path d="M60,52 q14,4 24,-3" stroke="#9FAE94" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M72,50 q5,-6 12,-5 q-3,6 -10,7 Z" fill="#9FAE94"/></svg>`;
+const STICKERS = [
+  {kind:'word',label:'amen',rot:-8,x:'6%',y:'4%',hue:'rose'},
+  {kind:'glyph',label:'✝',rot:7,x:'26%',y:'1%',hue:'ink'},
+  {kind:'word',label:'grace',rot:5,x:'46%',y:'7%',hue:'sage'},
+  {kind:'word',label:'blessed',rot:-4,x:'4%',y:'74%',hue:'paper'},
+  {kind:'glyph',label:'✧',rot:12,x:'30%',y:'84%',hue:'sage'},
+  {kind:'word',label:'pray',rot:8,x:'86%',y:'66%',hue:'rose'},
+  {kind:'glyph',label:'♥',rot:-10,x:'64%',y:'2%',hue:'rose'}
+];
+(function buildStickers(){
+  const layer = document.getElementById('dragLayer');
+  STICKERS.forEach((s,i)=>{
+    const el = document.createElement('div');
+    if(s.kind==='dove'){
+      el.className = 'sticker';
+      el.style.cssText = 'padding:7px 12px;border-radius:18px;background:#FFFDF7;border:2px solid var(--paper);display:grid;place-items:center;';
+      el.innerHTML = DOVE_MINI;
+    } else {
+      el.className = 'sticker '+(s.kind==='glyph'?'glyph':'word');
+      el.textContent = s.label;
+      const [bg,fg] = HUES[s.hue];
+      el.style.background = bg; el.style.color = fg;
+    }
+    el.style.left = s.x; el.style.top = s.y;
+    el.style.transform = `rotate(${s.rot}deg)`;
+    el.style.pointerEvents = 'auto'; el.style.zIndex = 30+i;
+    el.title = 'drag me';
+    let drag=null;
+    el.addEventListener('pointerdown',e=>{
+      e.preventDefault(); el.setPointerCapture(e.pointerId);
+      drag = {sx:e.clientX, sy:e.clientY, ox:el.offsetLeft, oy:el.offsetTop};
+      el.style.cursor='grabbing'; el.style.zIndex=50; el.style.boxShadow='0 14px 26px rgba(66,56,47,0.28)';
+    });
+    el.addEventListener('pointermove',e=>{
+      if(!drag) return;
+      el.style.left = (drag.ox + (e.clientX-drag.sx))+'px';
+      el.style.top  = (drag.oy + (e.clientY-drag.sy))+'px';
+      el.style.transform = `rotate(${s.rot}deg) scale(1.08)`;
+    });
+    const end=()=>{ if(!drag) return; drag=null; el.style.cursor='grab'; el.style.boxShadow='0 6px 14px rgba(66,56,47,0.16)'; el.style.transform=`rotate(${s.rot}deg)`; };
+    el.addEventListener('pointerup',end); el.addEventListener('pointercancel',end);
+    layer.appendChild(el);
+  });
+})();
+
+/* ===== how it works ===== */
+document.getElementById('howGrid').innerHTML = [
+  ['01','Write it down','Put pen to paper — a prayer, a thanks, a verse that found you. Your words, in your own hand.'],
+  ['02','Light & pin it','Light a candle, then pin your note to the wall — shared with your church family, or kept between you and the Lord.'],
+  ['03','Keep it forever','Every note and candle is saved. Look back and see how faithfully your prayers were answered.']
+].map((c,i)=>`<div class="card" style="padding:30px 26px;transform:rotate(${[-1,0.8,-0.6][i]}deg);">
+    <div style="font-family:'Caveat',cursive;font-size:46px;color:var(--rose);line-height:1;">${c[0]}</div>
+    <h3 style="font-size:30px;margin:8px 0 8px;">${c[1]}</h3>
+    <p style="margin:0;color:var(--ink-soft);font-size:16px;line-height:1.6;">${c[2]}</p></div>`).join('');
+
+/* ===== verse templates ===== */
+const VERSE_CATS = ['All','Love','Peace','Strength','Hope','Guidance'];
+let verseFilter='All';
+function renderVerseFilters(){
+  document.getElementById('verseFilters').innerHTML = VERSE_CATS.map(c=>{
+    const on = c===verseFilter;
+    return `<button class="vf btn-ghost" data-c="${c}" style="${on?'background:var(--rose-deep);color:#FFF9F4;border-color:var(--rose-deep);':''}">${c}</button>`;
+  }).join('');
+  document.querySelectorAll('.vf').forEach(b=>b.onclick=()=>{verseFilter=b.dataset.c;renderVerseFilters();renderVerses();});
+}
+function renderVerses(){
+  const list = VERSES.filter(v=>verseFilter==='All'||v.cat===verseFilter);
+  document.getElementById('verseGrid').innerHTML = list.map((v,i)=>{
+    const rot=[-1.2,0.9,-0.6,1.1,-0.9,0.7][i%6];
+    return `<div class="card vcard" data-ref="${v.ref}" style="break-inside:avoid;display:inline-block;width:100%;margin-bottom:20px;padding:22px 20px;cursor:pointer;transform:rotate(${rot}deg);border:1px solid rgba(66,56,47,0.05);transition:transform .15s,box-shadow .15s;">
+      <div style="font-family:'Lora',serif;font-style:italic;font-size:17px;line-height:1.6;color:var(--ink);">&ldquo;${v.text}&rdquo;</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+        <span style="font-family:'Kalam',cursive;font-size:16px;color:var(--rose-deep);">${v.ref}</span>
+        <span style="font-family:'Caveat',cursive;font-size:18px;color:var(--ink-soft);">start a note &rarr;</span>
+      </div></div>`;
+  }).join('');
+  document.querySelectorAll('.vcard').forEach(c=>{
+    c.onmouseenter=()=>c.style.transform='rotate(0deg) translateY(-3px)';
+    c.onmouseleave=()=>{renderVerses();};
+    c.onclick=()=>{
+      const v = VERSES.find(x=>x.ref===c.dataset.ref);
+      document.getElementById('noteText').value = `“${v.text}”\n— ${v.ref}\n\n`;
+      document.getElementById('noteTag').value = ({Love:'Gratitude',Peace:'Prayer',Strength:'Prayer',Hope:'Hope',Guidance:'Hope',Gratitude:'Gratitude',Praise:'Praise'})[v.cat]||'Hope';
+      document.getElementById('write').scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>{const t=document.getElementById('noteText');t.focus();t.setSelectionRange(t.value.length,t.value.length);},500);
+    };
+  });
+}
+
+/* ===== community wall ===== */
+const WALL_TABS = ['All','Gratitude','Prayer','Praise','Hope'];
+let wallFilter='All', NOTES=[];
+function renderWallFilters(){
+  document.getElementById('wallFilters').innerHTML = WALL_TABS.map(t=>{
+    const on=t===wallFilter;
+    return `<button class="wf btn-ghost" data-t="${t}" style="${on?'background:var(--rose-deep);color:#FFF9F4;border-color:var(--rose-deep);':''}">${t}</button>`;
+  }).join('');
+  document.querySelectorAll('.wf').forEach(b=>b.onclick=()=>{wallFilter=b.dataset.t;renderWallFilters();renderWall();});
+}
+function renderWall(){
+  const list = NOTES.filter(n=>wallFilter==='All'||n.tag===wallFilter);
+  const grid = document.getElementById('wallGrid');
+  if(!list.length){ grid.innerHTML = `<p style="font-family:'Kalam',cursive;color:var(--ink-soft);">No notes here yet — be the first to pin one.</p>`; return; }
+  grid.innerHTML = list.map((n,i)=>{
+    const rot=[-1.4,0.8,-0.6,1.2,-1,0.6,1.4,-0.8,0.5][i%9];
+    return `<div style="break-inside:avoid;display:inline-block;width:100%;background:${TAG_BG[n.tag]||'var(--paper)'};border-radius:10px;padding:26px 20px 18px;margin-bottom:22px;box-shadow:0 8px 22px rgba(66,56,47,0.10);transform:rotate(${rot}deg);position:relative;border:1px solid rgba(66,56,47,0.05);">
+      <div style="position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;background:var(--rose-deep);box-shadow:0 3px 5px rgba(66,56,47,0.3),inset 0 -2px 3px rgba(0,0,0,0.2);"></div>
+      <p style="margin:0 0 14px;font-family:'Kalam',cursive;font-size:18px;line-height:1.5;color:var(--ink);white-space:pre-wrap;">${esc(n.text)}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Caveat',cursive;font-size:20px;color:var(--ink-soft);">— ${esc(n.author||'A friend')}</span>
+        <span style="font-size:11px;letter-spacing:0.6px;text-transform:uppercase;color:var(--rose-deep);font-weight:600;background:var(--paper);padding:3px 9px;border-radius:999px;">${n.tag||'Note'}</span>
+      </div></div>`;
+  }).join('');
+}
+async function loadWall(){ NOTES = await Store.getNotes(); renderWall(); }
+
+/* ===== note submit → flip to a Bible verse → land on the wall ===== */
+const flipModal=document.getElementById('flipModal'), flipPolaroid=document.getElementById('flipPolaroid');
+function celebrateNote(note){
+  const ref = TAG_VERSE[note.tag] || 'John 3:16';
+  const v = VERSES.find(x=>x.ref===ref) || VERSES[0];
+  document.getElementById('flipFront').innerHTML = `
+    <div class="pnote" style="background:${TAG_BG[note.tag]||'var(--rose-tint)'};">${esc(note.text)}</div>
+    <div class="pmeta"><span>— ${esc(note.author||'A friend')}</span><span style="font-size:13px;font-family:'Lora',serif;color:var(--rose);">${esc(note.tag)}</span></div>`;
+  document.getElementById('flipBack').innerHTML = `
+    <div style="font-family:'Caveat',cursive;font-size:30px;color:var(--rose-deep);text-align:center;">A word for you</div>
+    <p style="margin:0;font-style:italic;font-size:18px;line-height:1.55;color:var(--ink);text-align:center;">&ldquo;${v.text}&rdquo;</p>
+    <div style="font-family:'Kalam',cursive;font-size:16px;color:var(--ink-soft);text-align:center;">${v.ref}</div>`;
+  flipPolaroid.classList.remove('flipped'); flipPolaroid.style.transform='rotateY(0deg)';
+  flipModal.classList.add('open');
+  setTimeout(()=>{ flipPolaroid.classList.add('flipped'); flipPolaroid.style.transform='rotateY(180deg)'; }, 650);
+  setTimeout(()=>{
+    flipModal.classList.remove('open');
+    document.getElementById('wall').scrollIntoView({behavior:'smooth'});
+  }, 3200);
+}
+document.getElementById('noteForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const text=document.getElementById('noteText').value.trim();
+  const author=document.getElementById('noteAuthor').value.trim();
+  const tag=document.getElementById('noteTag').value;
+  const err=document.getElementById('noteErr');
+  if(!text){ err.textContent='Write a few words first — even one line is enough.'; return; }
+  const spam = spamCheck(text); if(spam){ err.textContent = spam; return; }
+  err.textContent='';
+  const note={text,author:author||'A friend',tag,_createdDate:new Date().toISOString()};
+  markPosted(text);
+  NOTES.unshift(note); renderWall(); renderHeroChips();
+  document.getElementById('noteForm').reset();
+  celebrateNote(note);
+  try{ await Store.addNote(note); }catch(_){}
+});
+flipModal.addEventListener('click',e=>{ if(e.target===flipModal){ flipModal.classList.remove('open'); document.getElementById('wall').scrollIntoView({behavior:'smooth'}); }});
+
+/* ===== candles: type label on top + tap to reveal the prayer ===== */
+let CANDLES=[];
+function renderCandles(){
+  const wall=document.getElementById('candleWall');
+  wall.innerHTML = CANDLES.slice(0,60).map((c,idx)=>{
+    const type=c.type||'Prayer';
+    return `<div class="candle-wrap" data-i="${idx}">
+      <div class="cpop"><b>${esc(type)}</b>${esc(c.intention||'A quiet prayer.')}${c.name?'<br>— '+esc(c.name):''}</div>
+      <span class="ctype" style="color:${TYPE_COLOR[type]||'var(--rose-deep)'};">${esc(type)}</span>
+      <div class="flame" style="animation-delay:${(Math.random()*1.4).toFixed(2)}s"></div>
+      <div class="stick"></div>
+      <div class="cname">${esc(c.name||'a friend')}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('candleCount').textContent = CANDLES.length+(CANDLES.length===1?' candle is':' candles are')+' burning right now.';
+  wall.querySelectorAll('.candle-wrap').forEach(w=>{
+    w.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const open = w.classList.contains('show');
+      wall.querySelectorAll('.candle-wrap.show').forEach(x=>x.classList.remove('show'));
+      if(!open) w.classList.add('show');
+    });
+  });
+}
+document.addEventListener('click',()=>document.querySelectorAll('.candle-wrap.show').forEach(x=>x.classList.remove('show')));
+async function loadCandles(){ CANDLES = await Store.getCandles(); renderCandles(); }
+const cm=document.getElementById('candleModal');
+document.getElementById('openCandle').onclick=()=>cm.classList.add('open');
+document.getElementById('closeCandle').onclick=()=>cm.classList.remove('open');
+cm.addEventListener('click',e=>{if(e.target===cm)cm.classList.remove('open');});
+document.getElementById('candleForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const cErr=document.getElementById('candleErr');
+  const intention=document.getElementById('candleIntention').value.trim();
+  const spam=spamCheck(intention); if(spam){ if(cErr) cErr.textContent=spam; return; }
+  if(cErr) cErr.textContent='';
+  const candle={
+    name:document.getElementById('candleName').value.trim(),
+    type:document.getElementById('candleType').value,
+    intention,
+    _createdDate:new Date().toISOString()
+  };
+  markPosted(intention || ('candle '+Date.now()));
+  CANDLES.unshift(candle); renderCandles(); renderHeroChips();
+  document.getElementById('candleForm').reset(); cm.classList.remove('open');
+  document.getElementById('candleWall').scrollIntoView({behavior:'smooth'});
+  try{ await Store.addCandle(candle); }catch(_){}
+});
+
+/* ===== utils + boot ===== */
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+(function reveals(){
+  const els=[...document.querySelectorAll('.reveal')];
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}}),{threshold:0.1});
+    els.forEach(el=>io.observe(el));
+  } else els.forEach(el=>el.classList.add('in'));
+  setTimeout(()=>els.forEach(el=>el.classList.add('in')),1600);
+})();
+/* live chips beside the hero buttons — latest note + latest candle */
+function renderHeroChips(){
+  const n = NOTES[0], nc = document.getElementById('lastNoteChip');
+  if(n && nc){ const t = n.text.replace(/\s+/g,' ').trim();
+    nc.innerHTML = `<span class="chip-pin"></span><span class="chip-txt">&ldquo;${esc(t.slice(0,48))}${t.length>48?'…':''}&rdquo;</span><span class="chip-by">— ${esc((n.author||'a friend').split(' ')[0])}</span>`;
+  }
+  const c = CANDLES[0], cc = document.getElementById('lastCandleChip');
+  if(c && cc){ cc.innerHTML = `<span class="chip-flame"></span><span class="chip-txt"><b>${esc(c.type||'Prayer')}</b> &nbsp;${esc(c.intention||('for '+(c.name||'a friend')))}</span>`; }
+}
+(async function boot(){
+  if(SUPA.url && SUPA.key){ Store = makeSupa(); }
+  else if(WIX.clientId){ Store = await makeWix(); }
+  renderVerseFilters(); renderVerses(); renderWallFilters();
+  await loadWall(); await loadCandles(); renderHeroChips();
+})();
+
+/* ===== the open gratitude book illustration ===== */
+function BOOK_SVG(){return `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 540" width="100%" role="img" aria-label="An open handwritten gratitude notebook with a daily gratitude list and a prayer for grace, beneath a white dove carrying an olive branch in warm light.">
+  <defs>
+    <radialGradient id="sun" cx="50%" cy="20%" r="55%"><stop offset="0%" stop-color="#FBE9B8"/><stop offset="55%" stop-color="#F8EAD0" stop-opacity="0.6"/><stop offset="100%" stop-color="#FAF4E9" stop-opacity="0"/></radialGradient>
+    <linearGradient id="pageL" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#F3E7CF"/><stop offset="100%" stop-color="#FFFDF7"/></linearGradient>
+    <linearGradient id="pageR" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFFDF7"/><stop offset="100%" stop-color="#F3E7CF"/></linearGradient>
+    <linearGradient id="cover" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C98B89"/><stop offset="100%" stop-color="#9F5F60"/></linearGradient>
+  </defs>
+
+  <ellipse cx="330" cy="120" rx="300" ry="180" fill="url(#sun)"/>
+
+  <!-- dove with olive branch -->
+  <g transform="translate(300,40)" style="animation:dove 5s ease-in-out infinite;transform-origin:center;">
+    <path d="M30,30 C14,28 4,36 2,50 C2,40 -18,36 -34,46 C-22,46 -12,56 -2,60 C4,70 18,74 30,72 C44,70 56,60 56,48 C66,52 76,50 82,42 C72,44 64,40 60,32 C52,24 42,30 30,30 Z" fill="#FFFFFF" stroke="#E7DCC8" stroke-width="2"/>
+    <circle cx="14" cy="44" r="2.8" fill="#42382F"/>
+    <path d="M-4,40 q-8,-6 -16,-4" stroke="#E7B07F" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60,52 q16,4 28,-4" stroke="#9FAE94" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M70,50 q5,-7 13,-6 q-3,7 -11,8 Z" fill="#9FAE94"/>
+    <path d="M80,46 q5,-6 12,-4 q-3,6 -11,7 Z" fill="#B5C4A6"/>
+    <path d="M86,52 q6,-4 13,-1 q-4,5 -12,4 Z" fill="#9FAE94"/>
+  </g>
+
+  <!-- book cover shadow -->
+  <path d="M330,180 C238,150 120,168 70,196 L44,452 C112,420 244,408 330,440 C416,408 548,420 616,452 L590,196 C540,168 422,150 330,180 Z" fill="url(#cover)" transform="translate(0,16)" opacity="0.5"/>
+  <path d="M330,180 C238,150 120,168 70,196 L44,452 C112,420 244,408 330,440 C416,408 548,420 616,452 L590,196 C540,168 422,150 330,180 Z" fill="url(#cover)"/>
+
+  <!-- left page -->
+  <path d="M330,178 C246,150 134,166 84,194 L60,440 C118,412 240,400 330,430 Z" fill="url(#pageL)" stroke="#E6D7BE" stroke-width="1.5"/>
+  <!-- right page -->
+  <path d="M330,178 C414,150 526,166 576,194 L600,440 C542,412 420,400 330,430 Z" fill="url(#pageR)" stroke="#E6D7BE" stroke-width="1.5"/>
+  <!-- center spine + ribbon -->
+  <path d="M330,178 L330,430" stroke="#D8C09A" stroke-width="2" opacity="0.7"/>
+  <path d="M324,180 L336,180 L334,470 L326,470 Z" fill="#C98B89" opacity="0.85"/>
+
+  <!-- LEFT PAGE TEXT -->
+  <g transform="rotate(-5 200 300)" fill="#5A4B3C">
+    <text x="108" y="246" font-family="Caveat,cursive" font-size="30" font-weight="700" fill="#9F5F60">Daily Gratitude</text>
+    <text x="108" y="280" font-family="Caveat,cursive" font-size="30" font-weight="700" fill="#9F5F60">List:</text>
+    <g font-family="Kalam,cursive" font-size="19" fill="#5A4B3C">
+      <circle cx="116" cy="316" r="3" fill="#C98B89"/><text x="130" y="322">My family</text>
+      <circle cx="116" cy="350" r="3" fill="#C98B89"/><text x="130" y="356">Quiet morning time</text>
+      <circle cx="116" cy="384" r="3" fill="#C98B89"/><text x="130" y="390">A kind word</text>
+      <circle cx="116" cy="418" r="3" fill="#C98B89"/><text x="130" y="424">His endless mercy</text>
+    </g>
+  </g>
+
+  <!-- RIGHT PAGE TEXT -->
+  <g transform="rotate(5 460 300)" fill="#5A4B3C">
+    <text x="372" y="244" font-family="Caveat,cursive" font-size="30" font-weight="700" fill="#9F5F60">Prayer for Grace</text>
+    <g font-family="Kalam,cursive" font-size="17" fill="#5A4B3C">
+      <text x="372" y="286">Pour out Your love on</text>
+      <text x="372" y="312">everyone who reads this.</text>
+      <text x="372" y="338">Hold them close, and let</text>
+      <text x="372" y="364">them feel how deeply</text>
+      <text x="372" y="390">they are loved by You.</text>
+      <text x="372" y="420" font-family="Caveat,cursive" font-size="22" fill="#9F5F60">Amen.</text>
+    </g>
+  </g>
+
+  <!-- little hearts rising from the book -->
+  <g fill="#C98B89">
+    <path d="M250,150 c-5,-4 -9,-7 -9,-11 c0,-3 2,-5 5,-5 c2,0 3,1 4,2 c1,-1 2,-2 4,-2 c3,0 5,2 5,5 c0,4 -4,7 -9,11 Z" opacity="0.7"/>
+    <path d="M430,140 c-4,-3 -7,-6 -7,-9 c0,-2 2,-4 4,-4 c1,0 3,1 3,2 c1,-1 2,-2 3,-2 c3,0 4,2 4,4 c0,3 -3,6 -7,9 Z" opacity="0.55"/>
+  </g>
+</svg>`;}
+</script>
+</body>
+</html>

@@ -17,4 +17,4 @@ before they're lost.
 
 | # | Idea | Status |
 |---|------|--------|
-| _(none yet)_ | | |
+| 001 | [Shared near-miss & safety-signal network](idea-001-near-miss-sharing.md) | Raw capture |

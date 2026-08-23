@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifeQuest — Learn Life One Move at a Time</title>
+<style>
+:root{
+  --bg:#f4efe4; --panel:#fffdf7; --ink:#241f1a; --muted:#6d6357;
+  --line:#d9cfbc; --line-strong:#b9ab93;
+  --accent:#b4472f; --accent-ink:#fff;
+  --gold:#c9922b;
+  --wellbeing:#d1495b; --knowledge:#3d6fb4; --wealth:#c9922b;
+  --relationships:#c2643a; --growth:#4f8a5b; --contribution:#6a5299;
+  --sp-learn:#cfe0f2; --sp-choice:#f6e0b8; --sp-challenge:#e2d4ef;
+  --sp-opportunity:#cfe8d4; --sp-reflection:#cfe6e4; --sp-surprise:#f5d4e2;
+  --sp-money:#f3e3b0; --sp-career:#d6dcf0; --sp-health:#f4d3d3;
+  --sp-relationship:#f2ddcd; --sp-community:#d7ecdd; --sp-innovation:#cfe7ef;
+  --sp-risk:#f0cfc9; --sp-wisdom:#ddd6ef; --sp-corner:#efe6d2;
+  --radius:10px;
+  --shadow:0 1px 0 rgba(0,0,0,.06), 0 6px 18px rgba(60,45,25,.10);
+  --font:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1a1714; --panel:#241f1b; --ink:#f0e8dc; --muted:#a99c8b;
+    --line:#3a332c; --line-strong:#554b40;
+    --accent:#e0674a; --accent-ink:#1a1714;
+    --sp-learn:#2c4058; --sp-choice:#544326; --sp-challenge:#3f3450;
+    --sp-opportunity:#2e4a36; --sp-reflection:#2c4645; --sp-surprise:#4d2f3d;
+    --sp-money:#4d4225; --sp-career:#333a52; --sp-health:#4a2f31;
+    --sp-relationship:#4a3628; --sp-community:#2f4636; --sp-innovation:#2b4450;
+    --sp-risk:#4e302a; --sp-wisdom:#3a3450; --sp-corner:#37302a;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1a1714; --panel:#241f1b; --ink:#f0e8dc; --muted:#a99c8b;
+  --line:#3a332c; --line-strong:#554b40;
+  --accent:#e0674a; --accent-ink:#1a1714;
+  --sp-learn:#2c4058; --sp-choice:#544326; --sp-challenge:#3f3450;
+  --sp-opportunity:#2e4a36; --sp-reflection:#2c4645; --sp-surprise:#4d2f3d;
+  --sp-money:#4d4225; --sp-career:#333a52; --sp-health:#4a2f31;
+  --sp-relationship:#4a3628; --sp-community:#2f4636; --sp-innovation:#2b4450;
+  --sp-risk:#4e302a; --sp-wisdom:#3a3450; --sp-corner:#37302a;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  line-height:1.5;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--font);margin:0 0 .4em;line-height:1.15}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;padding:.6rem 1.1rem;
+  border-radius:var(--radius);font-weight:650;box-shadow:var(--shadow)}
+.btn:hover{filter:brightness(1.07)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong);box-shadow:none}
+.wrap{max-width:1240px;margin:0 auto;padding:1rem}
+
+/* ---------- setup ---------- */
+.logo{font-family:var(--font);font-weight:800;letter-spacing:-.5px}
+.logo .q{color:var(--accent)}
+#setup .hero{text-align:center;padding:1.5rem 0 .5rem}
+#setup .hero h1{font-size:clamp(2.2rem,7vw,3.6rem);margin-bottom:.15em}
+#setup .hero p{color:var(--muted);margin:0;font-size:1.05rem}
+.card-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:1.1rem;box-shadow:var(--shadow);margin-bottom:1rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+label{font-weight:600;font-size:.9rem}
+select,input[type=text]{font:inherit;padding:.45rem .55rem;border-radius:8px;
+  border:1.5px solid var(--line-strong);background:var(--panel);color:var(--ink);max-width:100%}
+.pgrid{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:.8rem;background:var(--bg)}
+.pcard h3{font-size:1rem;display:flex;align-items:center;gap:.4rem;margin-bottom:.6rem}
+.pcard .field{margin-bottom:.5rem;display:grid;gap:.2rem}
+.avatars{display:flex;gap:.25rem;flex-wrap:wrap}
+.avatars button{border:1.5px solid var(--line);background:var(--panel);border-radius:8px;
+  width:34px;height:34px;font-size:1.1rem;line-height:1;padding:0}
+.avatars button[aria-pressed=true]{border-color:var(--accent);background:var(--accent);}
+.tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+
+/* ---------- game ---------- */
+#game{display:none}
+#game.on{display:block}
+.topbar{display:flex;gap:.8rem;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;margin-bottom:.8rem}
+.topbar h1{font-size:1.5rem;margin:0}
+.layout{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr) 330px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:1fr}}
+
+.board{position:relative;width:100%;aspect-ratio:1/1;background:var(--panel);
+  border:2px solid var(--line-strong);border-radius:12px;padding:6px;
+  display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(12,1fr);
+  gap:3px;box-shadow:var(--shadow)}
+.sp{border:1px solid var(--line-strong);border-radius:5px;padding:2px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  font-size:.5rem;text-align:center;position:relative;background:var(--panel)}
+.sp .ico{font-size:.85rem;line-height:1.1}
+.sp .nm{font-weight:700;font-size:.46rem;text-transform:uppercase;letter-spacing:0;
+  line-height:1.05;word-break:normal;overflow-wrap:normal;hyphens:auto;max-width:100%}
+.sp .nm.long{font-size:.38rem}
+.sp .idx{position:absolute;top:1px;left:2px;font-size:.38rem;color:var(--muted)}
+.sp.corner{font-size:.58rem}
+.sp.corner .ico{font-size:1.4rem}
+.sp.corner .nm{font-size:.55rem}
+.sp.corner .nm.long{font-size:.44rem}
+.sp.here{outline:2.5px solid var(--accent);outline-offset:-2px}
+.toks{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;margin-top:auto}
+.tok{width:13px;height:13px;border-radius:50%;display:grid;place-items:center;
+  font-size:.6rem;background:var(--panel);border:1.5px solid var(--ink);line-height:1}
+.tok.move{animation:hop .45s ease}
+@keyframes hop{50%{transform:translateY(-7px) scale(1.25)}}
+.center{grid-column:2/12;grid-row:2/12;display:grid;place-items:center;gap:.5rem;
+  padding:.5rem;text-align:center}
+.center .title{font-family:var(--font);font-weight:800;font-size:clamp(1.6rem,4.6vw,3rem);
+  letter-spacing:-1px;line-height:1}
+.center .sub{color:var(--muted);font-size:clamp(.6rem,1.6vw,.85rem);
+  text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.decks{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.deck{border:1.5px solid var(--line-strong);border-radius:7px;padding:.25rem .45rem;
+  background:var(--bg);font-size:.55rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;transform:rotate(-2deg);box-shadow:2px 2px 0 var(--line)}
+.deck:nth-child(2n){transform:rotate(2deg)}
+
+/* dice */
+.dicebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:.8rem;box-shadow:var(--shadow);margin-bottom:.8rem;text-align:center}
+.dice{display:flex;gap:.6rem;justify-content:center;margin:.5rem 0}
+.die{width:52px;height:52px;border-radius:11px;background:var(--panel);
+  border:2px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);padding:6px;box-shadow:var(--shadow)}
+.die i{width:9px;height:9px;border-radius:50%;background:var(--ink);align-self:center;justify-self:center}
+.die.rolling{animation:tumble .6s ease}
+@keyframes tumble{
+  0%{transform:rotate(0) scale(1)}25%{transform:rotate(-90deg) scale(1.12)}
+  50%{transform:rotate(120deg) scale(.94)}75%{transform:rotate(250deg) scale(1.08)}
+  100%{transform:rotate(360deg) scale(1)}}
+.turnline{font-weight:700;font-size:.95rem}
+.rolltotal{font-family:var(--font);font-size:1.5rem;font-weight:800}
+.hint{color:var(--muted);font-size:.78rem}
+
+/* players */
+.plist{display:grid;gap:.55rem;margin-bottom:.8rem}
+.prow{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:.55rem .65rem;
+  box-shadow:var(--shadow)}
+.prow.active{border-color:var(--accent);border-width:2px}
+.phead{display:flex;align-items:center;gap:.4rem;font-weight:700;font-size:.9rem}
+.phead .cpu{font-size:.6rem;background:var(--line);color:var(--ink);padding:.05rem .3rem;
+  border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+.phead .score{margin-left:auto;font-family:var(--font);font-weight:800}
+.ptopic{font-size:.72rem;color:var(--muted);margin:.1rem 0 .35rem}
+.dims{display:grid;gap:2px}
+.dim{display:grid;grid-template-columns:16px 1fr 26px;align-items:center;gap:.3rem;font-size:.66rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar span{display:block;height:100%;border-radius:3px;transition:width .5s ease}
+.log{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:.6rem;
+  max-height:230px;overflow:auto;font-size:.8rem;box-shadow:var(--shadow)}
+.log p{margin:0 0 .4rem;padding-bottom:.4rem;border-bottom:1px dashed var(--line)}
+.log p:last-child{border:0;margin:0;padding:0}
+.log .who{font-weight:700}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(20,14,8,.62);display:none;
+  align-items:center;justify-content:center;padding:1rem;z-index:50}
+.overlay.on{display:flex}
+.modal{background:var(--panel);border:2px solid var(--line-strong);border-radius:16px;
+  max-width:560px;width:100%;max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+.modal .mh{padding:.7rem 1.1rem;border-bottom:2px solid var(--line-strong);
+  display:flex;align-items:center;gap:.5rem}
+.modal .mh .kind{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+.modal .mb{padding:1.1rem}
+.modal h2{font-size:1.3rem}
+.modal .body{margin:0 0 1rem}
+.opts{display:grid;gap:.5rem;margin-bottom:.8rem}
+.opt{text-align:left;background:var(--bg);border:1.5px solid var(--line-strong);
+  border-radius:10px;padding:.6rem .7rem;display:flex;gap:.5rem;align-items:flex-start}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt .k{font-weight:800;color:var(--accent)}
+.opt.correct{border-color:var(--growth);background:color-mix(in srgb,var(--growth) 14%,var(--bg))}
+.opt.wrong{border-color:var(--wellbeing);background:color-mix(in srgb,var(--wellbeing) 12%,var(--bg))}
+.opt.picked{border-width:2.5px}
+.feedback{border-left:4px solid var(--accent);padding:.6rem .8rem;background:var(--bg);
+  border-radius:0 10px 10px 0;margin-bottom:.8rem}
+.feedback .take{margin:.5rem 0 0;font-weight:650}
+.fx{display:flex;gap:.35rem;flex-wrap:wrap;margin:.6rem 0}
+.fx span{font-size:.75rem;font-weight:700;border-radius:20px;padding:.12rem .5rem;
+  border:1.5px solid var(--line-strong);background:var(--bg)}
+.fx span.up{border-color:var(--growth);color:var(--growth)}
+.fx span.dn{border-color:var(--wellbeing);color:var(--wellbeing)}
+textarea{font:inherit;width:100%;min-height:70px;padding:.5rem;border-radius:9px;
+  border:1.5px solid var(--line-strong);background:var(--bg);color:var(--ink);resize:vertical}
+
+/* end */
+#end{display:none}
+#end.on{display:block}
+.podium{display:grid;gap:.7rem;margin-bottom:1rem}
+.pod{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.8rem;
+  box-shadow:var(--shadow)}
+.pod.win{border:2.5px solid var(--gold)}
+.pod .top{display:flex;align-items:center;gap:.5rem;font-weight:700}
+.pod .big{margin-left:auto;font-family:var(--font);font-size:1.6rem;font-weight:800}
+.ach{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+.ach span{font-size:.75rem;border:1.5px solid var(--gold);border-radius:20px;padding:.1rem .55rem;font-weight:650}
+.recap{max-height:340px;overflow:auto}
+.recap li{margin-bottom:.5rem}
+@media (max-width:620px){
+  .sp .nm{display:none}
+  .sp .idx{font-size:.34rem}
+  .sp .ico{font-size:.72rem}
+  .sp.corner .ico{font-size:1rem}
+  .tok{width:10px;height:10px;font-size:.45rem}
+  .board{padding:3px;gap:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= SETUP ================= -->
+<section id="setup">
+  <div class="hero">
+    <h1 class="logo">Life<span class="q">Quest</span></h1>
+    <p>Every move teaches you something about life.</p>
+  </div>
+
+  <div class="card-panel">
+    <div class="row" style="justify-content:space-between">
+      <div class="row">
+        <label for="nHuman">Human players</label>
+        <select id="nHuman"><option>1</option><option>2</option><option>3</option>
+          <option>4</option><option>5</option><option>6</option></select>
+        <label for="nCpu">Computer players</label>
+        <select id="nCpu"><option>0</option><option selected>1</option><option>2</option><option>3</option></select>
+      </div>
+      <div class="row">
+        <label for="nDice">Dice</label>
+        <select id="nDice"><option value="2" selected>Two dice</option><option value="1">One die</option></select>
+        <label for="nRounds">Rounds</label>
+        <select id="nRounds"><option>8</option><option selected>12</option><option>16</option><option>20</option></select>
+      </div>
+    </div>
+    <p class="hint" style="margin:.6rem 0 0">Solo play always gets at least one computer opponent.
+      Each player picks their own subject — the board is shared, the lessons are not.</p>
+  </div>
+
+  <div id="players" class="pgrid"></div>
+
+  <div class="row" style="justify-content:center;margin:1.2rem 0 2rem">
+    <button id="start" class="btn" style="font-size:1.1rem;padding:.8rem 2rem">Start the journey →</button>
+  </div>
+</section>
+
+<!-- ================= GAME ================= -->
+<section id="game">
+  <div class="topbar">
+    <h1 class="logo">Life<span class="q">Quest</span></h1>
+    <div class="row">
+      <strong id="roundLbl">Round 1 of 12</strong>
+      <button id="themeBtn" class="btn ghost" title="Toggle light/dark">◐</button>
+      <button id="quitBtn" class="btn ghost">Finish now</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="board" id="board" role="group" aria-label="LifeQuest board"></div>
+    </div>
+    <div>
+      <div class="dicebox">
+        <div class="turnline" id="turnLbl">—</div>
+        <div class="dice" id="dice" aria-live="polite"></div>
+        <div class="rolltotal" id="rollTotal">&nbsp;</div>
+        <button id="rollBtn" class="btn" style="width:100%;font-size:1.05rem">🎲 Roll the dice</button>
+        <p class="hint" id="rollHint">Press R or Space to roll</p>
+      </div>
+      <div class="plist" id="plist"></div>
+      <div class="log" id="log" aria-live="polite" aria-label="Game log"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= END ================= -->
+<section id="end">
+  <div class="hero">
+    <h1 class="logo">Final Life Score</h1>
+    <p id="endSub">The strongest balanced life wins.</p>
+  </div>
+  <div class="podium" id="podium"></div>
+  <div class="card-panel">
+    <h2>What you learned</h2>
+    <div class="recap" id="recap"></div>
+  </div>
+  <div class="row" style="justify-content:center;margin-bottom:2rem">
+    <button id="again" class="btn">Play again</button>
+  </div>
+</section>
+
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal" id="modal">
+    <div class="mh" id="mHead"><span class="kind" id="mKind"></span></div>
+    <div class="mb" id="mBody"></div>
+  </div>
+</div>
+<script>
+/* =====================================================================
+   LifeQuest — content packs
+   A card is: {id,type,title,body,options?,answer?,explain?,takeaway?,fx?}
+   type: question | choice | event | opportunity | wisdom | reflection | challenge
+   fx / option.fx: {well,know,wealth,rel,growth,contrib} deltas
+   Add your own pack at runtime:  LIFEQUEST.addPack('id','Label',[cards])
+   ===================================================================== */
+const D = ['well','know','wealth','rel','growth','contrib'];
+const DIM = {
+  well:{label:'Wellbeing',icon:'❤️',css:'--wellbeing'},
+  know:{label:'Knowledge',icon:'🧠',css:'--knowledge'},
+  wealth:{label:'Wealth',icon:'💰',css:'--wealth'},
+  rel:{label:'Relationships',icon:'🤝',css:'--relationships'},
+  growth:{label:'Growth',icon:'🚀',css:'--growth'},
+  contrib:{label:'Contribution',icon:'🌍',css:'--contribution'}
+};
+const WEIGHT = {know:.20, well:.20, rel:.15, wealth:.15, growth:.15, contrib:.15};
+
+const q = (id,lvl,title,body,opts,answer,explain,take)=>
+  ({id,type:'question',level:lvl,title,body,options:opts,answer,explain,takeaway:take});
+
+/* ---------- LIFE SKILLS (the default mixed pack) ---------- */
+const LIFESKILLS = [
+q('ls1','beginner','Money','Why do banks pay interest on savings accounts?',
+  ['Because the law requires it','Because they lend your deposits out and share the return','Because inflation forces them to','As a marketing gift'],1,
+  'Banks use deposited money as part of their lending operations and compensate depositors with interest.',
+  'Idle money can still work — where you park it matters.'),
+q('ls2','beginner','Health','Roughly how long does an adult typically need to sleep each night?',
+  ['4–5 hours','7–9 hours','10–12 hours','It makes no difference'],1,
+  'Most adults need 7–9 hours. Sleep is when memory consolidates and the body repairs — chronic short sleep affects mood, judgement and immunity.',
+  'Sleep is not lost time. It is the maintenance window.'),
+q('ls3','intermediate','Communication','In a disagreement, what usually de-escalates fastest?',
+  ['Repeating your point louder','Restating what the other person said before replying','Staying silent until they stop','Listing everything they got wrong'],1,
+  'Reflecting back what you heard signals that the person has been understood, which lowers defensiveness and lets the actual problem surface.',
+  'People argue harder when they feel unheard, not when they are wrong.'),
+q('ls4','intermediate','Time','What does the Eisenhower idea of urgent vs important suggest?',
+  ['Do the loudest task first','Important-but-not-urgent work needs protected time','Urgency always signals value','Multitask everything'],1,
+  'Urgent things shout; important things rarely do. Health, learning and relationships are almost never urgent until it is late.',
+  'If it never becomes urgent, schedule it — or it never happens.'),
+q('ls5','beginner','Safety','You smell gas in a room. What comes first?',
+  ['Turn on a light to look around','Do not touch switches, ventilate and leave','Search for the leak with a lighter','Open a window and stay to watch'],1,
+  'Electrical switches can spark. Ventilate, get out, then call the professionals from outside.',
+  'In a hazard, your first move should never create a second hazard.'),
+q('ls6','intermediate','Critical thinking','A headline says "Study proves coffee causes success." What is the flaw?',
+  ['Coffee is unhealthy','Correlation is being reported as causation','The sample is always too small','Nothing — studies are reliable'],1,
+  'Two things moving together does not mean one caused the other. Something else — income, working hours, habits — often drives both.',
+  'Ask "what else could explain this?" before you accept a claim.'),
+q('ls7','advanced','Emotional intelligence','What best describes emotional regulation?',
+  ['Never feeling strong emotions','Noticing a feeling and choosing your response to it','Hiding all reactions','Only being positive'],1,
+  'Regulation is not suppression. It is the pause between the feeling and the action — where the choice lives.',
+  'You cannot pick the feeling. You can usually pick the next thirty seconds.'),
+q('ls8','beginner','Environment','Which everyday change usually cuts household energy use most?',
+  ['Unplugging phone chargers','Heating and cooling less, and insulating better','Turning off one lamp','Using a smaller kettle'],1,
+  'Heating and cooling dominates most household energy bills. Standby draw from small devices is real but tiny by comparison.',
+  'Fix the big flow before polishing the small one.'),
+q('ls9','intermediate','Career','You get critical feedback from your manager. Best first move?',
+  ['Defend your decisions immediately','Ask for a specific example','Apologise and change everything','Ignore it as an opinion'],1,
+  'A specific example turns vague criticism into something you can actually act on — and shows you are engaging, not deflecting.',
+  'Vague feedback is unusable. Asking for specifics is not arguing.'),
+q('ls10','intermediate','Technology','What is the strongest everyday protection for your online accounts?',
+  ['Changing passwords monthly','A unique long password per account plus two-factor','Never using public wifi','Using a very short password you remember'],1,
+  'Reuse is the real danger — one breach unlocks everything. A password manager plus two-factor beats frequent rotation.',
+  'Unique beats complicated. Two-factor beats both.'),
+q('ls11','beginner','AI','What does it mean when an AI model "hallucinates"?',
+  ['It crashes','It states something false with confidence','It runs slowly','It refuses to answer'],1,
+  'Language models predict plausible text, not verified truth, so they can produce fluent, confident, wrong answers. Verify anything that matters.',
+  'Fluency is not accuracy. Check what you would not want to be wrong about.'),
+q('ls12','advanced','Decision making','What is a sunk cost?',
+  ['Money already spent that cannot be recovered','A cost you forgot to budget','Future spending','A hidden fee'],0,
+  'Spent time or money is gone either way. The only real question is what the next choice is worth from here.',
+  '"I have already put so much in" is a reason to check, not a reason to continue.'),
+q('ls13','intermediate','Resilience','What does research suggest most helps people recover from setbacks?',
+  ['Avoiding all risk afterwards','Having supportive relationships and meaning','Never discussing it','Working harder immediately'],1,
+  'Connection and a sense of meaning are the strongest recovery factors — resilience is far more social than it is heroic.',
+  'Resilience is rarely something you do alone.'),
+q('ls14','beginner','Goal setting','Why is "get fit" a weak goal?',
+  ['It is too ambitious','There is no way to tell if today counted','Fitness does not matter','It takes too long'],1,
+  'A goal you cannot measure gives you no feedback. "Walk 20 minutes after lunch" can be answered yes or no today.',
+  'Make the goal small enough to answer with yes or no.'),
+q('ls15','intermediate','Ethics','A colleague takes credit for your work. Best first step?',
+  ['Post about it publicly','Speak to them directly and privately','Do nothing','Take credit for theirs next time'],1,
+  'A direct private conversation solves most cases and costs least — it may genuinely have been careless rather than deliberate.',
+  'Start with the smallest action that could fix it.'),
+q('ls16','advanced','Money','Why is high-interest debt usually paid before investing?',
+  ['Debt is always shameful','Its guaranteed cost usually exceeds expected returns','Investing is illegal with debt','Banks require it'],1,
+  'Clearing 20% interest is a guaranteed 20% return. Few investments beat that reliably, and none guarantee it.',
+  'A guaranteed return is worth more than a hoped-for one.'),
+q('ls17','beginner','Health','The 20-20-20 idea for screen work means:',
+  ['Work 20 hours a week','Every 20 minutes look 20 feet away for 20 seconds','Take 20 breaks daily','Sit 20 cm from the screen'],1,
+  'Every 20 minutes, look about 20 feet away for 20 seconds. It relaxes the focusing muscles and reduces eye strain.',
+  'Your eyes need distance the way your legs need movement.'),
+q('ls18','intermediate','Creativity','What most reliably increases creative output?',
+  ['Waiting for inspiration','Producing many rough attempts','Only starting when conditions are right','Working alone always'],1,
+  'Volume beats waiting. Quality tends to emerge from quantity, because early attempts teach you what the good one looks like.',
+  'You cannot edit a blank page.'),
+q('ls19','advanced','Entrepreneurship','What does "product-market fit" really describe?',
+  ['A polished product','People wanting it enough to keep coming back','A funded company','A large market'],1,
+  'It is pull, not push — customers returning and telling others, without you pushing at every step.',
+  'If you have to push every single sale, you have not found it yet.'),
+q('ls20','beginner','Community','Why does helping others tend to raise your own wellbeing?',
+  ['It does not','It builds connection and a sense of purpose','It always earns money','It removes responsibility'],1,
+  'Helping reliably increases perceived meaning and social connection — two of the strongest predictors of life satisfaction.',
+  'Contribution is not the opposite of self-interest.'),
+];
+
+/* ---------- TOPIC PACKS ---------- */
+const PACKS = {
+lifeskills:{label:'Life Skills', cards:LIFESKILLS},
+
+finance:{label:'Finance & Investing', cards:[
+q('fi1','beginner','Emergency fund','What is an emergency fund normally for?',
+  ['Holidays','Unplanned essential costs like a job loss or repair','Buying shares','Gifts'],1,
+  'It is money you can reach quickly so a surprise does not become debt. Three to six months of essential spending is a common target.',
+  'The fund exists so a bad week does not become a bad decade.'),
+q('fi2','intermediate','Compounding','Why does starting to invest early matter so much?',
+  ['Early prices are lower','Returns earn returns, and time multiplies that','Fees are waived','Markets favour the young'],1,
+  'Compounding grows on itself. Ten early years are usually worth more than twenty late ones at the same contribution.',
+  'Time in the market is the one advantage you cannot buy later.'),
+q('fi3','intermediate','Inflation','What does inflation do to cash under a mattress?',
+  ['Nothing','It quietly loses buying power','It grows','It becomes tax free'],1,
+  'The number stays the same while what it buys shrinks. At 5% inflation, money loses roughly a third of its value in eight years.',
+  'Cash is not risk-free. It is just a quieter risk.'),
+q('fi4','advanced','Diversification','Why spread investments across different assets?',
+  ['To guarantee profit','To reduce the damage any single failure can do','To pay less tax','To trade more often'],1,
+  'Diversifying does not raise expected returns — it reduces the chance that one bad outcome is fatal.',
+  'Diversification protects you from being catastrophically wrong once.'),
+q('fi5','beginner','Budgeting','What does "pay yourself first" mean?',
+  ['Spend on yourself before bills','Move savings aside as soon as income arrives','Take a salary before staff','Buy what you want first'],1,
+  'Saving whatever is left rarely works, because there is rarely anything left. Automating it first makes saving the default.',
+  'Make the good decision once, then automate it.'),
+q('fi6','advanced','Risk','What does a higher expected return normally come with?',
+  ['A guarantee','Higher variability, including real loss','Lower fees','Government backing'],1,
+  'Return is compensation for bearing risk. Anything promising high returns with no risk is mispriced, misunderstood, or a fraud.',
+  'If it is high return and risk-free, one of those two words is false.'),
+]},
+
+ai:{label:'Artificial Intelligence', cards:[
+q('ai1','beginner','Basics','What is machine learning, in one line?',
+  ['Programs written by hand','Systems that find patterns in data instead of being told the rules','Robots','Faster computers'],1,
+  'Rather than coding every rule, you show the system examples and it derives patterns from them.',
+  'Machine learning trades explicit rules for examples.'),
+q('ai2','intermediate','Language models','What is a token?',
+  ['A password','A chunk of text the model reads and predicts in','One byte','A licence unit'],1,
+  'Models process text in tokens — roughly a short word or word-piece. Cost, limits and context are all counted in tokens.',
+  'Models see word-pieces, not letters. That explains a lot of their odd mistakes.'),
+q('ai3','intermediate','Prompting','Which prompt usually produces better output?',
+  ['"Write something good"','A clear task, audience, format and constraints','The shortest possible','All capitals'],1,
+  'Specificity is what a model can act on. Naming the audience, format and limits removes most of the guesswork.',
+  'Vague in, vague out. Constraints are a gift to the model.'),
+q('ai4','advanced','Limits','Why can a model be confidently wrong?',
+  ['It lies deliberately','It optimises for plausible text, not verified truth','It runs out of memory','It is offline'],1,
+  'The objective is plausibility, not accuracy. Nothing in the mechanism checks a claim against the world unless a tool does it.',
+  'Confidence in an answer tells you nothing about its accuracy.'),
+q('ai5','intermediate','Data','Why does biased training data matter?',
+  ['It slows training','The system learns and repeats the bias at scale','It costs more','It breaks the code'],1,
+  'A model reproduces the patterns it was shown, including unfair ones — and then applies them faster and wider than a person could.',
+  'A model inherits the world it was shown, not the world you wanted.'),
+q('ai6','advanced','Practice','What is retrieval-augmented generation?',
+  ['Training from scratch','Fetching relevant documents and answering from them','Compressing a model','Running on a phone'],1,
+  'You retrieve real source material and give it to the model at answer time, so answers rest on documents rather than memory alone.',
+  'Give the model the source instead of trusting its recall.'),
+]},
+
+health:{label:'Health & Wellness', cards:[
+q('he1','beginner','Movement','What does prolonged sitting most affect?',
+  ['Only posture','Circulation, back health and metabolic markers','Nothing measurable','Only eyesight'],1,
+  'Long unbroken sitting affects circulation, back and metabolic health. Short frequent movement breaks help more than one long workout does.',
+  'Break the sitting, not just the week.'),
+q('he2','intermediate','Stress','What happens when stress stays switched on for months?',
+  ['Nothing changes','Sleep, immunity and judgement degrade','You adapt fully','It improves focus'],1,
+  'Short stress is useful; sustained stress erodes sleep, immune function and decision quality. Recovery is part of the system, not a reward.',
+  'Stress is a sprint response. Nobody sprints for a year.'),
+q('he3','beginner','Hydration','A common early sign of mild dehydration is:',
+  ['Sharper focus','Headache and tiredness','Faster reflexes','Better sleep'],1,
+  'Mild dehydration often shows up as fatigue or a dull headache long before thirst feels urgent.',
+  'Tired at 3pm is sometimes just a glass of water.'),
+q('he4','intermediate','Nutrition','Why is fibre worth attention?',
+  ['It adds protein','It supports digestion, satiety and steadier blood sugar','It replaces water','It burns fat'],1,
+  'Fibre slows sugar absorption, feeds gut bacteria and keeps you full longer. Most people eat far less than recommended.',
+  'The boring nutrient does most of the quiet work.'),
+q('he5','advanced','Mental health','What best predicts recovery from a difficult period?',
+  ['Working harder','Social support and a sense of meaning','Complete isolation','Avoiding the subject'],1,
+  'Support and meaning consistently outperform willpower. Asking for help is a strategy, not a failure.',
+  'The strongest recovery tool is usually another person.'),
+]},
+
+entrepreneurship:{label:'Entrepreneurship', cards:[
+q('en1','beginner','Start','What should usually come before building the product?',
+  ['Raising money','Confirming someone has the problem','Hiring a team','Designing a logo'],1,
+  'Most failed products are well built and unwanted. Talking to people about the problem is cheaper than building the wrong answer.',
+  'Fall in love with the problem, not your solution.'),
+q('en2','intermediate','Cash','Why can a profitable business still fail?',
+  ['Profit is irrelevant','It can run out of cash before customers pay','Taxes','Competition'],1,
+  'Profit is an accounting result; cash is what pays wages on Friday. Timing between paying and being paid kills many healthy businesses.',
+  'Profit is an opinion. Cash is a fact.'),
+q('en3','intermediate','Customers','What is the most useful early customer signal?',
+  ['Compliments','Repeat use and willingness to pay','Social media likes','Press coverage'],1,
+  'Praise is free. Returning and paying are costly signals, so they carry real information.',
+  'Watch what people do with their money and their time.'),
+q('en4','advanced','Focus','What is an MVP actually for?',
+  ['A cheap product','Learning the fastest thing that tests your riskiest assumption','A prototype for investors','A beta launch'],1,
+  'The point is learning, not shipping something small. Identify the assumption that would sink you and test that first.',
+  'Build the experiment, not the miniature version.'),
+]},
+
+communication:{label:'Communication', cards:[
+q('co1','beginner','Listening','What does active listening require?',
+  ['Planning your reply','Attending fully and checking you understood','Agreeing','Staying silent'],1,
+  'Listening means attention plus a check — "so what you are saying is..." — before responding.',
+  'Most people listen to reply. The gap is the opportunity.'),
+q('co2','intermediate','Feedback','Which feedback lands best?',
+  ['"You are careless"','Specific behaviour, its effect, and what to do instead','Public correction','Saying nothing'],1,
+  'Behaviour plus effect plus a concrete alternative gives someone something to act on. Character labels give them something to defend.',
+  'Describe the action, not the person.'),
+q('co3','advanced','Difficult talks','How should a hard conversation usually open?',
+  ['With the accusation','With the shared goal and what you observed','With an apology','With small talk'],1,
+  'Naming the shared goal first turns the exchange from opponents into two people facing one problem.',
+  'Sit on the same side of the table as the problem.'),
+q('co4','intermediate','Writing','What most improves everyday writing?',
+  ['Longer words','Putting the point first and cutting the rest','More adjectives','More paragraphs'],1,
+  'Readers skim. Leading with the conclusion respects that, and shorter sentences carry more per word.',
+  'Say the thing first. Explain second.'),
+]},
+
+science:{label:'Science', cards:[
+q('sc1','beginner','Method','What makes a claim scientific?',
+  ['Being published','Being testable and falsifiable','Being popular','Being complex'],1,
+  'A claim that no observation could ever contradict is not a scientific claim, however true it might feel.',
+  'A theory that explains everything predicts nothing.'),
+q('sc2','intermediate','Energy','What does conservation of energy say?',
+  ['Energy is created constantly','Energy changes form but the total is conserved','Energy disappears','Only heat is conserved'],1,
+  'Energy transforms between forms — chemical, kinetic, thermal — without the total changing in a closed system.',
+  'Nothing is free; it is only converted.'),
+q('sc3','advanced','Statistics','What does a p-value NOT tell you?',
+  ['Anything about data','The probability that your hypothesis is true','How surprising data is under a null','A threshold comparison'],1,
+  'It measures how surprising the data would be if the null were true — not the probability that your hypothesis is correct.',
+  'Statistical significance is not importance, and not proof.'),
+]},
+
+gk:{label:'General Knowledge', cards:[
+q('gk1','beginner','Geography','Which is the largest ocean by area?',
+  ['Atlantic','Pacific','Indian','Arctic'],1,
+  'The Pacific covers roughly a third of Earth’s surface — larger than all land combined.',
+  'Most of our planet is water we rarely see.'),
+q('gk2','intermediate','History','The printing press mattered most because it:',
+  ['Made books beautiful','Made copying cheap, so ideas spread fast','Replaced writing','Was profitable'],1,
+  'Cheap duplication meant ideas could outrun the authorities that wanted to contain them — the change was distribution, not writing.',
+  'When copying gets cheap, everything downstream changes.'),
+q('gk3','beginner','Body','Roughly what share of the human body is water?',
+  ['About 20%','About 60%','About 90%','About 5%'],1,
+  'Around 60% for an average adult, varying with age and body composition.',
+  'You are mostly the thing you forget to drink.'),
+]},
+};
+
+/* ---------- topic-agnostic decks (any topic, any player) ---------- */
+const EVENTS = [
+ {id:'ev1',type:'event',title:'Sudden expense',body:'Your phone suddenly stops working. Replace it now, or manage without it for two turns?',
+  options:[{text:'Pay to replace it',consequence:'Costly, but you stay connected and working.',fx:{wealth:-3,well:1}},
+           {text:'Go without for two turns',consequence:'Awkward and slower — but you notice how much of the scrolling you did not miss.',fx:{well:2,growth:1,wealth:0}}]},
+ {id:'ev2',type:'event',title:'You explained it well',body:'You helped another player understand a difficult idea.',fx:{contrib:2,rel:1},
+  takeaway:'Teaching something is the fastest way to find out whether you actually understand it.'},
+ {id:'ev3',type:'event',title:'Weeks of practice',body:'You spent several weeks quietly learning a new skill. Nobody noticed. It still counted.',fx:{know:3,growth:1},
+  takeaway:'Progress is mostly invisible until suddenly it is not.'},
+ {id:'ev4',type:'event',title:'All work, no rest',body:'You ignored your health while focusing entirely on work.',fx:{well:-2,wealth:1},
+  takeaway:'Borrowing from your health pays a very high interest rate.'},
+ {id:'ev5',type:'event',title:'You spotted it first',body:'You noticed an opportunity others walked past. Draw an extra opportunity next turn.',fx:{growth:2,know:1},
+  takeaway:'Opportunity usually looks like inconvenience at first glance.'},
+ {id:'ev6',type:'event',title:'Something for the neighbourhood',body:'You made something genuinely useful for the people around you.',fx:{contrib:3,rel:1},
+  takeaway:'Small useful things, repeated, are how a community is actually built.'},
+ {id:'ev7',type:'event',title:'An old friend calls',body:'You almost let it ring. You picked up instead, and talked for an hour.',fx:{rel:3,well:1},
+  takeaway:'Relationships decay silently. Maintenance is cheap; rebuilding is not.'},
+ {id:'ev8',type:'event',title:'A public mistake',body:'You got something wrong in front of people — and said so plainly.',fx:{rel:1,growth:2,well:-1},
+  takeaway:'Owning an error early costs less than defending it slowly.'},
+ {id:'ev9',type:'event',title:'Unexpected windfall',body:'A small amount of money arrives that you had not planned for.',
+  options:[{text:'Spend it now',consequence:'Enjoyable, gone by Thursday.',fx:{wealth:-1,well:2}},
+           {text:'Save it',consequence:'Boring today. A cushion later.',fx:{wealth:3}},
+           {text:'Give some away',consequence:'It mattered more to someone else than it would have to you.',fx:{contrib:3,wealth:1,rel:1}}]},
+];
+
+const CHOICES = [
+ {id:'ch1',type:'choice',title:'An unexpected $1,000',body:'You received an unexpected $1,000. What would you do?',
+  options:[
+   {text:'Spend all of it',consequence:'Fun, and completely gone. Nothing wrong with joy — but nothing left either.',fx:{well:2,wealth:-2}},
+   {text:'Put it into savings',consequence:'A cushion against the next surprise. Quiet, unglamorous, powerful.',fx:{wealth:3,well:1}},
+   {text:'Pay high-interest debt',consequence:'A guaranteed return equal to the interest rate you just stopped paying.',fx:{wealth:4}},
+   {text:'Invest all of it immediately',consequence:'Potential growth — but with no emergency fund, one bad week forces you to sell at the worst time.',fx:{wealth:2,well:-1,growth:1}}],
+  explain:'There is rarely one universally correct answer. It depends on whether you already hold an emergency fund, the interest rate on any debt, your goals and your tolerance for risk. Clearing expensive debt is usually strongest, because that return is guaranteed; investing rewards those who already have a cushion.',
+  takeaway:'Good money decisions depend on your situation, not on a rule you read once.'},
+ {id:'ch2',type:'choice',title:'The extra project',body:'Your manager offers a visible project. It means late nights for two months.',
+  options:[
+   {text:'Take it fully',consequence:'Career momentum, at a real cost to sleep and the people at home.',fx:{wealth:2,growth:2,well:-2,rel:-1}},
+   {text:'Take it with agreed limits',consequence:'You negotiate scope. Slightly less glory, considerably more sustainable.',fx:{growth:2,wealth:1,rel:1}},
+   {text:'Decline honestly',consequence:'You protect your capacity and say why. Respected more often than people expect.',fx:{well:2,rel:1,growth:-1}}],
+  explain:'Ambition and sustainability are not opposites, but they do trade off. Negotiating scope is the option people forget exists — most requests are more flexible than they first sound.',
+  takeaway:'"Yes, and here is what it would take" is usually available.'},
+ {id:'ch3',type:'choice',title:'The friend who went quiet',body:'A close friend has not replied in weeks. What now?',
+  options:[
+   {text:'Wait for them',consequence:'Fair — but silence often reads as indifference to someone struggling.',fx:{rel:-1}},
+   {text:'Send a low-pressure message',consequence:'No demand, no guilt. Just a door left open.',fx:{rel:3,contrib:1}},
+   {text:'Demand an explanation',consequence:'Understandable, and usually pushes them further away.',fx:{rel:-2,well:-1}}],
+  explain:'People withdraw for reasons that are usually about them, not you. A message with no obligation attached is the easiest thing to answer.',
+  takeaway:'Reach out without a bill attached.'},
+ {id:'ch4',type:'choice',title:'The shortcut',body:'You could finish faster by skipping a check nobody will audit.',
+  options:[
+   {text:'Skip it',consequence:'Saved an hour. Carried a small risk that is not yours alone.',fx:{wealth:1,contrib:-2,growth:-1}},
+   {text:'Do the check',consequence:'Slower. Nothing happened — which is exactly the point of checks.',fx:{contrib:2,growth:1}},
+   {text:'Flag that the check is too slow',consequence:'You do it and propose a better process. Fixes it for everyone.',fx:{contrib:3,growth:2,rel:1}}],
+  explain:'Most safety and quality failures are not dramatic — they are a small skipped step that had never mattered before.',
+  takeaway:'If a rule feels pointless, improve it openly rather than skipping it quietly.'},
+];
+
+const WISDOM = [
+ {id:'w1',type:'wisdom',title:'On comparison',body:'You are comparing your behind-the-scenes to everyone else’s highlight reel. They are doing the same with yours.',fx:{well:1,growth:1}},
+ {id:'w2',type:'wisdom',title:'On small habits',body:'A one percent daily improvement is barely visible on Tuesday and unmistakable in a year. Systems beat intentions.',fx:{growth:2}},
+ {id:'w3',type:'wisdom',title:'On saying no',body:'Every yes is a no to something else. You are always choosing — the only question is whether you notice.',fx:{growth:1,well:1}},
+ {id:'w4',type:'wisdom',title:'On being wrong',body:'Changing your mind with new evidence is not weakness. Refusing to is not strength.',fx:{know:1,growth:1}},
+ {id:'w5',type:'wisdom',title:'On money',body:'Wealth is what you do not see: the car not bought, the option kept open. Spending is visible; security is not.',fx:{wealth:1,know:1}},
+ {id:'w6',type:'wisdom',title:'On time',body:'You will never "find" time. It is only ever taken from something else, deliberately or by accident.',fx:{growth:1,well:1}},
+ {id:'w7',type:'wisdom',title:'On help',body:'Most people are willing to help and are almost never asked. The ask is the bottleneck, not their generosity.',fx:{rel:2}},
+ {id:'w8',type:'wisdom',title:'On learning',body:'If you can explain it simply to someone who does not care, you understand it. Jargon often hides the gap.',fx:{know:2}},
+];
+
+const REFLECTIONS = [
+ {id:'r1',body:'What is one thing you have been putting off that would take under ten minutes?'},
+ {id:'r2',body:'Who has helped you recently without being asked — and do they know it?'},
+ {id:'r3',body:'What would you attempt this year if you knew nobody would judge the first attempt?'},
+ {id:'r4',body:'Which part of your life gets the least attention right now: health, money, people, or growth?'},
+ {id:'r5',body:'What is something you believed strongly five years ago that you no longer believe?'},
+ {id:'r6',body:'What would "a good week" actually look like for you? Be specific.'},
+ {id:'r7',body:'What is one skill that would change the most about your daily work if you had it?'},
+];
+
+const CHALLENGES = [
+ {id:'cl1',body:'Name three things you are grateful for. Out loud, to the other players.',fx:{well:2,rel:1}},
+ {id:'cl2',body:'Explain your chosen topic to the table in under 30 seconds, in plain language.',fx:{know:2,contrib:1}},
+ {id:'cl3',body:'Name one thing you will do differently this week because of something in this game.',fx:{growth:2}},
+ {id:'cl4',body:'Give a genuine, specific compliment to the player on your left.',fx:{rel:2,contrib:1}},
+ {id:'cl5',body:'Estimate: how many hours a week do you spend on your phone? Then say whether you are happy with it.',fx:{well:1,know:1,growth:1}},
+ {id:'cl6',body:'Say one thing you got wrong recently, and what it taught you.',fx:{growth:2,rel:1}},
+];
+</script>
+<script>
+/* =====================================================================
+   LifeQuest — engine
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = ms => new Promise(r=>setTimeout(r, reduced?Math.min(ms,60):ms));
+
+/* ---------- board ---------- */
+const TYPES = {
+  start:{name:'Start',icon:'▶'}, milestone:{name:'Milestone',icon:'🏁'},
+  learn:{name:'Learn',icon:'📘'}, choice:{name:'Life Choice',icon:'⚖️'},
+  challenge:{name:'Challenge',icon:'🎯'}, opportunity:{name:'Opportunity',icon:'🔑'},
+  reflection:{name:'Reflection',icon:'🪞'}, surprise:{name:'Surprise',icon:'🎁'},
+  money:{name:'Money',icon:'💰'}, career:{name:'Career',icon:'💼'},
+  health:{name:'Health',icon:'❤️'}, relationship:{name:'Relationship',icon:'💬'},
+  community:{name:'Community',icon:'🌍'}, innovation:{name:'Innovation',icon:'💡'},
+  risk:{name:'Risk',icon:'🎲'}, wisdom:{name:'Wisdom',icon:'🦉'}
+};
+const EDGE = [
+ 'learn','money','choice','health','learn','surprise','career','learn','relationship','opportunity',
+ 'learn','challenge','wisdom','learn','risk','community','learn','innovation','choice','reflection',
+ 'learn','money','surprise','learn','career','opportunity','learn','health','challenge','wisdom',
+ 'learn','relationship','choice','learn','community','risk','learn','innovation','reflection','opportunity'
+];
+const CORNERS = {0:{type:'start',name:'Start'},11:{type:'milestone',name:'Explore'},
+  22:{type:'milestone',name:'Build Skills'},33:{type:'milestone',name:'Contribute'}};
+const SPACES = (()=>{ const out=[]; let e=0;
+  for(let i=0;i<44;i++){
+    if(CORNERS[i]) out.push({i,type:CORNERS[i].type,name:CORNERS[i].name});
+    else { const t=EDGE[e++]; out.push({i,type:t,name:TYPES[t].name}); }
+  } return out; })();
+function cell(i){
+  if(i<=11) return {r:12, c:12-i};
+  if(i<=21) return {r:23-i, c:1};
+  if(i<=33) return {r:1, c:i-21};
+  return {r:i-32, c:12};
+}
+
+/* ---------- CPU personalities ---------- */
+const CPUS = [
+ {name:'Alex',title:'The Explorer',avatar:'🧭',acc:.55,risk:.85,
+  line:'Curious — takes the chance and finds out.'},
+ {name:'Maya',title:'The Strategist',avatar:'♟️',acc:.76,risk:.30,
+  line:'Weighs it up, then picks the steady option.'},
+ {name:'Leo',title:'The Entrepreneur',avatar:'🚀',acc:.62,risk:.75,
+  line:'Goes where the upside is.'},
+ {name:'Nova',title:'The Scholar',avatar:'📚',acc:.90,risk:.40,
+  line:'Knows the answer more often than not.'}
+];
+const AVATARS = ['🦊','🐢','🦉','🐬','🦋','🐝','🌟','🎈','🍀','🔥','🌙','🎩'];
+const LEVELS = ['beginner','intermediate','advanced','expert','adaptive'];
+
+/* ---------- state ---------- */
+let G = null;
+const SAVE = 'lifequest.save.v1';
+function save(){ try{ localStorage.setItem(SAVE, JSON.stringify(G)); }catch(e){} }
+function loadSave(){ try{ return JSON.parse(localStorage.getItem(SAVE)||'null'); }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE); }catch(e){} }
+
+/* extension points */
+window.LIFEQUEST = {
+  addPack(id,label,cards){ PACKS[id]={label,cards}; },
+  generator:null,   // async ({player,kind,topic}) => card | null
+  get state(){ return G; }
+};
+
+/* ---------- setup screen ---------- */
+function topicOptions(sel){
+  const o = Object.entries(PACKS).map(([k,v])=>
+    `<option value="${k}"${k===sel?' selected':''}>${v.label}</option>`).join('');
+  return o + `<option value="__custom">Custom topic…</option>`;
+}
+function buildSetup(){
+  const nH = +$('#nHuman').value, nC = +$('#nCpu').value;
+  const total = Math.min(nH+nC, 6);
+  const box = $('#players'); box.innerHTML='';
+  for(let i=0;i<total;i++){
+    const human = i < nH;
+    const cpu = CPUS[(i-nH+CPUS.length)%CPUS.length];
+    const d = document.createElement('div');
+    d.className='pcard'; d.dataset.human = human?'1':'0';
+    d.innerHTML = `
+      <h3><span class="tag">${human?'Player '+(i+1):'Computer'}</span>
+        ${human?'':`<span>${cpu.avatar} ${cpu.name} — ${cpu.title}</span>`}</h3>
+      ${human?`
+      <div class="field"><label for="n${i}">Name</label>
+        <input type="text" id="n${i}" value="Player ${i+1}" maxlength="14"></div>
+      <div class="field"><label>Token</label>
+        <div class="avatars" data-av>${AVATARS.map((a,j)=>
+          `<button type="button" aria-pressed="${j===i}" data-a="${a}">${a}</button>`).join('')}</div></div>`
+      :`<p class="hint" style="margin:.1rem 0 .5rem">${cpu.line}</p>`}
+      <div class="field"><label for="t${i}">Learning topic</label>
+        <select id="t${i}" data-topic>${topicOptions('lifeskills')}</select>
+        <input type="text" id="c${i}" data-custom placeholder="e.g. Teach me astronomy" style="display:none">
+      </div>
+      <div class="field"><label for="d${i}">Difficulty</label>
+        <select id="d${i}" data-diff>${LEVELS.map(l=>
+          `<option value="${l}"${l==='adaptive'?' selected':''}>${l[0].toUpperCase()+l.slice(1)}</option>`).join('')}</select>
+      </div>`;
+    box.appendChild(d);
+    d.querySelector('[data-topic]').addEventListener('change',e=>{
+      d.querySelector('[data-custom]').style.display = e.target.value==='__custom'?'block':'none';
+    });
+    d.querySelectorAll('[data-av] button').forEach(b=>b.addEventListener('click',()=>{
+      d.querySelectorAll('[data-av] button').forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+    }));
+  }
+}
+$('#nHuman').addEventListener('change',()=>{
+  if(+$('#nHuman').value===1 && +$('#nCpu').value===0) $('#nCpu').value='1';
+  buildSetup();
+});
+$('#nCpu').addEventListener('change',()=>{
+  if(+$('#nHuman').value===1 && +$('#nCpu').value===0){ $('#nCpu').value='1'; }
+  buildSetup();
+});
+
+function startGame(){
+  const nH=+$('#nHuman').value, nC=+$('#nCpu').value;
+  const cards=[...document.querySelectorAll('#players .pcard')];
+  const players = cards.map((d,i)=>{
+    const human = d.dataset.human==='1';
+    const cpu = CPUS[(i-nH+CPUS.length)%CPUS.length];
+    const tsel = d.querySelector('[data-topic]').value;
+    const custom = (d.querySelector('[data-custom]').value||'').trim();
+    const topic = tsel==='__custom' ? (custom?'__custom':'lifeskills') : tsel;
+    return {
+      id:i, human,
+      name: human ? (d.querySelector('input[type=text]').value.trim()||('Player '+(i+1))) : cpu.name,
+      title: human?'':cpu.title,
+      avatar: human ? (d.querySelector('[data-av] [aria-pressed=true]')?.dataset.a || AVATARS[i]) : cpu.avatar,
+      topic, customTopic: topic==='__custom'?custom:'',
+      diff: d.querySelector('[data-diff]').value,
+      acc: human?null:cpu.acc, risk: human?null:cpu.risk,
+      pos:0, dims:{well:10,know:10,wealth:10,rel:10,growth:10,contrib:10},
+      seen:[], wrong:[], right:0, asked:0, helped:0, learned:[], reflections:[]
+    };
+  });
+  G = { players, turn:0, round:1, rounds:+$('#nRounds').value, dice:+$('#nDice').value,
+        log:[], over:false, busy:false };
+  $('#setup').style.display='none'; $('#end').classList.remove('on'); $('#game').classList.add('on');
+  renderBoard(); renderAll(); showDice(G.dice===2?[3,4]:[3], false);
+  say('system', `The journey begins. ${G.rounds} rounds. Every move teaches something.`);
+  beginTurn();
+}
+$('#start').addEventListener('click', startGame);
+
+/* ---------- render ---------- */
+function renderBoard(){
+  const b = $('#board'); b.innerHTML='';
+  SPACES.forEach(s=>{
+    const {r,c} = cell(s.i);
+    const el = document.createElement('div');
+    const corner = s.type==='start'||s.type==='milestone';
+    el.className = 'sp'+(corner?' corner':'');
+    el.style.gridRow=r; el.style.gridColumn=c;
+    el.style.background = `var(--sp-${corner?'corner':s.type})`;
+    el.dataset.i = s.i;
+    el.setAttribute('role','img');
+    el.setAttribute('aria-label', `Space ${s.i}: ${s.name}`);
+    el.innerHTML = `<span class="idx">${s.i}</span>
+      <span class="ico">${TYPES[s.type].icon}</span>
+      <span class="nm${s.name.length>9?' long':''}">${s.name}</span>
+      <span class="toks" data-toks></span>`;
+    b.appendChild(el);
+  });
+  const c = document.createElement('div');
+  c.className='center';
+  c.innerHTML = `<div>
+    <div class="title logo">Life<span class="q">Quest</span></div>
+    <div class="sub">Learn life one move at a time</div></div>
+    <div class="decks">
+      <span class="deck">Life</span><span class="deck">Knowledge</span>
+      <span class="deck">Choice</span><span class="deck">Opportunity</span>
+      <span class="deck">Wisdom</span></div>`;
+  $('#board').appendChild(c);
+}
+function renderTokens(){
+  document.querySelectorAll('#board [data-toks]').forEach(t=>t.innerHTML='');
+  G.players.forEach(p=>{
+    const sp = document.querySelector(`#board .sp[data-i="${p.pos}"] [data-toks]`);
+    if(sp) sp.insertAdjacentHTML('beforeend', `<span class="tok" data-p="${p.id}" title="${p.name}">${p.avatar}</span>`);
+  });
+  document.querySelectorAll('#board .sp').forEach(s=>s.classList.remove('here'));
+  const cur = document.querySelector(`#board .sp[data-i="${G.players[G.turn].pos}"]`);
+  if(cur) cur.classList.add('here');
+}
+function topicLabel(p){
+  return p.topic==='__custom' ? p.customTopic : (PACKS[p.topic]?.label || 'Life Skills');
+}
+/* Weighted total across the six dimensions… */
+function rawScore(p){ return D.reduce((a,k)=> a + p.dims[k]*WEIGHT[k], 0); }
+/* …scaled by your weakest dimension divided by your strongest.
+   Neglect one part of life and the whole score pays for it — that is the game. */
+function balance(p){
+  const v = D.map(k=>Math.max(0,p.dims[k]));
+  const mx = Math.max(...v);
+  return mx ? Math.min(...v)/mx : 0;
+}
+function lifeScore(p){ return Math.round(rawScore(p)*balance(p)*10)/10; }
+function renderPlayers(){
+  $('#plist').innerHTML = G.players.map(p=>`
+    <div class="prow${p.id===G.turn&&!G.over?' active':''}">
+      <div class="phead"><span>${p.avatar}</span><span>${p.name}</span>
+        ${p.human?'':'<span class="cpu">CPU</span>'}
+        <span class="score" title="Life Score — weighted total × balance (weakest ÷ strongest)">${lifeScore(p)}</span></div>
+      <div class="ptopic">📖 ${topicLabel(p)} · ${p.diff}${p.asked?` · ${p.right}/${p.asked} correct`:''}</div>
+      <div class="dims">${D.map(k=>{
+        const v = p.dims[k], pct = Math.max(2, Math.min(100, v/30*100));
+        return `<div class="dim"><span title="${DIM[k].label}">${DIM[k].icon}</span>
+          <span class="bar"><span style="width:${pct}%;background:var(${DIM[k].css})"></span></span>
+          <span>${v}</span></div>`;}).join('')}</div>
+    </div>`).join('');
+}
+function renderAll(){
+  renderTokens(); renderPlayers();
+  $('#roundLbl').textContent = `Round ${G.round} of ${G.rounds}`;
+  const p = G.players[G.turn];
+  $('#turnLbl').textContent = G.over ? 'Game over' : `${p.avatar} ${p.name}'s turn`;
+  $('#rollBtn').disabled = G.over || !p.human || G.busy;
+  $('#rollHint').textContent = G.over ? '' : (p.human ? 'Press R or Space to roll' : `${p.name} is thinking…`);
+}
+function say(who, text){
+  G.log.unshift({who,text});
+  $('#log').innerHTML = G.log.slice(0,40).map(l=>
+    `<p>${l.who==='system'?'':`<span class="who">${l.who}</span> `}${l.text}</p>`).join('');
+}
+
+/* ---------- dice ---------- */
+const PIPS = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function drawDie(v){
+  return `<div class="die" role="img" aria-label="Die showing ${v}">` +
+    Array.from({length:9},(_,i)=> PIPS[v].includes(i)?'<i></i>':'<span></span>').join('') + '</div>';
+}
+function showDice(vals, rolling){
+  $('#dice').innerHTML = vals.map(v=>drawDie(v)).join('');
+  if(rolling) document.querySelectorAll('.die').forEach(d=>d.classList.add('rolling'));
+}
+async function rollDice(){
+  const n = G.dice;
+  $('#rollBtn').disabled = true; $('#rollTotal').innerHTML='&nbsp;';
+  for(let i=0;i<(reduced?1:6);i++){
+    showDice(Array.from({length:n},()=>1+rnd(6)), i===0);
+    await sleep(80);
+  }
+  const vals = Array.from({length:n},()=>1+rnd(6));
+  showDice(vals,false);
+  const total = vals.reduce((a,b)=>a+b,0);
+  $('#rollTotal').textContent = `Rolled ${total}`;
+  await sleep(260);
+  return {vals,total};
+}
+
+/* ---------- modal ---------- */
+let modalResolve = null;
+function openModal(kind, colorType, html){
+  $('#mKind').textContent = kind;
+  $('#mHead').style.background = `var(--sp-${colorType||'learn'})`;
+  $('#mBody').innerHTML = html;
+  $('#overlay').classList.add('on');
+  const f = $('#mBody').querySelector('button,textarea');
+  if(f) f.focus();
+}
+function closeModal(){ $('#overlay').classList.remove('on'); }
+function waitModal(){ return new Promise(r=>{ modalResolve = r; }); }
+function done(v){ const r=modalResolve; modalResolve=null; closeModal(); if(r) r(v); }
+function fxHtml(fx){
+  if(!fx) return '';
+  const parts = Object.entries(fx).filter(([,v])=>v).map(([k,v])=>
+    `<span class="${v>0?'up':'dn'}">${DIM[k].icon} ${v>0?'+':''}${v} ${DIM[k].label}</span>`);
+  return parts.length?`<div class="fx">${parts.join('')}</div>`:'';
+}
+function applyFx(p, fx){
+  if(!fx) return;
+  Object.entries(fx).forEach(([k,v])=>{ if(D.includes(k)) p.dims[k]=Math.max(0,Math.min(30,p.dims[k]+v)); });
+}
+function contBtn(label){ return `<button class="btn" data-cont>${label||'Continue'}</button>`; }
+
+/* ---------- card selection ---------- */
+function levelFor(p){
+  if(p.diff!=='adaptive') return p.diff;
+  if(p.asked<3) return 'intermediate';
+  const r = p.right/p.asked;
+  return r>.8?'advanced' : r>.5?'intermediate' : 'beginner';
+}
+function questionFor(p){
+  const pack = PACKS[p.topic]?.cards || LIFESKILLS;
+  const lvl = levelFor(p);
+  const unseen = pack.filter(c=>!p.seen.includes(c.id));
+  const byLevel = unseen.filter(c=>c.level===lvl);
+  if(byLevel.length) return pick(byLevel);
+  if(unseen.length) return pick(unseen);
+  const redo = pack.filter(c=>p.wrong.includes(c.id));      // revisit what they got wrong
+  if(redo.length) return pick(redo);
+  p.seen = [];
+  return pick(pack);
+}
+function customCard(p){
+  const t = p.customTopic || 'your topic';
+  return pick([
+    {type:'challenge',title:'Teach it back',body:`Say one thing you already know about ${t} — and one thing you are not sure about.`,fx:{know:1,growth:2}},
+    {type:'reflection',title:'Why this topic?',body:`What made you choose ${t}? What would knowing it well change for you?`},
+    {type:'challenge',title:'Find the gap',body:`Name the single question about ${t} you would most like answered. Write it down — that is your next study session.`,fx:{know:2,growth:1}},
+    {type:'wisdom',title:'On learning anything',body:`The fastest route into ${t} is usually one real problem you actually care about, not a course you finish out of duty.`,fx:{know:1,growth:1}}
+  ]);
+}
+async function cardFor(p, kind){
+  if(window.LIFEQUEST.generator){
+    try{ const c = await window.LIFEQUEST.generator({player:p, kind, topic:topicLabel(p)}); if(c) return c; }
+    catch(e){ console.warn('generator failed, using offline pack', e); }
+  }
+  if(kind==='question'){
+    if(p.topic==='__custom' && Math.random()<.5) return customCard(p);
+    return questionFor(p);
+  }
+  if(kind==='choice')    return pick(CHOICES);
+  if(kind==='event')     return pick(EVENTS);
+  if(kind==='wisdom')    return pick(WISDOM);
+  if(kind==='challenge') { const c=pick(CHALLENGES); return {type:'challenge',title:'Challenge',body:c.body,fx:c.fx}; }
+  if(kind==='reflection'){ const r=pick(REFLECTIONS); return {type:'reflection',title:'Reflection',body:r.body}; }
+  return questionFor(p);
+}
+</script>
+<script>
+/* =====================================================================
+   LifeQuest — turn resolution
+   ===================================================================== */
+$('#mBody').addEventListener('click', e=>{
+  const c = e.target.closest('[data-cont]'); if(c){ done(null); return; }
+  const o = e.target.closest('[data-opt]'); if(o && !o.disabled){ done(+o.dataset.opt); }
+});
+$('#overlay').addEventListener('keydown', e=>{
+  if(e.key==='Escape') e.preventDefault();
+  if(/^[1-6]$/.test(e.key)){
+    const b = $('#mBody').querySelector(`[data-opt="${+e.key-1}"]`);
+    if(b && !b.disabled){ e.preventDefault(); b.click(); }
+  }
+});
+
+function optsHtml(options, disabled){
+  const K='ABCDEF';
+  return `<div class="opts">${options.map((o,i)=>
+    `<button class="opt" data-opt="${i}"${disabled?' disabled':''}>
+      <span class="k">${K[i]}</span><span>${o.text||o}</span></button>`).join('')}</div>`;
+}
+function learnedNote(p, card, take){
+  if(take) p.learned.push({title:card.title||'Lesson', take});
+}
+
+/* ---------- question ---------- */
+async function doQuestion(p, card, space, bonusFx){
+  p.asked++; if(!p.seen.includes(card.id)) p.seen.push(card.id);
+  const cpu = !p.human;
+  let choiceIdx;
+  const head = `<h2>${card.title||'Question'}</h2>
+    <p class="hint" style="margin:-.4rem 0 .8rem">${topicLabel(p)}${card.level?' · '+card.level:''}</p>
+    <p class="body">${card.body}</p>`;
+
+  if(cpu){
+    const good = Math.random() < (p.acc + (levelFor(p)==='beginner'?.08:0));
+    choiceIdx = good ? card.answer : pick(card.options.map((_,i)=>i).filter(i=>i!==card.answer));
+    openModal(`${p.name} is answering`, space, head + optsHtml(card.options, true) +
+      `<p class="hint">${p.name} is thinking…</p>`);
+    await sleep(1100);
+  } else {
+    openModal('Knowledge Card', space, head + optsHtml(card.options,false));
+    choiceIdx = await waitModal();
+  }
+
+  const right = choiceIdx === card.answer;
+  if(right) p.right++; else if(card.id && !p.wrong.includes(card.id)) p.wrong.push(card.id);
+  if(right) p.wrong = p.wrong.filter(x=>x!==card.id);
+
+  const lvl = card.level||'intermediate';
+  const w = lvl==='advanced'||lvl==='expert' ? 3 : 2;
+  const fx = right ? {know:w, growth:1, ...(bonusFx||{})} : {know:1};
+  applyFx(p, fx);
+  learnedNote(p, card, card.takeaway);
+
+  const K='ABCDEF';
+  const marked = `<div class="opts">${card.options.map((o,i)=>
+    `<button class="opt${i===card.answer?' correct':''}${i===choiceIdx&&!right?' wrong':''}${i===choiceIdx?' picked':''}" disabled>
+      <span class="k">${K[i]}</span><span>${o.text||o}</span></button>`).join('')}</div>`;
+  openModal(right?'Correct':'Not quite — here is why', space, head + marked +
+    `<div class="feedback"><p style="margin:0">${card.explain}</p>
+      ${card.takeaway?`<p class="take">💡 ${card.takeaway}</p>`:''}</div>
+     ${fxHtml(fx)}${contBtn()}`);
+  say(p.name, right ? `answered correctly — ${card.title}.` : `missed one on ${card.title}, and learned why.`);
+  if(cpu) { await sleep(1700); done(null); } else await waitModal();
+}
+
+/* ---------- choice / event with options ---------- */
+async function doOptions(p, card, space, kind){
+  const cpu = !p.human;
+  const head = `<h2>${card.title}</h2><p class="body">${card.body}</p>`;
+  let idx;
+  if(cpu){
+    // strategist-style players prefer the option with the best balanced effect
+    const score = o => { const f=o.fx||{}; const s=D.reduce((a,k)=>a+(f[k]||0),0);
+      return s + (Math.random()*3-1.5)*(1-p.risk); };
+    idx = card.options.map((o,i)=>[score(o),i]).sort((a,b)=>b[0]-a[0])[0][1];
+    openModal(`${p.name} decides`, space, head + optsHtml(card.options,true) + `<p class="hint">${p.name} is weighing it up…</p>`);
+    await sleep(1200);
+  } else {
+    openModal(kind==='choice'?'Choice Card':'Life Card', space, head + optsHtml(card.options,false));
+    idx = await waitModal();
+  }
+  const o = card.options[idx];
+  applyFx(p, o.fx);
+  learnedNote(p, card, card.takeaway || o.consequence);
+  const K='ABCDEF';
+  const marked = `<div class="opts">${card.options.map((x,i)=>
+    `<button class="opt${i===idx?' picked':''}" disabled><span class="k">${K[i]}</span><span>${x.text}</span></button>`).join('')}</div>`;
+  openModal(cpu?`${p.name} chose ${K[idx]}`:'Your choice', space, head + marked +
+    `<div class="feedback"><p style="margin:0">${o.consequence||''}</p>
+      ${card.explain?`<p style="margin:.5rem 0 0">${card.explain}</p>`:''}
+      ${card.takeaway?`<p class="take">💡 ${card.takeaway}</p>`:''}</div>
+     ${fxHtml(o.fx)}${contBtn()}`);
+  say(p.name, `chose "${o.text}" — ${card.title}.`);
+  if(cpu){ await sleep(1900); done(null); } else await waitModal();
+}
+
+/* ---------- plain card (event / wisdom / challenge) ---------- */
+async function doSimple(p, card, space, kind){
+  const cpu = !p.human;
+  applyFx(p, card.fx);
+  learnedNote(p, card, card.takeaway || (kind==='wisdom'?card.body:null));
+  openModal(kind==='wisdom'?'Wisdom Card':kind==='challenge'?'Challenge':'Life Card', space,
+    `<h2>${card.title}</h2><p class="body">${card.body}</p>${fxHtml(card.fx)}${contBtn()}`);
+  say(p.name, `${kind==='wisdom'?'picked up a Wisdom card':kind==='challenge'?'took a challenge':'hit a life event'}: ${card.title}.`);
+  if(cpu){ await sleep(1600); done(null); } else await waitModal();
+}
+
+/* ---------- reflection ---------- */
+async function doReflection(p, card, space){
+  if(!p.human){
+    applyFx(p,{growth:1,well:1});
+    openModal('Reflection', space, `<h2>Reflection</h2><p class="body">${card.body}</p>
+      <p class="hint">${p.name} considers it quietly.</p>${fxHtml({growth:1,well:1})}${contBtn()}`);
+    await sleep(1400); done(null); return;
+  }
+  openModal('Reflection', space, `<h2>Reflection</h2><p class="body">${card.body}</p>
+    <textarea id="refl" placeholder="Just for you — kept in your end-of-game recap."></textarea>
+    <div style="margin-top:.7rem">${contBtn('Save & continue')}</div>`);
+  await waitModal();
+  const t = ($('#refl')?.value||'').trim();
+  if(t) p.reflections.push({q:card.body, a:t});
+  applyFx(p, t?{growth:2,well:1}:{growth:1});
+  say(p.name, 'paused to reflect.');
+}
+
+/* ---------- opportunity ---------- */
+async function doOpportunity(p, space){
+  const cpu=!p.human;
+  const head = `<h2>An opportunity</h2>
+    <p class="body">Take on a harder question for double the reward — or take the safe, smaller gain?</p>`;
+  const options=[{text:'Take the opportunity (double reward, small loss if wrong)'},{text:'Play it safe (+1 Knowledge)'}];
+  let idx;
+  if(cpu){ idx = Math.random()<p.risk?0:1;
+    openModal(`${p.name} decides`, space, head+optsHtml(options,true)); await sleep(1100);
+  } else { openModal('Opportunity Card', space, head+optsHtml(options,false)); idx = await waitModal(); }
+  if(idx===1){ applyFx(p,{know:1,wealth:1});
+    openModal('Played safe', space, head+`<div class="feedback"><p style="margin:0">Steady. Not every turn needs a gamble — knowing which ones do is the skill.</p></div>${fxHtml({know:1,wealth:1})}${contBtn()}`);
+    say(p.name,'passed on the opportunity.');
+    if(cpu){ await sleep(1400); done(null); } else await waitModal();
+    return;
+  }
+  say(p.name,'took the opportunity.');
+  await present(p, await cardFor(p,'question'), space, {wealth:2, growth:1});
+}
+
+/* ---------- risk (uses the dice) ---------- */
+async function doRisk(p, space){
+  const cpu=!p.human;
+  const head=`<h2>Calculated risk</h2><p class="body">Roll one die. Four or higher pays off. Three or lower costs you. Or walk away with a small steady gain.</p>`;
+  const options=[{text:'Roll for it'},{text:'Walk away (+1 Wealth, +1 Wellbeing)'}];
+  let idx;
+  if(cpu){ idx = Math.random()<p.risk?0:1;
+    openModal(`${p.name} decides`, space, head+optsHtml(options,true)); await sleep(1000);
+  } else { openModal('Risk', space, head+optsHtml(options,false)); idx = await waitModal(); }
+  if(idx===1){ applyFx(p,{wealth:1,well:1});
+    openModal('Walked away', space, head+`<div class="feedback"><p style="margin:0">No shame in it. Risk you cannot afford to lose is not opportunity — it is exposure.</p></div>${fxHtml({wealth:1,well:1})}${contBtn()}`);
+    say(p.name,'walked away from the risk.');
+    if(cpu){ await sleep(1400); done(null); } else await waitModal(); return;
+  }
+  openModal('Rolling…', space, head+`<div style="text-align:center" id="riskDie"></div>`);
+  for(let i=0;i<(reduced?1:5);i++){ $('#riskDie').innerHTML=drawDie(1+rnd(6)); await sleep(90); }
+  const v=1+rnd(6); $('#riskDie').innerHTML=drawDie(v);
+  const win = v>=4;
+  const fx = win?{wealth:3,growth:2}:{wealth:-2,well:-1,growth:1};
+  applyFx(p,fx);
+  learnedNote(p,{title:'On risk'}, win
+    ? 'It paid off this time. A good outcome does not always mean it was a good decision.'
+    : 'It did not pay off. A bad outcome does not always mean it was a bad decision.');
+  openModal(win?`Rolled ${v} — it paid off`:`Rolled ${v} — it did not`, space,
+    head+`<div style="text-align:center;margin:.6rem 0">${drawDie(v)}</div>
+    <div class="feedback"><p style="margin:0">${win
+      ? 'It paid off. Worth remembering: a good outcome does not prove it was a good decision.'
+      : 'It did not pay off — and you still learned something about your own tolerance for risk.'}</p></div>
+    ${fxHtml(fx)}${contBtn()}`);
+  say(p.name, `risked it, rolled ${v} — ${win?'and won':'and lost'}.`);
+  if(cpu){ await sleep(1700); done(null); } else await waitModal();
+}
+
+/* ---------- community ---------- */
+async function doCommunity(p, space){
+  const others = G.players.filter(x=>x.id!==p.id);
+  const options = others.map(o=>({text:`Help ${o.avatar} ${o.name} (they gain Knowledge, you gain Contribution)`, target:o.id}))
+    .concat([{text:'Focus on your own progress (+2 Growth)', target:null}]);
+  const head = `<h2>Community</h2><p class="body">Someone near you is stuck on something you happen to understand.</p>`;
+  let idx;
+  if(!p.human){ idx = Math.random()<.7 ? rnd(others.length) : options.length-1;
+    openModal(`${p.name} decides`, space, head+optsHtml(options,true)); await sleep(1100);
+  } else { openModal('Community', space, head+optsHtml(options,false)); idx = await waitModal(); }
+  const o = options[idx];
+  if(o.target===null){ applyFx(p,{growth:2});
+    openModal('Focused', space, head+`<div class="feedback"><p style="margin:0">Fair enough — you cannot pour from an empty cup. The balance between the two is the whole question.</p></div>${fxHtml({growth:2})}${contBtn()}`);
+    say(p.name,'focused on their own progress.');
+  } else {
+    const t = G.players.find(x=>x.id===o.target);
+    applyFx(p,{contrib:3,rel:1}); applyFx(t,{know:2}); p.helped++;
+    learnedNote(p,{title:'On helping'},'Explaining something is the fastest way to find out whether you actually understand it.');
+    openModal('You helped', space, head+`<div class="feedback"><p style="margin:0">You explained it to ${t.name}. They understood it — and you found the gaps in your own understanding while doing it.</p><p class="take">💡 Teaching is the fastest test of what you actually know.</p></div>${fxHtml({contrib:3,rel:1})}<p class="hint">${t.name}: 🧠 +2 Knowledge</p>${contBtn()}`);
+    say(p.name,`helped ${t.name} — +3 Contribution.`);
+  }
+  if(!p.human){ await sleep(1800); done(null); } else await waitModal();
+}
+
+/* ---------- start / milestone ---------- */
+async function doStart(p, passed){
+  const fx = {wealth:2, growth:1};
+  applyFx(p,fx);
+  if(passed) return;
+  openModal('Start', 'corner', `<h2>Back to the beginning</h2>
+    <p class="body">A full lap. Collect your salary and set one intention for the round ahead.</p>${fxHtml(fx)}${contBtn()}`);
+  if(!p.human){ await sleep(1200); done(null); } else await waitModal();
+}
+async function doMilestone(p, name, space){
+  const card = await cardFor(p,'wisdom');
+  applyFx(p,{growth:2});
+  learnedNote(p, card, card.body);
+  openModal(`Milestone — ${name}`,'corner',
+    `<h2>${name}</h2><p class="hint" style="margin:-.4rem 0 .8rem">A stage of the journey — reached in your own order, not a fixed path.</p>
+     <div class="feedback"><strong>${card.title}</strong><p style="margin:.3rem 0 0">${card.body}</p></div>
+     ${fxHtml({growth:2,...(card.fx||{})})}${contBtn()}`);
+  applyFx(p, card.fx);
+  say(p.name, `reached the ${name} milestone.`);
+  if(!p.human){ await sleep(1700); done(null); } else await waitModal();
+}
+
+/* ---------- present any card by its own type ----------
+   Cards can arrive from a topic pack, a custom-topic template or the AI
+   generator, so route on card.type rather than on the space we landed on. */
+async function present(p, card, space, bonusFx){
+  if(!card) return;
+  switch(card.type){
+    case 'question':
+      if(!Array.isArray(card.options) || card.answer==null) break;
+      return doQuestion(p, card, space, bonusFx);
+    case 'choice': case 'event':
+      if(Array.isArray(card.options)) return doOptions(p, card, space, card.type);
+      return doSimple(p, card, space, 'event');
+    case 'reflection': return doReflection(p, card, space);
+    case 'wisdom':     return doSimple(p, card, space, 'wisdom');
+    case 'challenge':  return doSimple(p, card, space, 'challenge');
+  }
+  return doSimple(p, {title:card.title||'A moment', body:card.body||'', fx:card.fx||{growth:1}}, space, 'event');
+}
+
+/* ---------- dispatcher ---------- */
+async function resolveSpace(p){
+  const s = SPACES[p.pos];
+  switch(s.type){
+    case 'start':      return doStart(p,false);
+    case 'milestone':  return doMilestone(p, s.name, 'corner');
+    case 'learn': case 'career': case 'health': case 'innovation':
+      return present(p, await cardFor(p,'question'), s.type);
+    case 'money':
+      return present(p, await cardFor(p,'question'), 'money', {wealth:2});
+    case 'choice': case 'relationship':
+      return present(p, await cardFor(p,'choice'), s.type);
+    case 'surprise':    return present(p, await cardFor(p,'event'), 'surprise');
+    case 'wisdom':      return present(p, await cardFor(p,'wisdom'), 'wisdom');
+    case 'challenge':   return present(p, await cardFor(p,'challenge'), 'challenge');
+    case 'reflection':  return present(p, await cardFor(p,'reflection'), 'reflection');
+    case 'opportunity': return doOpportunity(p,'opportunity');
+    case 'risk':        return doRisk(p,'risk');
+    case 'community':   return doCommunity(p,'community');
+    default:            return present(p, await cardFor(p,'question'), 'learn');
+  }
+}
+
+/* ---------- turn loop ---------- */
+async function move(p, n){
+  for(let i=0;i<n;i++){
+    p.pos = (p.pos+1)%44;
+    if(p.pos===0 && i<n-1) await doStart(p,true);   // passing Start
+    renderTokens();
+    const t = document.querySelector(`#board .tok[data-p="${p.id}"]`);
+    if(t){ t.classList.add('move'); }
+    await sleep(reduced?20:110);
+  }
+}
+async function takeTurn(){
+  if(G.busy || G.over) return;          // one turn at a time — guards double-click, R key and doubles
+  G.busy = true;
+  try{
+  let again = true, usedBonus = false;
+  while(again){
+    again = false;
+    const p = G.players[G.turn];
+    const {vals,total} = await rollDice();
+    say(p.name, `rolled ${vals.join(' + ')}${vals.length>1?` = ${total}`:''}.`);
+    await move(p,total);
+    renderAll();
+    await resolveSpace(p);
+    renderAll(); save();
+    if(G.dice===2 && vals[0]===vals[1] && !usedBonus && !G.over){
+      usedBonus = true;
+      applyFx(p,{growth:1});
+      say(p.name,'rolled doubles — another turn.');
+      renderAll();
+      await sleep(600);
+      again = true;
+    }
+  }
+  }catch(err){
+    console.error('turn failed', err);
+    say('system','Something went wrong resolving that space — moving on.');
+    closeModal();
+  }
+  G.busy = false;
+  endTurn();
+}
+function endTurn(){
+  G.turn = (G.turn+1) % G.players.length;
+  if(G.turn===0){
+    G.round++;
+    if(G.round > G.rounds){ return finish(); }
+  }
+  renderAll(); save(); beginTurn();
+}
+async function beginTurn(){
+  if(G.over) return;
+  G.busy = false;
+  renderAll();
+  const p = G.players[G.turn];
+  if(!p.human){ await sleep(900); takeTurn(); }
+}
+$('#rollBtn').addEventListener('click', ()=>{ if(!$('#rollBtn').disabled) takeTurn(); });
+document.addEventListener('keydown', e=>{
+  if($('#overlay').classList.contains('on')){
+    if(e.key==='Enter'||e.key===' '){
+      const c=$('#mBody').querySelector('[data-cont]');
+      if(c && document.activeElement?.tagName!=='TEXTAREA'){ e.preventDefault(); c.click(); }
+    }
+    return;
+  }
+  if((e.key==='r'||e.key==='R'||e.key===' ') && $('#game').classList.contains('on')
+     && !$('#rollBtn').disabled && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA'){
+    e.preventDefault(); takeTurn();
+  }
+});
+
+/* ---------- end ---------- */
+function finish(){
+  G.over = true; clearSave(); renderAll();
+  const ranked = [...G.players].sort((a,b)=>lifeScore(b)-lifeScore(a));
+  const best = (k,f)=> [...G.players].sort((a,b)=>f(b)-f(a))[0];
+  const badges = {};
+  const add=(p,b)=>{ if(!p) return; (badges[p.id]=badges[p.id]||[]).push(b); };
+  add(best('know',p=>p.dims.know),'🏆 Most Knowledgeable');
+  add(best('well',p=>p.dims.well),'❤️ Best Wellbeing');
+  add(best('right',p=>p.asked?p.right/p.asked:0),'💡 Best Problem Solver');
+  add(best('helped',p=>p.helped),'🤝 Most Helpful Player');
+  add(best('growth',p=>p.dims.growth),'🚀 Greatest Growth');
+  add(best('wealth',p=>p.dims.wealth),'💰 Best Financial Decisions');
+  add(best('contrib',p=>p.dims.contrib),'🌍 Greatest Contribution');
+
+  $('#podium').innerHTML = ranked.map((p,i)=>{
+    const bal = Math.round(balance(p)*100);
+    return `<div class="pod${i===0?' win':''}">
+      <div class="top"><span>${i===0?'👑':`${i+1}.`}</span><span>${p.avatar} ${p.name}</span>
+        ${p.human?'':'<span class="cpu tag">CPU</span>'}
+        <span class="big">${lifeScore(p)}</span></div>
+      <div class="ptopic">📖 ${topicLabel(p)} · ${p.right}/${p.asked} correct ·
+        ${Math.round(rawScore(p)*10)/10} total × ${bal}% balance = <strong>${lifeScore(p)}</strong></div>
+      <div class="dims">${D.map(k=>`<div class="dim"><span>${DIM[k].icon}</span>
+        <span class="bar"><span style="width:${Math.min(100,p.dims[k]/30*100)}%;background:var(${DIM[k].css})"></span></span>
+        <span>${p.dims[k]}</span></div>`).join('')}</div>
+      ${(badges[p.id]||[]).length?`<div class="ach">${badges[p.id].map(b=>`<span>${b}</span>`).join('')}</div>`:''}
+    </div>`;}).join('');
+
+  const w = ranked[0];
+  $('#endSub').innerHTML = `<strong>${w.avatar} ${w.name}</strong> built the strongest balanced life. ` +
+    `The weighted total counts Knowledge and Wellbeing at 20% each and Relationships, Wealth, Growth and Contribution at 15% — ` +
+    `then it is multiplied by your <em>balance</em>: your weakest dimension divided by your strongest. ` +
+    `Pour everything into one dimension and the multiplier collapses. A broad foundation beats a tall tower.`;
+
+  $('#recap').innerHTML = G.players.filter(p=>p.human).map(p=>{
+    const seen=new Set(); const list=p.learned.filter(l=>l.take&&!seen.has(l.take)&&seen.add(l.take));
+    return `<div style="margin-bottom:1rem">
+      <h3>${p.avatar} ${p.name} — ${topicLabel(p)}</h3>
+      ${list.length?`<ul>${list.map(l=>`<li><strong>${l.title}:</strong> ${l.take}</li>`).join('')}</ul>`
+        :'<p class="hint">No lessons recorded this game.</p>'}
+      ${p.reflections.length?`<h4>Your reflections</h4><ul>${p.reflections.map(r=>
+        `<li><em>${r.q}</em><br>${r.a}</li>`).join('')}</ul>`:''}
+    </div>`;}).join('') || '<p class="hint">No human players this game.</p>';
+
+  $('#game').classList.remove('on'); $('#end').classList.add('on');
+  window.scrollTo(0,0);
+}
+$('#quitBtn').addEventListener('click', ()=>{ if(confirm('Finish now and see the final Life Score?')) finish(); });
+$('#again').addEventListener('click', ()=>{
+  $('#end').classList.remove('on'); $('#setup').style.display='block'; window.scrollTo(0,0);
+});
+
+/* ---------- theme + boot ---------- */
+const THEME='lifequest.theme';
+try{ const t=localStorage.getItem(THEME); if(t) document.documentElement.dataset.theme=t; }catch(e){}
+$('#themeBtn').addEventListener('click', ()=>{
+  const cur = document.documentElement.dataset.theme;
+  const next = cur==='dark'?'light':'dark';
+  document.documentElement.dataset.theme = next;
+  try{ localStorage.setItem(THEME,next); }catch(e){}
+});
+buildSetup();
+(function offerResume(){
+  const s = loadSave();
+  if(!s || s.over) return;
+  const bar = document.createElement('div');
+  bar.className='card-panel';
+  bar.innerHTML = `<div class="row" style="justify-content:space-between">
+    <span>You have a game in progress — round ${s.round} of ${s.rounds}, ${s.players.length} players.</span>
+    <span class="row"><button class="btn" id="resume">Resume</button>
+    <button class="btn ghost" id="discard">Discard</button></span></div>`;
+  $('#setup').insertBefore(bar, $('#setup').children[1]);
+  bar.querySelector('#resume').addEventListener('click', ()=>{
+    G = s; G.busy = false; bar.remove();
+    $('#setup').style.display='none'; $('#game').classList.add('on');
+    renderBoard(); renderAll(); showDice(G.dice===2?[3,4]:[3], false);
+    say('system','Game resumed.'); beginTurn();
+  });
+  bar.querySelector('#discard').addEventListener('click', ()=>{ clearSave(); bar.remove(); });
+})();
+</script>
+</body>
+</html>

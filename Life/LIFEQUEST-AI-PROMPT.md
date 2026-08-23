@@ -3,6 +3,9 @@
 > Paste everything below into an AI (Claude, GPT, an image model for the
 > visual sections) to generate the game. Written to be used whole, or split —
 > the *Visual Direction* section works on its own as an image prompt.
+>
+> **Already built:** [`lifequest.html`](lifequest.html) is a working
+> implementation of this design — see [`GAME-README.md`](GAME-README.md).
 
 ---
 

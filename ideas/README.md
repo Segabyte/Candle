@@ -18,4 +18,4 @@ before they're lost.
 | # | Idea | Status |
 |---|------|--------|
 | 001 | [Shared near-miss & safety-signal network](idea-001-near-miss-sharing.md) | Raw capture |
-| 002 | ["Life" learning board game](idea-002-life-learning-board-game.md) | Raw capture + prompts |
+| 002 | ["Life" learning board game](idea-002-life-learning-board-game.md) | In progress → [`Life/`](../Life/) |

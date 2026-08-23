@@ -241,4 +241,10 @@ Original artwork — no existing brand names, logos or trademarked tile names.
 
 ## Notes / Refinements
 
-_(Add below as this develops.)_
+- **2026-08-22** — Idea taken forward as **LifeQuest**, with its own working
+  folder at [`Life/`](../Life/). The full design prompt lives in
+  [`Life/LIFEQUEST-AI-PROMPT.md`](../Life/LIFEQUEST-AI-PROMPT.md) and
+  supersedes Prompt A and Prompt B above: it expands the concept to six life
+  dimensions, named AI opponents, per-player topics with a custom "teach me
+  anything" option, adaptive difficulty, and a companion-app path for a
+  physical edition.

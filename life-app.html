@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>*{margin:0}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Fifteen Summers</title>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+  :root{
+    --ground:#E9E9E2; --surface:#F5F5F0; --surface-2:#EFEFE8;
+    --ink:#141A19; --ink-soft:#4A5350; --ink-faint:#7C837E;
+    --line:#D2D3C9; --line-soft:#DEDFD6;
+    --ash:#B0B4AB; --ash-deep:#8D9289;
+    --ember:#B3441C; --ember-soft:#D9713F;
+    --brass:#8E6B1E;
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --pad:clamp(20px,4vw,44px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0F1312; --surface:#171C1B; --surface-2:#1D2322;
+      --ink:#E8EAE3; --ink-soft:#A7ADA6; --ink-faint:#7C837D;
+      --line:#2A312F; --line-soft:#232928;
+      --ash:#454D4A; --ash-deep:#5C635F;
+      --ember:#E07347; --ember-soft:#B85630;
+      --brass:#C79A3E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0F1312; --surface:#171C1B; --surface-2:#1D2322;
+    --ink:#E8EAE3; --ink-soft:#A7ADA6; --ink-faint:#7C837D;
+    --line:#2A312F; --line-soft:#232928;
+    --ash:#454D4A; --ash-deep:#5C635F;
+    --ember:#E07347; --ember-soft:#B85630;
+    --brass:#C79A3E;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);font-family:var(--sans);line-height:1.55;
+       -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 var(--pad) 72px}
+  h1,h2,h3{margin:0;text-wrap:balance}
+  p{margin:0}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--brass)}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* ---------- masthead + controls ---------- */
+  .masthead{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;
+            padding:22px 0 18px;border-bottom:1px solid var(--line)}
+  .mark{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+  .mark .name{font-family:var(--serif);font-size:26px;letter-spacing:.01em}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+        border:1px solid var(--line);color:var(--ink-faint);padding:3px 7px;border-radius:2px}
+  .controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+               color:var(--ink-faint)}
+  .field input{font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--surface);
+               border:1px solid var(--line);border-radius:3px;padding:7px 9px}
+  .field input:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .field input[type=number]{width:76px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(38px,7vw,72px) 0 clamp(30px,5vw,52px);
+        display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end}
+  .count{font-family:var(--serif);font-size:clamp(76px,17vw,178px);line-height:.86;
+         letter-spacing:-.02em;color:var(--ember);font-variant-numeric:tabular-nums}
+  .count-unit{font-family:var(--serif);font-style:italic;font-size:clamp(24px,4vw,40px);
+              color:var(--ink);margin-left:.12em}
+  .hero-lede{margin-top:18px;font-size:17px;color:var(--ink-soft);max-width:34ch}
+  .hero-lede b{color:var(--ink);font-weight:600}
+  .clock{font-family:var(--mono);font-size:13px;color:var(--ink-faint);letter-spacing:.06em;
+         white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+  .clock .big{display:block;font-size:22px;color:var(--ink);letter-spacing:.02em;margin-top:4px}
+  @media (max-width:680px){.hero{grid-template-columns:1fr}.clock{text-align:left}}
+
+  /* ---------- stat strip ---------- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+         border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat{padding:20px 20px 18px;border-right:1px solid var(--line-soft)}
+  .stat:last-child{border-right:0}
+  .stat .v{font-family:var(--serif);font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .k{margin-top:7px;font-size:13px;color:var(--ink-soft)}
+  .stat .n{margin-top:3px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+  @media (max-width:560px){.stat{border-right:0;border-bottom:1px solid var(--line-soft)}}
+
+  /* ---------- sections ---------- */
+  section{padding-top:clamp(46px,7vw,76px)}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+            flex-wrap:wrap;margin-bottom:22px}
+  .sec-head h2{font-family:var(--serif);font-size:clamp(28px,4vw,38px);line-height:1.06}
+  .sec-head .note{font-size:13.5px;color:var(--ink-soft);max-width:44ch}
+
+  /* ---------- summers grid ---------- */
+  .grid-card{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+             padding:clamp(18px,3vw,30px)}
+  .decade{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:14px;margin-bottom:9px}
+  .decade:last-of-type{margin-bottom:0}
+  .decade .age{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);text-align:right}
+  .row{display:grid;grid-template-columns:repeat(10,1fr);gap:clamp(5px,1vw,10px)}
+  .sq{aspect-ratio:1;border-radius:2px;background:var(--ash);position:relative}
+  .sq.left{background:var(--ember)}
+  .sq.now{background:var(--ember);box-shadow:0 0 0 2px var(--ground),0 0 0 4px var(--ember)}
+  .sq.partial{background:linear-gradient(160deg,var(--ember) 0 42%,var(--ash) 42% 100%)}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:22px;padding-top:18px;
+          border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:11px;
+          color:var(--ink-faint);letter-spacing:.04em}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:10px;height:10px;border-radius:2px;display:block}
+
+  /* ---------- meter ---------- */
+  .meter-card{margin-top:18px;background:var(--surface);border:1px solid var(--line);
+              border-radius:5px;padding:clamp(18px,3vw,26px)}
+  .meter{height:12px;border-radius:2px;background:var(--ash);overflow:hidden;display:flex}
+  .meter .spent{background:var(--ash-deep)}
+  .meter .left{background:var(--ember);flex:1}
+  .meter-labels{display:flex;justify-content:space-between;gap:12px;margin-top:10px;
+                font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+
+  /* ---------- path ---------- */
+  .path{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;
+        overflow:hidden}
+  .chapter{background:var(--surface);padding:clamp(20px,3vw,28px);
+           display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:10px 34px}
+  .chapter:nth-child(even){background:var(--surface-2)}
+  .ch-when{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.06em}
+  .chapter h3{font-family:var(--serif);font-size:27px;line-height:1.1;margin-top:6px}
+  .ch-thesis{margin-top:8px;font-size:14px;color:var(--ink-soft);max-width:32ch}
+  .ch-bar{margin-top:14px;height:5px;border-radius:2px;background:var(--ember);opacity:.9}
+  .ch-share{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+  .moves{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .moves li{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:14.5px;align-items:start}
+  .moves li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brass);
+                    margin-top:8px}
+  @media (max-width:720px){.chapter{grid-template-columns:1fr}}
+
+  /* ---------- season ---------- */
+  .season{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:28px;
+          background:var(--surface);border:1px solid var(--line);border-radius:5px;
+          padding:clamp(20px,3vw,30px)}
+  .season .v{font-family:var(--serif);font-size:60px;line-height:1;color:var(--ember);
+             font-variant-numeric:tabular-nums}
+  .season .k{font-size:14px;color:var(--ink-soft);margin-top:6px}
+  .todo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+  .todo li{display:grid;grid-template-columns:20px 1fr auto;gap:12px;align-items:center;
+           padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:14.5px}
+  .todo li:last-child{border-bottom:0}
+  .todo .box{width:15px;height:15px;border:1.5px solid var(--ash-deep);border-radius:3px}
+  .todo .due{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);white-space:nowrap}
+  @media (max-width:720px){.season{grid-template-columns:1fr}}
+
+  footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);
+         display:flex;flex-wrap:wrap;gap:14px 28px;justify-content:space-between;
+         font-size:13px;color:var(--ink-faint)}
+  footer .next{max-width:52ch}
+  footer b{color:var(--ink-soft);font-weight:600}
+
+  .reveal{opacity:0;animation:fade .5s ease forwards}
+  @keyframes fade{to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1}}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="mark">
+      <span class="name">Life App</span>
+      <span class="chip">Preview</span>
+    </div>
+    <div class="controls">
+      <div class="field">
+        <label for="dob">Date of birth</label>
+        <input id="dob" type="date" value="1981-10-15">
+      </div>
+      <div class="field">
+        <label for="age">Retire at</label>
+        <input id="age" type="number" min="40" max="90" step="1" value="60">
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow" id="until">Until 15 October 2041</p>
+      <h1 class="count"><span id="days">5,526</span><span class="count-unit">days</span></h1>
+      <p class="hero-lede" id="lede">You stop working on your <b>60th birthday</b>. That is
+        <b>15 summers</b>, 789 Saturdays and one last October away.</p>
+    </div>
+    <div class="clock">
+      to the morning of retirement
+      <span class="big" id="tick">—</span>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Your life in summers</h2>
+      <p class="note">One square per summer, birth to sixty. The ashed squares have already
+        happened. Everything you are going to do sits in the ember.</p>
+    </div>
+    <div class="grid-card">
+      <div id="summers"></div>
+      <div class="legend">
+        <span><i style="background:var(--ash)"></i> Spent</span>
+        <span><i style="background:var(--ember)"></i> Ahead of you</span>
+        <span><i style="background:linear-gradient(160deg,var(--ember) 0 42%,var(--ash) 42% 100%)"></i> This one, half gone</span>
+      </div>
+    </div>
+    <div class="meter-card">
+      <div class="meter"><div class="spent" id="spent-bar" style="width:74.8%"></div><div class="left"></div></div>
+      <div class="meter-labels">
+        <span id="spent-label">16,389 days lived</span>
+        <span id="left-label">5,526 days of working life left</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>The path</h2>
+      <p class="note">The years left are not interchangeable — money, energy and freedom peak at
+        different times. Four chapters, sized by how much of the runway each one gets.</p>
+    </div>
+    <div class="path" id="path"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>This season</h2>
+      <p class="note">The countdown only matters if it changes this week. Four moves for the
+        rest of the year.</p>
+    </div>
+    <div class="season">
+      <div>
+        <p class="eyebrow">Left in 2026</p>
+        <p class="v num" id="year-days">124</p>
+        <p class="k">days — about 18 weeks, 17 more Saturdays.</p>
+      </div>
+      <ul class="todo">
+        <li><span class="box"></span><span>Put a number on it: what does retiring at 60 actually cost per year?</span><span class="due">by 30 Sep</span></li>
+        <li><span class="box"></span><span>Raise the monthly pension contribution once, now — 15 years of compounding left.</span><span class="due">by 15 Oct</span></li>
+        <li><span class="box"></span><span>Pick the one skill worth carrying into the next chapter. Ship something with it.</span><span class="due">by 30 Nov</span></li>
+        <li><span class="box"></span><span>Book the full health check you keep moving. The body is the asset with no glide path.</span><span class="due">by 31 Dec</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p class="next"><b>What this preview is.</b> The countdown, the summers grid and the four
+      chapters, computed live from your date of birth. Change either field above and everything
+      recalculates.</p>
+    <p class="next"><b>Next to build.</b> Saved profile, checkable moves that persist, a weekly
+      "one thing" nudge, and money — target number, current trajectory, the gap.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var MS = 86400000;
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var dobEl = document.getElementById("dob"), ageEl = document.getElementById("age");
+  var retireDate, reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function fmt(n){ return n.toLocaleString("en-GB"); }
+  function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function longDate(d){ return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function dayDiff(a,b){ return Math.round((midnight(b) - midnight(a)) / MS); }
+
+  function countWeekdays(from, days){
+    var sat = 0, week = 0, c = new Date(midnight(from));
+    for (var i = 1; i <= days; i++){
+      c.setDate(c.getDate() + 1);
+      var w = c.getDay();
+      if (w === 6) sat++;
+      if (w > 0 && w < 6) week++;
+    }
+    return { saturdays: sat, weekdays: week };
+  }
+
+  function build(){
+    var parts = dobEl.value.split("-");
+    if (parts.length !== 3) return;
+    var dob = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    var retireAge = Math.max(40, Math.min(90, +ageEl.value || 60));
+    var today = midnight(new Date());
+    retireDate = new Date(dob.getFullYear() + retireAge, dob.getMonth(), dob.getDate());
+
+    var days = Math.max(0, dayDiff(today, retireDate));
+    var lived = dayDiff(dob, today);
+    var whole = dayDiff(dob, retireDate);
+    var wk = countWeekdays(today, days);
+
+    // summers: June–August, northern hemisphere
+    var summersAhead = 0, thisSummerLeft = 0;
+    for (var y = today.getFullYear(); y <= retireDate.getFullYear(); y++){
+      var start = new Date(y, 5, 1), end = new Date(y, 7, 31);
+      if (start > today && start <= retireDate) summersAhead++;
+      else if (today >= start && today <= end && end <= retireDate) thisSummerLeft = dayDiff(today, end) + 1;
+    }
+    var birthdays = 0;
+    for (var y2 = today.getFullYear(); y2 <= retireDate.getFullYear(); y2++){
+      var b = new Date(y2, dob.getMonth(), dob.getDate());
+      if (b > today && b <= retireDate) birthdays++;
+    }
+    var moons = Math.round(days / 29.53059);
+    var months = Math.floor(days / 30.436875);
+
+    // hero
+    document.getElementById("until").textContent = "Until " + longDate(retireDate);
+    document.getElementById("days").textContent = fmt(days);
+    var summerPhrase = summersAhead + " full summer" + (summersAhead === 1 ? "" : "s");
+    document.getElementById("lede").innerHTML =
+      "You stop working on your <b>" + retireAge + "th birthday</b>. That is <b>" + summerPhrase +
+      "</b>, " + fmt(wk.saturdays) + " Saturdays and " + fmt(birthdays) + " more birthdays away" +
+      (thisSummerLeft ? " — plus the last " + thisSummerLeft + " days of this summer." : ".");
+
+    // stats
+    var stats = [
+      { v: summersAhead, k: "summers ahead", n: thisSummerLeft ? "+ " + thisSummerLeft + " days of this one" : "June to August" },
+      { v: fmt(wk.saturdays), k: "Saturdays left", n: "the free ones" },
+      { v: fmt(wk.weekdays), k: "weekdays left", n: "before holidays and leave" },
+      { v: fmt(months), k: "months", n: "roughly " + Math.floor(days / 91.31) + " quarters" },
+      { v: fmt(moons), k: "full moons", n: "one every 29.5 days" }
+    ];
+    document.getElementById("stats").innerHTML = stats.map(function(s, i){
+      return '<div class="stat' + (reduced ? '' : ' reveal') + '" style="animation-delay:' + (i * 60) + 'ms">' +
+             '<div class="v num">' + s.v + '</div><div class="k">' + s.k + '</div><div class="n">' + s.n + '</div></div>';
+    }).join("");
+
+    // summers grid
+    var html = "", n = 0;
+    for (var row = 0; row < Math.ceil(retireAge / 10); row++){
+      var cells = "";
+      for (var col = 0; col < 10; col++){
+        n = row * 10 + col + 1;
+        if (n > retireAge){ cells += '<div></div>'; continue; }
+        var year = dob.getFullYear() + n;               // first full summer is the one after birth
+        var cls = "sq", age = n - 1;
+        var sStart = new Date(year, 5, 1), sEnd = new Date(year, 7, 31);
+        if (sStart > today) cls += " left";
+        else if (today >= sStart && today <= sEnd) cls += " partial";
+        var delay = reduced ? 0 : Math.min(n * 7, 620);
+        cells += '<div class="' + cls + (reduced ? '' : ' reveal') + '" style="animation-delay:' + delay +
+                 'ms" title="Summer ' + year + ' · age ' + age + '"></div>';
+      }
+      html += '<div class="decade"><span class="age num">' + (row * 10) + '–' + Math.min(row * 10 + 9, retireAge - 1) +
+              '</span><div class="row">' + cells + '</div></div>';
+    }
+    document.getElementById("summers").innerHTML = html;
+
+    // meter
+    var pct = (lived / whole) * 100;
+    document.getElementById("spent-bar").style.width = pct.toFixed(1) + "%";
+    document.getElementById("spent-label").textContent = fmt(lived) + " days lived · " + pct.toFixed(1) + "%";
+    document.getElementById("left-label").textContent = fmt(days) + " days of working life left";
+
+    // path
+    var bands = [
+      { to: retireAge - 12, title: "Peak build",   thesis: "Earning power and energy overlap for the last time. Spend it on compounding, not maintenance.",
+        moves: ["Max the pension contribution — every year here is worth two later.", "Go deep on one skill you would still want at 58.", "Make the work visible: ship, write, present under your own name."] },
+      { to: retireAge - 7,  title: "Leverage",     thesis: "Convert what you know into things that earn without your hours attached.",
+        moves: ["Lead or teach — turn skill into other people's output.", "Start the income that is not a salary.", "Rebuild the network you will still want after the job ends."] },
+      { to: retireAge - 3,  title: "Consolidate",  thesis: "De-risk. From here a setback costs years you no longer have to spare.",
+        moves: ["Debt to zero, mortgage-free before the last payslip.", "Begin the glide path out of high-risk holdings.", "Treat health as the portfolio with no recovery time."] },
+      { to: retireAge,      title: "Handover",     thesis: "Land the plane. Test the next life while the salary is still arriving.",
+        moves: ["Hand over the work so it survives you leaving.", "Run a month of the retired week — see if you like it.", "Fix the date, tell people, make it real."] }
+    ];
+    var startAge = Math.floor(lived / 365.2425), acc = today, out = "";
+    bands.forEach(function(b, i){
+      var end = new Date(dob.getFullYear() + b.to, dob.getMonth(), dob.getDate());
+      if (end > retireDate) end = retireDate;
+      var span = Math.max(0, dayDiff(acc, end));
+      if (span <= 0) return;
+      var share = Math.round((span / days) * 100);
+      var fromAge = i === 0 ? startAge : Math.max(startAge, bands[i - 1].to);
+      out += '<article class="chapter"><div>' +
+             '<p class="ch-when">Chapter ' + (i + 1) + ' · ages ' + fromAge + '–' + b.to + ' · ' +
+             acc.getFullYear() + '–' + end.getFullYear() + '</p>' +
+             '<h3>' + b.title + '</h3>' +
+             '<p class="ch-thesis">' + b.thesis + '</p>' +
+             '<div class="ch-bar" style="width:' + Math.max(share, 6) + '%"></div>' +
+             '<p class="ch-share num">' + fmt(span) + ' days · ' + share + '% of the runway</p>' +
+             '</div><ul class="moves">' + b.moves.map(function(m){ return '<li><span>' + m + '</span></li>'; }).join("") +
+             '</ul></article>';
+      acc = end;
+    });
+    document.getElementById("path").innerHTML = out;
+
+    // this season
+    var yearEnd = new Date(today.getFullYear(), 11, 31);
+    document.getElementById("year-days").textContent = fmt(Math.max(0, dayDiff(today, yearEnd)));
+
+    tick();
+  }
+
+  function tick(){
+    if (!retireDate) return;
+    var now = new Date(), ms = retireDate - now;
+    var el = document.getElementById("tick");
+    if (ms <= 0){ el.textContent = "you are there"; return; }
+    var d = Math.floor(ms / MS), h = Math.floor(ms / 3600000) % 24,
+        m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60;
+    var p = function(v){ return String(v).padStart(2, "0"); };
+    el.textContent = d + "d " + p(h) + ":" + p(m) + ":" + p(s);
+  }
+
+  dobEl.addEventListener("change", build);
+  ageEl.addEventListener("change", build);
+  ageEl.addEventListener("input", build);
+  build();
+  setInterval(tick, 1000);
+})();
+</script>
+
+</body>
+</html>

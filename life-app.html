@@ -194,15 +194,43 @@
           border:1px solid var(--line);border-radius:3px;cursor:pointer;padding:0}
   .daynav:hover{color:var(--ember);border-color:var(--ember-soft)}
   .daynav:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
-  .datefield{position:relative;display:flex;align-items:center;justify-content:center;height:42px;
-             min-width:132px;padding:0 12px;background:var(--surface-2);border:1px solid var(--line);
-             border-radius:3px}
+  .datewrap{position:relative;display:inline-flex}
+  .datefield{display:flex;align-items:center;justify-content:center;gap:9px;height:42px;
+             min-width:150px;padding:0 13px;background:var(--surface-2);border:1px solid var(--line);
+             border-radius:3px;cursor:pointer}
   .datefield:hover{border-color:var(--ash-deep)}
-  .datefield:focus-within{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-ghost)}
+  .datefield:hover .calglyph{color:var(--ember)}
+  .datefield:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .datefield[aria-expanded="true"]{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-ghost)}
   .datelabel{font-family:var(--mono);font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;
-             color:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none;white-space:nowrap}
-  .datefield input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;
-                   border:0;cursor:pointer;color-scheme:var(--scheme);font-family:var(--mono)}
+             color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .calglyph{width:14px;height:14px;flex:none;color:var(--brass);stroke:currentColor;fill:none;
+            stroke-width:1.4;stroke-linecap:round}
+
+  .dpick{position:absolute;top:calc(100% + 9px);right:0;z-index:30;width:272px;text-align:center;
+         background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:13px;
+         box-shadow:0 20px 44px rgba(0,0,0,.30)}
+  .dpick-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+  .dpick-mo{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;
+            color:var(--ink)}
+  .dpick-nav{width:32px;height:32px;border:1px solid var(--line);background:none;border-radius:3px;
+             color:var(--ink-soft);font-family:var(--serif);font-size:18px;line-height:1;cursor:pointer;padding:0}
+  .dpick-nav:hover{color:var(--ember);border-color:var(--ember-soft)}
+  .dpick-nav:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .dpick-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:5px;
+            font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-faint)}
+  .dpick-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .dpick-grid button{height:33px;padding:0;border:1px solid transparent;border-radius:3px;
+                     background:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;
+                     color:var(--ink);font-variant-numeric:tabular-nums}
+  .dpick-grid button:hover{border-color:var(--ash-deep)}
+  .dpick-grid button.other{color:var(--ink-faint);opacity:.5}
+  .dpick-grid button.today{border-color:var(--ember-soft);color:var(--ember)}
+  .dpick-grid button.sel{background:var(--ember);border-color:var(--ember);color:var(--btn-ink)}
+  .dpick-grid button:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .dpick-foot{display:flex;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;
+              border-top:1px solid var(--line-soft)}
+  @media (max-width:680px){.dpick{right:auto;left:0}}
   .datemeta{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:9px;
             min-height:20px}
   .datestatus{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
@@ -594,9 +622,28 @@
         <span class="big" id="day-spent">—</span>
         <div class="datenav">
           <button class="daynav" type="button" id="day-prev" aria-label="Previous day" title="Previous day">‹</button>
-          <span class="datefield">
-            <span class="datelabel" id="day-date-label">—</span>
-            <input type="date" id="day-date-input" aria-label="Jump to a date">
+          <span class="datewrap">
+            <button class="datefield" type="button" id="day-date-btn" aria-haspopup="dialog"
+                    aria-expanded="false" aria-label="Choose a date">
+              <span class="datelabel" id="day-date-label">—</span>
+              <svg class="calglyph" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1.7" y="3.2" width="12.6" height="11.1" rx="1.4"></rect>
+                <path d="M1.7 6.6h12.6M5 1.7v2.6M11 1.7v2.6"></path>
+              </svg>
+            </button>
+            <div class="dpick" id="day-picker" role="dialog" aria-label="Choose a date" hidden>
+              <div class="dpick-head">
+                <button class="dpick-nav" type="button" id="pick-prev" aria-label="Previous month">‹</button>
+                <span class="dpick-mo" id="pick-month">—</span>
+                <button class="dpick-nav" type="button" id="pick-next" aria-label="Next month">›</button>
+              </div>
+              <div class="dpick-wd" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+              <div class="dpick-grid" id="pick-grid"></div>
+              <div class="dpick-foot">
+                <button class="btn-quiet" type="button" id="pick-today">Today</button>
+                <button class="btn-quiet" type="button" id="pick-close">Close</button>
+              </div>
+            </div>
           </span>
           <button class="daynav" type="button" id="day-next" aria-label="Next day" title="Next day">›</button>
         </div>
@@ -948,8 +995,12 @@
       prevBtn = document.getElementById("day-prev"),
       nextBtn = document.getElementById("day-next"),
       todayBtn = document.getElementById("day-today"),
-      dateInput = document.getElementById("day-date-input"),
-      dateLabel = document.getElementById("day-date-label");
+      dateBtn = document.getElementById("day-date-btn"),
+      dateLabel = document.getElementById("day-date-label"),
+      picker = document.getElementById("day-picker"),
+      pickGrid = document.getElementById("pick-grid"),
+      pickMonthEl = document.getElementById("pick-month");
+  var pickCursor = null;
 
   // Two clocks, deliberately separate:
   //   activeKey — the life clock: the real day the tear-off chronology is on.
@@ -1066,8 +1117,8 @@
     var left = daysToRetirement(d);
 
     // --- date navigation ---
-    dateInput.value = viewKey;
     dateLabel.textContent = shortDate(d);
+    if (!picker.hidden) paintPicker();
     todayBtn.hidden = today;
     document.getElementById("day-status").textContent =
       off === 0 ? "Today" : off === -1 ? "Yesterday" : off === 1 ? "Tomorrow" :
@@ -1169,12 +1220,89 @@
     var t = todayKey();
     goTo(t, viewKey < t ? 1 : -1);
   });
-  dateInput.addEventListener("change", function(){ if (dateInput.value) goTo(dateInput.value, 0); });
-  dateInput.addEventListener("click", function(){
-    try { if (dateInput.showPicker) dateInput.showPicker(); } catch(e){}
+  /* ---- the date picker, built in-page: showPicker() is gated inside the
+     sandboxed frame an artifact runs in, and clicking a native date field's
+     text never opens the browser calendar anyway ---- */
+  function paintPicker(){
+    var first = new Date(pickCursor.getFullYear(), pickCursor.getMonth(), 1);
+    pickMonthEl.textContent = MONTHS[first.getMonth()].toUpperCase() + " " + first.getFullYear();
+    var start = new Date(first.getFullYear(), first.getMonth(), 1 - ((first.getDay() + 6) % 7));
+    var t = todayKey(), html = "";
+    for (var i = 0; i < 42; i++){
+      var cell = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      var k = dkey(cell);
+      var cls = (cell.getMonth() !== first.getMonth() ? "other " : "") +
+                (k === t ? "today " : "") + (k === viewKey ? "sel" : "");
+      html += '<button type="button" class="' + cls.trim() + '" data-d="' + k + '" aria-label="' +
+              DAYS[cell.getDay()] + " " + longDate(cell) + '"' +
+              (k === viewKey ? ' aria-current="date"' : "") + '>' + cell.getDate() + '</button>';
+    }
+    pickGrid.innerHTML = html;
+  }
+  function openPicker(){
+    pickCursor = parseKey(viewKey);
+    paintPicker();
+    picker.hidden = false;
+    dateBtn.setAttribute("aria-expanded","true");
+    var sel = pickGrid.querySelector(".sel") || pickGrid.querySelector("button");
+    if (sel) sel.focus();
+  }
+  function closePicker(back){
+    if (picker.hidden) return;
+    picker.hidden = true;
+    dateBtn.setAttribute("aria-expanded","false");
+    if (back) dateBtn.focus();
+  }
+  function focusDate(k){
+    var d = parseKey(k);
+    if (d.getMonth() !== pickCursor.getMonth() || d.getFullYear() !== pickCursor.getFullYear()){
+      pickCursor = new Date(d.getFullYear(), d.getMonth(), 1);
+      paintPicker();
+    }
+    var cell = pickGrid.querySelector('[data-d="' + k + '"]');
+    if (cell) cell.focus();
+  }
+  function stepMonth(n){
+    pickCursor = new Date(pickCursor.getFullYear(), pickCursor.getMonth() + n, 1);
+    paintPicker();
+  }
+
+  dateBtn.addEventListener("click", function(){
+    if (picker.hidden) openPicker(); else closePicker(true);
   });
-  dateInput.addEventListener("keydown", function(e){
-    if (e.key === "Enter"){ e.preventDefault(); try { if (dateInput.showPicker) dateInput.showPicker(); } catch(e2){} }
+  document.getElementById("pick-prev").addEventListener("click", function(){ stepMonth(-1); });
+  document.getElementById("pick-next").addEventListener("click", function(){ stepMonth(1); });
+  document.getElementById("pick-today").addEventListener("click", function(){
+    var t = todayKey();
+    goTo(t, viewKey < t ? 1 : viewKey > t ? -1 : 0);
+    closePicker(true);
+  });
+  document.getElementById("pick-close").addEventListener("click", function(){ closePicker(true); });
+  pickGrid.addEventListener("click", function(e){
+    var cell = e.target.closest("button[data-d]");
+    if (!cell) return;
+    var k = cell.dataset.d;
+    goTo(k, k > viewKey ? 1 : k < viewKey ? -1 : 0);
+    closePicker(true);
+  });
+  picker.addEventListener("keydown", function(e){
+    if (e.key === "Escape"){ e.preventDefault(); closePicker(true); return; }
+    var cell = e.target.closest("button[data-d]");
+    if (!cell) return;
+    var d = parseKey(cell.dataset.d), n = 0;
+    if (e.key === "ArrowLeft") n = -1;
+    else if (e.key === "ArrowRight") n = 1;
+    else if (e.key === "ArrowUp") n = -7;
+    else if (e.key === "ArrowDown") n = 7;
+    else if (e.key === "PageUp"){ e.preventDefault(); stepMonth(-1); return; }
+    else if (e.key === "PageDown"){ e.preventDefault(); stepMonth(1); return; }
+    else return;
+    e.preventDefault();
+    focusDate(dkey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)));
+  });
+  document.addEventListener("click", function(e){
+    if (picker.hidden) return;
+    if (!e.target.closest(".datewrap")) closePicker(false);
   });
   document.addEventListener("keydown", function(e){
     if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;

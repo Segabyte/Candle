@@ -178,7 +178,7 @@
   .tab[aria-selected="true"]{background:var(--surface);color:var(--ink)}
   .tab:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
 
-  /* ---------- today ---------- */
+  /* ---------- today · the hour log ---------- */
   .day-hero{padding:clamp(36px,6vw,68px) 0 clamp(26px,4vw,46px);
             display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;align-items:end}
   .day-count{font-family:var(--serif);font-size:clamp(66px,14vw,150px);line-height:.88;
@@ -193,25 +193,75 @@
                font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
                color:var(--ink-faint);padding:0 2px 12px;border-bottom:1px solid var(--line-soft);
                margin-bottom:10px}
-  .hour{display:grid;grid-template-columns:34px minmax(80px,1fr) minmax(0,1.9fr);
-        align-items:center;gap:13px;padding:2px}
+  .hour{display:grid;grid-template-columns:32px minmax(56px,.7fr) minmax(0,1.7fr) auto;
+        align-items:center;gap:11px;padding:2px}
   .hour.now .hh{color:var(--ember)}
   .hh{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:right;
       font-variant-numeric:tabular-nums}
   .slot{display:block;width:100%;height:19px;border:0;padding:0;border-radius:2px;
         background:var(--ember-ghost);cursor:pointer}
   .slot:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
-  .hour.past .slot{background:var(--ash-ghost);cursor:default}
-  .hour.flagged .slot{background:var(--ember)}
-  .hour.past.flagged .slot{background:var(--ash-deep)}
+  .hour.past .slot{background:var(--ash-ghost)}
+  .hour.done .slot{background:var(--ember)}
+  .hour.skip .slot{background:repeating-linear-gradient(135deg,var(--ash-ghost) 0 5px,
+                   var(--ash) 5px 7px)}
   .what{font-family:var(--sans);font-size:14px;color:var(--ink);background:none;border:0;
         border-bottom:1px solid transparent;padding:2px 0;width:100%}
-  .what::placeholder{color:var(--ink-faint);opacity:.7}
+  .what::placeholder{color:var(--ink-faint);opacity:.6}
   .what:focus{outline:none;border-bottom-color:var(--ember)}
   .what:disabled{color:var(--ink-faint)}
-  .hour.past .what::placeholder{color:transparent}
+  .hour.done .what{color:var(--ink-soft)}
+  .hour.skip .what{color:var(--ink-faint);text-decoration:line-through;
+                   text-decoration-color:var(--ash-deep)}
+  .pill{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+        border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--ink-faint);
+        background:none;cursor:pointer;white-space:nowrap}
+  .pill:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .pill:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .pill .dot{color:var(--brass)}
+  .hour.done .pill{color:var(--ember);border-color:var(--ember-soft);background:var(--ember-ghost)}
+  .hour.skip .pill{border-style:dashed}
   .ladder.sealed .slot{background:var(--ash-ghost);cursor:default}
-  .ladder.sealed .hour.flagged .slot{background:var(--ash-deep)}
+  .ladder.sealed .hour.done .slot{background:var(--ash-deep)}
+
+  /* hour editor dialog */
+  .hdlg{width:min(560px,calc(100vw - 26px));max-height:calc(100vh - 32px);overflow:auto;
+        border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);
+        padding:0;margin:auto;box-shadow:0 30px 70px rgba(0,0,0,.34)}
+  .hdlg::backdrop{background:rgba(12,16,15,.52)}
+  .hdlg-in{padding:clamp(20px,4vw,30px)}
+  .hdlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+             padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .hdlg h3{font-family:var(--serif);font-size:clamp(26px,5vw,36px);font-weight:400;line-height:1;
+           margin-top:5px;font-variant-numeric:tabular-nums}
+  .hdlg-when{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+             color:var(--ink-faint);border:1px solid var(--line);border-radius:999px;padding:5px 9px;
+             white-space:nowrap}
+  .hdlg-when.current{color:var(--ember);border-color:var(--ember-soft);background:var(--ember-ghost)}
+  .fld{display:grid;gap:7px;margin-top:18px}
+  .fld > label,.fld legend{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+                           text-transform:uppercase;color:var(--ink-faint);padding:0}
+  .fld input[type=text],.fld textarea{width:100%;font-family:var(--sans);font-size:15px;
+      color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:3px;
+      padding:10px 12px;resize:vertical}
+  .fld textarea{min-height:94px;line-height:1.55}
+  .fld input[type=text]:focus,.fld textarea:focus{outline:2px solid var(--ember);outline-offset:1px;
+      border-color:transparent}
+  .fld fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
+  .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt span{min-height:42px;display:flex;align-items:center;justify-content:center;text-align:center;
+            border:1px solid var(--line);border-radius:3px;padding:8px;cursor:pointer;
+            font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+            color:var(--ink-faint)}
+  .opt input:checked + span{border-color:var(--ember);color:var(--ember);background:var(--ember-ghost)}
+  .opt input:focus-visible + span{outline:2px solid var(--ember);outline-offset:2px}
+  .hdlg-note{margin-top:15px;font-size:12.5px;color:var(--ink-faint);line-height:1.5}
+  .hdlg-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:16px;
+                border-top:1px solid var(--line)}
+  @media (max-width:520px){.opts{grid-template-columns:1fr}.hdlg-head{display:block}
+                           .hdlg-when{display:inline-block;margin-top:10px}}
 
   .seal{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:5px;
         padding:clamp(18px,3vw,26px);display:flex;flex-wrap:wrap;gap:18px 26px;
@@ -223,6 +273,11 @@
        cursor:pointer;white-space:nowrap}
   .btn:hover{background:var(--ember-soft)}
   .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .btn-ghost{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+             background:none;color:var(--ink-soft);border:1px solid var(--line);border-radius:3px;
+             padding:11px 15px;cursor:pointer}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .btn-ghost:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
   .btn-quiet{font-family:var(--mono);font-size:11px;letter-spacing:.08em;background:none;border:0;
              color:var(--ink-faint);cursor:pointer;text-decoration:underline;text-underline-offset:3px;
              padding:6px 0;white-space:nowrap}
@@ -411,8 +466,8 @@
       <div>
         <p class="eyebrow" id="day-date">Today</p>
         <h1 class="day-count" id="day-left">—</h1>
-        <p class="hero-lede" id="day-lede">Twenty-four hours arrived this morning. Flag the ones you
-          mean to use — unflagged, they leave anyway.</p>
+        <p class="hero-lede" id="day-lede">Twenty-four hours arrived this morning. Log what each one
+          went on — every hour of today stays editable, however late you get to it.</p>
       </div>
       <div class="clock">
         of the 24 you were given
@@ -422,7 +477,7 @@
 
     <div class="ladder" id="ladder">
       <div class="ladder-head">
-        <span>Hour · what it is for</span>
+        <span>Hour · what it went on</span>
         <span id="ladder-tally">—</span>
       </div>
       <div id="hours"></div>
@@ -437,8 +492,9 @@
     </div>
 
     <p class="hero-lede" style="margin-top:22px;max-width:60ch;font-size:13.5px" id="day-footnote">
-      Flags are kept on this device for today only. At midnight the day is gone either way — that
-      is the whole point of the number on the other tab.</p>
+      Past hours never lock. Until you call the day — or midnight closes it — you can go back to
+      00:00 and correct any hour: change the task, add notes, mark it complete or skipped. The
+      record is kept on this device for today only.</p>
   </div><!-- /view-today -->
 
   <div id="view-pad" hidden>
@@ -476,6 +532,41 @@
       sheet is done and tears itself off, whatever time it is. Leave it alone and midnight tears
       it for you — the pad has exactly as many sheets in it as you have days.</p>
   </div><!-- /view-pad -->
+
+  <dialog class="hdlg" id="hour-dialog" aria-labelledby="hdlg-title">
+    <form method="dialog" class="hdlg-in" id="hour-form">
+      <div class="hdlg-head">
+        <div>
+          <p class="eyebrow" id="hdlg-date">—</p>
+          <h3 id="hdlg-title">—</h3>
+        </div>
+        <span class="hdlg-when" id="hdlg-when">—</span>
+      </div>
+      <div class="fld">
+        <label for="hdlg-task">What this hour went on</label>
+        <input id="hdlg-task" type="text" maxlength="80" autocomplete="off">
+      </div>
+      <div class="fld">
+        <label for="hdlg-notes">Notes</label>
+        <textarea id="hdlg-notes" maxlength="600" placeholder="Anything worth remembering about this hour."></textarea>
+      </div>
+      <div class="fld">
+        <fieldset>
+          <legend>Status</legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="hstatus" value="not_started"><span>Not started</span></label>
+            <label class="opt"><input type="radio" name="hstatus" value="completed"><span>Completed</span></label>
+            <label class="opt"><input type="radio" name="hstatus" value="skipped"><span>Skipped</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <p class="hdlg-note" id="hdlg-help">—</p>
+      <div class="hdlg-actions">
+        <button type="button" class="btn-ghost" id="hdlg-cancel">Cancel</button>
+        <button type="submit" class="btn" id="hdlg-save" value="save">Save changes</button>
+      </div>
+    </form>
+  </dialog>
 
   <footer>
     <p class="next"><b>What this preview is.</b> The countdown, the summers grid and the four
@@ -649,57 +740,97 @@
   var MS = 86400000;
   var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var STATUS = { not_started:"Not started", completed:"Completed", skipped:"Skipped" };
+
   var hoursEl = document.getElementById("hours"),
       ladder = document.getElementById("ladder"),
       sealBtn = document.getElementById("seal-btn"),
-      reopenBtn = document.getElementById("reopen");
-  var day = null, key = "", state = { flags:{}, sealed:null };
+      reopenBtn = document.getElementById("reopen"),
+      dlg = document.getElementById("hour-dialog"),
+      form = document.getElementById("hour-form");
+  var day = null, key = "", state = { hours:{}, sealed:null }, editing = null;
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function p2(v){ return String(v).padStart(2,"0"); }
   function fmt(n){ return n.toLocaleString("en-GB"); }
+  function esc(v){ return String(v == null ? "" : v).replace(/[&<>"]/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+  function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function longDate(d){ return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function dayDiff(a,b){ return Math.round((midnight(b) - midnight(a)) / MS); }
   function keyFor(d){ return "lifeapp.day." + d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
 
+  function blank(){ return { text:"", notes:"", status:"not_started" }; }
+  function hour(h){
+    var d = state.hours[h];
+    if (!d) return blank();
+    return { text: d.text || "", notes: d.notes || "", status: STATUS[d.status] ? d.status : "not_started" };
+  }
+  function put(h, d){
+    if (!d.text && !d.notes && d.status === "not_started") delete state.hours[h];
+    else state.hours[h] = d;
+    save();
+  }
+
   function load(){
-    try {
-      var raw = localStorage.getItem(key);
-      state = raw ? JSON.parse(raw) : { flags:{}, sealed:null };
-    } catch(e){ state = { flags:{}, sealed:null }; }
-    if (!state || typeof state !== "object") state = { flags:{}, sealed:null };
-    if (!state.flags) state.flags = {};
+    var raw = null, parsed = null;
+    try { raw = localStorage.getItem(key); } catch(e){}
+    try { parsed = raw ? JSON.parse(raw) : null; } catch(e){ parsed = null; }
+    if (!parsed || typeof parsed !== "object") parsed = {};
+    if (!parsed.hours){                                   // migrate the earlier flag-only record
+      var hrs = {};
+      if (parsed.flags && typeof parsed.flags === "object"){
+        Object.keys(parsed.flags).forEach(function(h){
+          hrs[h] = { text: String(parsed.flags[h] || ""), notes:"", status:"completed" };
+        });
+      }
+      parsed = { hours: hrs, sealed: parsed.sealed || null };
+    }
+    if (!parsed.hours || typeof parsed.hours !== "object") parsed.hours = {};
+    state = parsed;
   }
   function save(){ try { localStorage.setItem(key, JSON.stringify(state)); } catch(e){} }
 
-  function daysLeft(){
-    var parts = document.getElementById("dob").value.split("-");
-    if (parts.length !== 3) return null;
-    var dob = new Date(+parts[0], +parts[1]-1, +parts[2]);
-    var age = Math.max(40, Math.min(90, +document.getElementById("age").value || 60));
-    var r = new Date(dob.getFullYear()+age, dob.getMonth(), dob.getDate());
-    var t = new Date(); t = new Date(t.getFullYear(), t.getMonth(), t.getDate());
-    return Math.max(0, Math.round((r - t)/MS));
+  function tally(){
+    var t = { done:0, skipped:0, logged:0 };
+    for (var h = 0; h < 24; h++){
+      var d = hour(h);
+      if (d.status === "completed") t.done++;
+      else if (d.status === "skipped") t.skipped++;
+      if (d.text) t.logged++;
+    }
+    return t;
+  }
+  function span(h){ return p2(h) + ":00 – " + p2((h+1) % 24) + ":00"; }
+  function kind(h){
+    var n = new Date().getHours();
+    return h < n ? "Past hour" : h === n ? "Current hour" : "Future hour";
   }
 
   function buildHours(){
     var now = new Date(), html = "";
     for (var h = 0; h < 24; h++){
-      var past = h < now.getHours(), isNow = h === now.getHours();
-      var flagged = Object.prototype.hasOwnProperty.call(state.flags, h);
-      var cls = "hour" + (past ? " past" : "") + (isNow ? " now" : "") + (flagged ? " flagged" : "");
+      var d = hour(h), past = h < now.getHours(), isNow = h === now.getHours();
+      var cls = "hour" + (past ? " past" : "") + (isNow ? " now" : "") +
+                (d.status === "completed" ? " done" : "") + (d.status === "skipped" ? " skip" : "");
       var style = "";
-      if (isNow && !state.sealed){
+      if (isNow && !state.sealed && d.status === "not_started"){
         var pct = Math.round((now.getMinutes()/60)*100);
-        style = ' style="background:linear-gradient(90deg,var(--ash-ghost) 0 ' + pct + '%,' +
-                (flagged ? "var(--ember)" : "var(--ember-ghost)") + " " + pct + '% 100%)"';
+        style = ' style="background:linear-gradient(90deg,var(--ash-ghost) 0 ' + pct +
+                '%,var(--ember-ghost) ' + pct + '% 100%)"';
       }
-      var label = flagged ? String(state.flags[h] || "") : "";
+      var locked = !!state.sealed;
       html += '<div class="' + cls + '" data-h="' + h + '">' +
               '<span class="hh">' + p2(h) + '</span>' +
-              '<button class="slot" type="button"' + style + ' aria-pressed="' + flagged + '" ' +
-              'aria-label="' + (past ? "Hour " + p2(h) + ", already spent" : "Flag hour " + p2(h) + ":00") + '"' +
-              (past || state.sealed ? " disabled" : "") + '></button>' +
-              '<input class="what" type="text" maxlength="60" value="' + label.replace(/"/g,"&quot;") + '" ' +
-              'placeholder="' + (past || state.sealed ? "" : "what for?") + '"' +
-              (past || state.sealed ? " disabled" : "") + '>' +
+              '<button class="slot" type="button"' + style + ' aria-pressed="' + (d.status === "completed") +
+              '" aria-label="Mark ' + span(h) + (d.status === "completed" ? " not started" : " completed") + '"' +
+              (locked ? " disabled" : "") + '></button>' +
+              '<input class="what" type="text" maxlength="80" value="' + esc(d.text) + '" ' +
+              'placeholder="' + (locked ? "" : "what went on?") + '" aria-label="Task for ' + span(h) + '"' +
+              (locked ? " disabled" : "") + '>' +
+              '<button class="pill" type="button" aria-label="Edit ' + span(h) + ", " + STATUS[d.status] + '"' +
+              (locked ? " disabled" : "") + '>' + STATUS[d.status] +
+              (d.notes ? ' <span class="dot" aria-hidden="true">•</span>' : "") + '</button>' +
               '</div>';
     }
     hoursEl.innerHTML = html;
@@ -707,53 +838,46 @@
 
   function render(){
     var now = new Date();
-    var spentMin = now.getHours()*60 + now.getMinutes();
-    var leftMin = 1440 - spentMin;
-    var d = daysLeft();
+    var spentMin = now.getHours()*60 + now.getMinutes(), leftMin = 1440 - spentMin;
+    var t = tally(), hoursLeft = Math.ceil(leftMin/60);
+    var d = null;
+    var parts = document.getElementById("dob").value.split("-");
+    if (parts.length === 3){
+      var dob = new Date(+parts[0], +parts[1]-1, +parts[2]);
+      var age = Math.max(40, Math.min(90, +document.getElementById("age").value || 60));
+      d = Math.max(0, dayDiff(midnight(now), new Date(dob.getFullYear()+age, dob.getMonth(), dob.getDate())));
+    }
 
     document.getElementById("day-date").textContent =
-      DAYS[now.getDay()] + " " + now.getDate() + " " + MONTHS[now.getMonth()] + " " + now.getFullYear() +
-      (d === null ? "" : " · one of the " + fmt(d));
+      DAYS[now.getDay()] + " " + longDate(now) + (d === null ? "" : " · one of the " + fmt(d));
     document.getElementById("day-left").innerHTML =
       Math.floor(leftMin/60) + "<u>h</u>" + p2(leftMin%60) + "<u>m</u>";
     document.getElementById("day-spent").textContent =
       Math.floor(spentMin/60) + "h " + p2(spentMin%60) + "m spent";
 
-    var flags = Object.keys(state.flags).map(Number);
-    var ahead = flags.filter(function(h){ return h >= now.getHours(); }).length;
-    var hoursLeft = Math.ceil(leftMin/60);
-
     document.getElementById("day-lede").innerHTML = state.sealed
-      ? "The day is closed. What was not used is not coming back — that is one day off the number on the other tab."
-      : "Twenty-four hours arrived this morning; <b>" + Math.floor(spentMin/60) + "</b> are already spent. " +
-        "Flag the ones you mean to use — unflagged, they leave anyway.";
+      ? "The day is closed. Reopen it if you still need to correct an hour."
+      : "Twenty-four hours arrived this morning; <b>" + Math.floor(spentMin/60) + "</b> are already " +
+        "spent. Log what each one went on — every hour of today stays editable, however late you get to it.";
 
     document.getElementById("ladder-tally").textContent =
-      flags.length + " flagged · " + hoursLeft + " hour" + (hoursLeft === 1 ? "" : "s") + " left";
+      t.done + " done · " + t.skipped + " skipped · " + hoursLeft + " hour" + (hoursLeft === 1 ? "" : "s") + " left";
 
     var line = document.getElementById("seal-line");
     if (state.sealed){
-      var t = new Date(state.sealed);
-      line.innerHTML = "Sealed at <b>" + p2(t.getHours()) + ":" + p2(t.getMinutes()) + "</b>. You flagged <b>" +
-        flags.length + " of 24</b> hours" + (flags.length ? " — " + named() : "") + ". " +
+      var st = new Date(state.sealed);
+      line.innerHTML = "Closed at <b>" + p2(st.getHours()) + ":" + p2(st.getMinutes()) + "</b>. <b>" +
+        t.done + " of 24</b> hours completed" + (t.skipped ? ", " + t.skipped + " skipped" : "") + ". " +
         (d === null ? "" : "<b>" + fmt(Math.max(0, d - 1)) + "</b> days left after tonight.");
       sealBtn.hidden = true; reopenBtn.hidden = false; ladder.classList.add("sealed");
     } else {
-      line.innerHTML = flags.length
-        ? "<b>" + flags.length + "</b> hour" + (flags.length === 1 ? "" : "s") + " flagged, <b>" + ahead +
-          "</b> of them still ahead of you. Close the day when you are done with it."
-        : "Nothing flagged yet. <b>" + hoursLeft + "</b> hour" + (hoursLeft === 1 ? "" : "s") +
-          " of this one are still yours.";
+      line.innerHTML = t.done || t.skipped || t.logged
+        ? "<b>" + t.done + "</b> hour" + (t.done === 1 ? "" : "s") + " completed, <b>" + t.logged +
+          "</b> logged. Close the day when you are done with it."
+        : "Nothing logged yet. <b>" + hoursLeft + "</b> hour" + (hoursLeft === 1 ? "" : "s") +
+          " of this one are still ahead.";
       sealBtn.hidden = false; reopenBtn.hidden = true; ladder.classList.remove("sealed");
     }
-  }
-
-  function named(){
-    var list = Object.keys(state.flags).map(Number).sort(function(a,b){ return a-b; })
-      .filter(function(h){ return state.flags[h]; })
-      .map(function(h){ return state.flags[h]; });
-    if (!list.length) return "none of them named";
-    return list.slice(0,3).join(", ") + (list.length > 3 ? " and " + (list.length-3) + " more" : "");
   }
 
   function refresh(rebuild){
@@ -763,25 +887,74 @@
     render();
   }
 
+  /* ---- the hour editor: same panel for past, current and future ---- */
+  function openEditor(h){
+    if (state.sealed) return;
+    editing = h;
+    var d = hour(h), k = kind(h), now = new Date();
+    document.getElementById("hdlg-date").textContent = DAYS[now.getDay()] + " · " + longDate(now);
+    document.getElementById("hdlg-title").textContent = span(h);
+    var when = document.getElementById("hdlg-when");
+    when.textContent = k;
+    when.className = "hdlg-when" + (k === "Current hour" ? " current" : "");
+    document.getElementById("hdlg-task").value = d.text;
+    document.getElementById("hdlg-notes").value = d.notes;
+    var radio = form.querySelector('input[name="hstatus"][value="' + d.status + '"]');
+    if (radio) radio.checked = true;
+    document.getElementById("hdlg-help").textContent = k === "Future hour"
+      ? "Plan it now if you like. A future hour counts as completed only when you say so."
+      : "Every hour of today can be corrected — task, notes and status alike. Time passing never locks the record.";
+    if (typeof dlg.showModal === "function"){
+      dlg.showModal();
+      setTimeout(function(){ var f = document.getElementById("hdlg-task"); f.focus(); f.select(); }, 0);
+    } else {                                   // no <dialog> support: fall back to the inline field
+      var inline = hoursEl.querySelector('.hour[data-h="' + h + '"] .what');
+      if (inline) inline.focus();
+      editing = null;
+    }
+  }
+
+  function commit(){
+    if (editing === null) return;
+    var picked = form.querySelector('input[name="hstatus"]:checked');
+    put(editing, {
+      text: document.getElementById("hdlg-task").value.trim(),
+      notes: document.getElementById("hdlg-notes").value.trim(),
+      status: picked ? picked.value : "not_started"
+    });
+    editing = null;
+    buildHours(); render();
+  }
+
+  // Commit on submit, not on close: Chrome fires `close` only for the first
+  // form-driven close, so a returnValue-based save silently no-ops after that.
+  form.addEventListener("submit", function(){ commit(); });
+  dlg.addEventListener("close", function(){ editing = null; });
+  document.getElementById("hdlg-cancel").addEventListener("click", function(){ dlg.close("cancel"); });
+
   hoursEl.addEventListener("click", function(e){
+    if (state.sealed) return;
+    var row = e.target.closest(".hour");
+    if (!row) return;
+    var h = +row.dataset.h;
+    if (e.target.closest(".pill")){ openEditor(h); return; }
     var slot = e.target.closest(".slot");
-    if (!slot || slot.disabled) return;
-    var row = slot.closest(".hour"), h = row.dataset.h;
-    if (Object.prototype.hasOwnProperty.call(state.flags, h)) delete state.flags[h];
-    else { state.flags[h] = ""; }
-    save(); buildHours(); render();
-    var next = hoursEl.querySelector('.hour[data-h="' + h + '"] .what');
-    if (next && !next.disabled && Object.prototype.hasOwnProperty.call(state.flags, h)) next.focus();
+    if (!slot) return;
+    var d = hour(h);
+    d.status = d.status === "completed" ? "not_started" : "completed";   // past hours included
+    put(h, d); buildHours(); render();
+    var again = hoursEl.querySelector('.hour[data-h="' + h + '"] .slot');
+    if (again) again.focus();
   });
 
   hoursEl.addEventListener("input", function(e){
     var input = e.target.closest(".what");
     if (!input || input.disabled) return;
-    var h = input.closest(".hour").dataset.h;
-    state.flags[h] = input.value;
-    input.closest(".hour").classList.add("flagged");
-    input.closest(".hour").querySelector(".slot").setAttribute("aria-pressed","true");
-    save(); render();
+    var h = +input.closest(".hour").dataset.h;
+    var d = hour(h);
+    d.text = input.value;
+    put(h, d);
+    render();
   });
 
   sealBtn.addEventListener("click", function(){ state.sealed = Date.now(); save(); buildHours(); render(); });

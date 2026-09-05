@@ -18,6 +18,8 @@
     --ash:#B0B4AB; --ash-deep:#8D9289;
     --ember:#B3441C; --ember-soft:#D9713F;
     --brass:#8E6B1E; --ember-ghost:#E7D2C7; --ash-ghost:#DCDDD4; --btn-ink:#F8F4F0;
+    --desk:#C8C4B4; --stock:#F7F2E4; --stock-dim:#E7E0CB; --stock-ink:#2A2620;
+    --rule:#CDC9B6; --stock-faint:#918B78; --red:#B93B2B;
     --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
     --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -31,6 +33,8 @@
       --ash:#454D4A; --ash-deep:#5C635F;
       --ember:#E07347; --ember-soft:#B85630;
       --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
+      --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
+      --rule:#BAB39D; --stock-faint:#7C7663; --red:#A93425;
     }
   }
   :root[data-theme="dark"]{
@@ -40,6 +44,8 @@
     --ash:#454D4A; --ash-deep:#5C635F;
     --ember:#E07347; --ember-soft:#B85630;
     --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
+      --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
+      --rule:#BAB39D; --stock-faint:#7C7663; --red:#A93425;
   }
 
   *{box-sizing:border-box}
@@ -157,11 +163,11 @@
   .todo .due{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);white-space:nowrap}
   @media (max-width:720px){.season{grid-template-columns:1fr}}
 
-  footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);
+  .wrap > footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);
          display:flex;flex-wrap:wrap;gap:14px 28px;justify-content:space-between;
          font-size:13px;color:var(--ink-faint)}
-  footer .next{max-width:52ch}
-  footer b{color:var(--ink-soft);font-weight:600}
+  .wrap > footer .next{max-width:52ch}
+  .wrap > footer b{color:var(--ink-soft);font-weight:600}
 
 
   /* ---------- view tabs ---------- */
@@ -222,6 +228,85 @@
              padding:6px 0;white-space:nowrap}
   .btn-quiet:hover{color:var(--ink)}
 
+  /* ---------- the pad ---------- */
+  .pad-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;
+           padding:clamp(26px,4vw,44px) 0 22px}
+  .pad-bar .eyebrow{margin-right:auto}
+  .pad-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+
+  .pad{background:var(--desk);border-radius:6px;padding:clamp(22px,4vw,44px) clamp(14px,3vw,40px)
+       clamp(30px,5vw,56px);display:flex;justify-content:center}
+  .pad-inner{width:100%;max-width:520px;position:relative}
+  .pad-top{background:var(--stock-dim);height:26px;border-radius:3px 3px 0 0;position:relative;
+           box-shadow:0 1px 0 rgba(0,0,0,.12)}
+  .punch{position:absolute;top:7px;width:11px;height:11px;border-radius:50%;background:var(--desk);
+         box-shadow:inset 0 1px 1px rgba(0,0,0,.35)}
+  .punch.l{left:19%} .punch.r{right:19%}
+  .perf{height:9px;background:var(--stock);position:relative}
+  .perf::after{content:"";position:absolute;inset:auto 10px 3px;height:0;
+               border-bottom:2px dotted var(--stock-faint);opacity:.55}
+
+  .sheet{background:var(--stock);color:var(--stock-ink);border-radius:0 0 3px 3px;
+         padding:0 clamp(16px,3.4vw,30px) 20px;position:relative;
+         box-shadow:0 1px 0 var(--stock-dim),0 3px 0 var(--stock),0 4px 0 var(--stock-dim),
+                    0 6px 0 var(--stock),0 7px 0 var(--stock-dim),0 16px 26px rgba(0,0,0,.28)}
+  .sheet::after{content:"";position:absolute;inset:0;border-radius:0 0 3px 3px;pointer-events:none;
+                background:radial-gradient(120% 80% at 50% 0,rgba(255,255,255,.5),transparent 60%),
+                           radial-gradient(90% 60% at 100% 100%,rgba(0,0,0,.06),transparent 70%)}
+
+  .date-block{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:0 18px;
+              padding:16px 0 14px;border-bottom:2px solid var(--red)}
+  .dd{grid-row:1/3;font-family:var(--serif);font-size:clamp(62px,13vw,86px);line-height:.8;
+      color:var(--red);font-variant-numeric:lining-nums}
+  .wd{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;
+      color:var(--stock-ink);align-self:end}
+  .mo{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--stock-faint);align-self:start;margin-top:3px}
+
+  .lines{padding:6px 0 4px}
+  .line{display:grid;grid-template-columns:26px 22px 1fr;align-items:center;gap:8px;
+        border-bottom:1px solid var(--rule);min-height:29px;position:relative}
+  .line:last-child{border-bottom:0}
+  .hn{font-family:var(--mono);font-size:10.5px;color:var(--stock-faint);text-align:right;
+      font-variant-numeric:tabular-nums}
+  .line.now .hn{color:var(--red)}
+  .line.now::after{content:"now";position:absolute;right:-2px;top:50%;transform:translateY(-50%);
+                   font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--red);
+                   text-transform:uppercase;opacity:.7;pointer-events:none}
+  .flag{background:none;border:0;padding:4px 2px;cursor:pointer;line-height:0;color:var(--stock-faint)}
+  .flag svg{width:13px;height:15px;display:block}
+  .flag .cloth{fill:none;stroke:currentColor;stroke-width:1.4}
+  .line.up .flag{color:var(--red)}
+  .line.up .flag .cloth{fill:var(--red);stroke:var(--red)}
+  .flag:focus-visible{outline:2px solid var(--red);outline-offset:1px;border-radius:2px}
+  .task{font-family:var(--sans);font-size:14px;color:var(--stock-ink);background:none;border:0;
+        padding:5px 26px 5px 0;width:100%}
+  .task::placeholder{color:var(--stock-faint);opacity:.55}
+  .task:focus{outline:none}
+  .line.up .task{color:var(--stock-faint);text-decoration:line-through;
+                 text-decoration-color:var(--red);text-decoration-thickness:1px}
+
+  .sheet-foot{display:flex;justify-content:space-between;gap:14px;padding-top:12px;
+              font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+              color:var(--stock-faint)}
+  .stamp{position:absolute;top:34%;left:50%;transform:translate(-50%,-50%) rotate(-11deg);
+         font-family:var(--mono);font-size:clamp(20px,4.6vw,30px);letter-spacing:.16em;
+         color:var(--red);border:3px double var(--red);border-radius:5px;padding:8px 16px;
+         opacity:.82;pointer-events:none;white-space:nowrap;z-index:2}
+
+  .sheet.tearing{animation:tear .78s cubic-bezier(.32,.06,.4,1) forwards;transform-origin:14% 0;z-index:3}
+  @keyframes tear{
+    12%{transform:rotate(-2.2deg) translate(-4px,3px)}
+    30%{transform:rotate(2.6deg) translate(6px,10px)}
+    100%{transform:rotate(-15deg) translate(-16%,124%);opacity:0}
+  }
+  .sheet.arriving{animation:arrive .42s ease-out}
+  @keyframes arrive{from{transform:translateY(-7px) scale(.994);opacity:.5}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    .sheet.tearing,.sheet.arriving{animation:none}
+    .sheet.tearing{opacity:0}
+  }
+
   .reveal{opacity:0;animation:fade .5s ease forwards}
   @keyframes fade{to{opacity:1}}
   @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1}}
@@ -236,6 +321,7 @@
     <div class="tabs" role="tablist">
       <button class="tab" id="tab-life" role="tab" aria-selected="true" aria-controls="view-life">Long view</button>
       <button class="tab" id="tab-today" role="tab" aria-selected="false" aria-controls="view-today">Today</button>
+      <button class="tab" id="tab-pad" role="tab" aria-selected="false" aria-controls="view-pad">The pad</button>
     </div>
     <div class="controls">
       <div class="field">
@@ -354,6 +440,42 @@
       Flags are kept on this device for today only. At midnight the day is gone either way — that
       is the whole point of the number on the other tab.</p>
   </div><!-- /view-today -->
+
+  <div id="view-pad" hidden>
+    <div class="pad-bar">
+      <p class="eyebrow" id="pad-count">—</p>
+      <div class="pad-actions">
+        <button class="btn-quiet" id="sound-toggle" aria-pressed="true">sound on</button>
+        <button class="btn-quiet" id="flag-all">Flag all 24</button>
+        <button class="btn" id="tear-btn">Tear off the day</button>
+      </div>
+    </div>
+
+    <div class="pad">
+      <div class="pad-inner">
+        <div class="pad-top"><span class="punch l"></span><span class="punch r"></span></div>
+        <div class="perf"></div>
+        <div class="sheet" id="sheet">
+          <header class="date-block">
+            <span class="dd" id="sheet-dd">—</span>
+            <span class="wd" id="sheet-wd">—</span>
+            <span class="mo" id="sheet-mo">—</span>
+          </header>
+          <div class="lines" id="sheet-lines"></div>
+          <footer class="sheet-foot">
+            <span id="sheet-score">0 of 24 flagged</span>
+            <span id="sheet-note">today</span>
+          </footer>
+          <div class="stamp" id="sheet-stamp" hidden>DAY COMPLETE</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="hero-lede" style="margin-top:22px;max-width:62ch;font-size:13.5px">
+      One line per hour. Flag a line when the hour is spent well; flag all twenty-four and the
+      sheet is done and tears itself off, whatever time it is. Leave it alone and midnight tears
+      it for you — the pad has exactly as many sheets in it as you have days.</p>
+  </div><!-- /view-pad -->
 
   <footer>
     <p class="next"><b>What this preview is.</b> The countdown, the summers grid and the four
@@ -666,25 +788,240 @@
   reopenBtn.addEventListener("click", function(){ state.sealed = null; save(); buildHours(); render(); });
 
   // view switching
-  var tabs = { life: document.getElementById("tab-life"), today: document.getElementById("tab-today") };
-  var views = { life: document.getElementById("view-life"), today: document.getElementById("view-today") };
+  var tabEls = [].slice.call(document.querySelectorAll('[role="tab"]'));
   function show(name){
-    Object.keys(views).forEach(function(k){
-      views[k].hidden = (k !== name);
-      tabs[k].setAttribute("aria-selected", String(k === name));
+    tabEls.forEach(function(t){
+      var view = document.getElementById(t.getAttribute("aria-controls"));
+      var on = t.id === "tab-" + name;
+      if (view) view.hidden = !on;
+      t.setAttribute("aria-selected", String(on));
     });
     if (name === "today") refresh(true);
-    try { history.replaceState(null, "", name === "today" ? "#today" : "#"); } catch(e){}
+    document.dispatchEvent(new CustomEvent("viewchange", { detail: name }));
+    try { history.replaceState(null, "", name === "life" ? "#" : "#" + name); } catch(e){}
     window.scrollTo({ top: 0, behavior: "auto" });
   }
-  tabs.life.addEventListener("click", function(){ show("life"); });
-  tabs.today.addEventListener("click", function(){ show("today"); });
+  tabEls.forEach(function(t){
+    t.addEventListener("click", function(){ show(t.id.replace("tab-","")); });
+  });
   document.getElementById("dob").addEventListener("change", function(){ render(); });
   document.getElementById("age").addEventListener("input", function(){ render(); });
 
   refresh(true);
   if (location.hash === "#today") show("today");
+  else if (location.hash === "#pad") show("pad");
   setInterval(function(){ refresh(new Date().getMinutes() === 0); }, 15000);
+})();
+</script>
+
+<script>
+(function(){
+  var WD = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+  var MO = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+  var sheet = document.getElementById("sheet"),
+      linesEl = document.getElementById("sheet-lines"),
+      stamp = document.getElementById("sheet-stamp"),
+      soundBtn = document.getElementById("sound-toggle");
+  var current = null, data = { tasks:{}, flags:{} }, tearing = false, pending = null;
+
+  function p2(v){ return String(v).padStart(2,"0"); }
+  function fmt(n){ return n.toLocaleString("en-GB"); }
+  function key(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
+  function parseKey(k){ var a = k.split("-"); return new Date(+a[0], +a[1]-1, +a[2]); }
+  function todayKey(){ return key(new Date()); }
+  function getRaw(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+  function setRaw(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+  function getJSON(k){ try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } catch(e){ return null; } }
+  function save(){ setRaw("lifeapp.pad." + current, JSON.stringify(data)); }
+
+  /* ---- paper sounds, synthesized (no audio files) ---- */
+  var Sound = (function(){
+    var ctx = null, on = getRaw("lifeapp.sound") !== "off";
+    function ac(){
+      if (ctx === false) return null;
+      if (!ctx){
+        var C = window.AudioContext || window.webkitAudioContext;
+        if (!C){ ctx = false; return null; }
+        try { ctx = new C(); } catch(e){ ctx = false; return null; }
+      }
+      if (ctx.state === "suspended"){ try { ctx.resume(); } catch(e){} }
+      return ctx;
+    }
+    function burst(o){
+      if (!on) return;
+      var c = ac(); if (!c) return;
+      try {
+        var n = Math.max(2, Math.floor(c.sampleRate * o.dur));
+        var buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+        for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+        var src = c.createBufferSource(); src.buffer = buf;
+        var f = c.createBiquadFilter();
+        f.type = o.type || "bandpass"; f.Q.value = o.q || 1;
+        f.frequency.setValueAtTime(o.f0, c.currentTime);
+        if (o.f1) f.frequency.exponentialRampToValueAtTime(o.f1, c.currentTime + o.dur);
+        var g = c.createGain(), steps = 56, curve = new Float32Array(steps);
+        for (var j = 0; j < steps; j++){
+          var t = j / (steps - 1);
+          var grain = o.rough ? (0.4 + 0.6 * Math.random()) : 1;
+          curve[j] = o.gain * Math.pow(1 - t, o.decay || 1.6) * grain * (t < 0.05 ? t / 0.05 : 1);
+        }
+        curve[steps-1] = 0;
+        g.gain.setValueCurveAtTime(curve, c.currentTime, o.dur);
+        src.connect(f); f.connect(g); g.connect(c.destination);
+        src.start(); src.stop(c.currentTime + o.dur + 0.03);
+      } catch(e){}
+    }
+    return {
+      tick:   function(){ burst({ dur:.05, f0:2800, type:"highpass", gain:.05, decay:2.4 }); },
+      tear:   function(){ burst({ dur:.54, f0:1100, f1:3100, q:.9, gain:.30, decay:1.1, rough:true });
+                          burst({ dur:.22, f0:420, type:"lowpass", gain:.10, decay:2 }); },
+      rustle: function(){ burst({ dur:.28, f0:1500, type:"lowpass", gain:.11, decay:1.8, rough:true }); },
+      toggle: function(){ on = !on; setRaw("lifeapp.sound", on ? "on" : "off"); if (on) ac(); return on; },
+      isOn:   function(){ return on; }
+    };
+  })();
+
+  function sheetsLeft(){
+    var parts = document.getElementById("dob").value.split("-");
+    if (parts.length !== 3 || !current) return null;
+    var dob = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    var age = Math.max(40, Math.min(90, +document.getElementById("age").value || 60));
+    var retire = new Date(dob.getFullYear() + age, dob.getMonth(), dob.getDate());
+    return Math.max(0, Math.round((retire - parseKey(current)) / 86400000));
+  }
+
+  function flagSVG(){
+    return '<svg viewBox="0 0 13 15"><path d="M2 1.4 V13.8" stroke="currentColor" stroke-width="1.4" ' +
+           'stroke-linecap="round" fill="none"/><path class="cloth" d="M2.9 2.2 L11.3 5 L2.9 8.3 Z"/></svg>';
+  }
+
+  function load(){
+    var c = getRaw("lifeapp.pad.current") || todayKey();
+    if (c < todayKey()) c = todayKey();          // ISO keys compare lexically
+    current = c; setRaw("lifeapp.pad.current", c);
+    data = getJSON("lifeapp.pad." + current) || { tasks:{}, flags:{} };
+    if (!data.tasks) data.tasks = {};
+    if (!data.flags) data.flags = {};
+  }
+
+  function flagged(){ var n = 0; for (var h = 0; h < 24; h++) if (data.flags[h]) n++; return n; }
+
+  function render(){
+    var d = parseKey(current), isToday = current === todayKey(), nowH = new Date().getHours();
+    document.getElementById("sheet-dd").textContent = d.getDate();
+    document.getElementById("sheet-wd").textContent = WD[d.getDay()];
+    document.getElementById("sheet-mo").textContent = MO[d.getMonth()] + " " + d.getFullYear();
+
+    var html = "";
+    for (var h = 0; h < 24; h++){
+      var up = !!data.flags[h];
+      var txt = String(data.tasks[h] || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+      html += '<div class="line' + (up ? " up" : "") + (isToday && h === nowH ? " now" : "") + '" data-h="' + h + '">' +
+              '<span class="hn">' + p2(h) + '</span>' +
+              '<button class="flag" type="button" aria-pressed="' + up + '" aria-label="' +
+              (up ? "Lower" : "Raise") + ' the flag on ' + p2(h) + ':00">' + flagSVG() + '</button>' +
+              '<input class="task" type="text" maxlength="70" value="' + txt + '" placeholder="' +
+              (h === 8 && !txt ? "write the hour&#39;s work here" : "") + '">' +
+              '</div>';
+    }
+    linesEl.innerHTML = html;
+
+    var n = flagged();
+    document.getElementById("sheet-score").textContent = n + " of 24 flagged";
+    var ahead = Math.round((parseKey(current) - parseKey(todayKey())) / 86400000);
+    document.getElementById("sheet-note").textContent =
+      ahead <= 0 ? "today" : ahead === 1 ? "tomorrow · torn early" : "+" + ahead + " days ahead";
+    stamp.hidden = n < 24;
+
+    var left = sheetsLeft();
+    document.getElementById("pad-count").textContent =
+      left === null ? "" : left <= 1 ? "the last sheet in the pad" : fmt(left) + " sheets left in the pad";
+  }
+
+  function complete(){
+    render();
+    if (flagged() === 24 && !tearing){
+      if (pending) clearTimeout(pending);
+      pending = setTimeout(function(){ pending = null; tear(); }, 950);
+    }
+  }
+
+  function tear(){
+    if (tearing) return;
+    tearing = true;
+    if (pending){ clearTimeout(pending); pending = null; }
+    var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    data.torn = Date.now(); data.score = flagged(); save();
+    Sound.tear();
+    var finish = function(){
+      sheet.classList.remove("tearing");
+      var next = parseKey(current); next.setDate(next.getDate() + 1);
+      var nk = key(next);
+      if (nk < todayKey()) nk = todayKey();
+      current = nk; setRaw("lifeapp.pad.current", current);
+      data = getJSON("lifeapp.pad." + current) || { tasks:{}, flags:{} };
+      if (!data.tasks) data.tasks = {};
+      if (!data.flags) data.flags = {};
+      render();
+      Sound.rustle();
+      if (!reduced){
+        sheet.classList.add("arriving");
+        setTimeout(function(){ sheet.classList.remove("arriving"); }, 440);
+      }
+      tearing = false;
+    };
+    if (reduced){ finish(); return; }
+    sheet.classList.add("tearing");
+    setTimeout(finish, 780);
+  }
+
+  linesEl.addEventListener("click", function(e){
+    var btn = e.target.closest(".flag");
+    if (!btn) return;
+    var h = btn.closest(".line").dataset.h;
+    if (data.flags[h]) delete data.flags[h]; else data.flags[h] = 1;
+    save(); Sound.tick(); complete();
+  });
+
+  linesEl.addEventListener("input", function(e){
+    var input = e.target.closest(".task");
+    if (!input) return;
+    var h = input.closest(".line").dataset.h;
+    if (input.value) data.tasks[h] = input.value; else delete data.tasks[h];
+    save();
+  });
+
+  document.getElementById("flag-all").addEventListener("click", function(){
+    for (var h = 0; h < 24; h++) data.flags[h] = 1;
+    save(); Sound.tick(); complete();
+  });
+  document.getElementById("tear-btn").addEventListener("click", function(){ tear(); });
+  soundBtn.addEventListener("click", function(){
+    var on = Sound.toggle();
+    soundBtn.textContent = on ? "sound on" : "sound off";
+    soundBtn.setAttribute("aria-pressed", String(on));
+    if (on) Sound.rustle();
+  });
+  document.getElementById("dob").addEventListener("change", render);
+  document.getElementById("age").addEventListener("input", render);
+
+  document.addEventListener("viewchange", function(e){ if (e.detail === "pad") rollover(); });
+
+  function rollover(){
+    if (tearing) return;
+    if (current < todayKey()){
+      var visible = !document.getElementById("view-pad").hidden;
+      if (visible) { tear(); return; }        // midnight tears it in front of you
+      load();
+    }
+    render();
+  }
+
+  soundBtn.textContent = Sound.isOn() ? "sound on" : "sound off";
+  soundBtn.setAttribute("aria-pressed", String(Sound.isOn()));
+  load();
+  render();
+  setInterval(rollover, 20000);
 })();
 </script>
 

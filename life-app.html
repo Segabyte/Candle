@@ -362,6 +362,88 @@
     .sheet.tearing{opacity:0}
   }
 
+  /* ---------- tear-off · one line a day ---------- */
+  .leaf-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;padding:clamp(26px,4vw,44px) 0 20px}
+  .leaf-bar .eyebrow{margin-right:auto}
+  .themes{display:flex;flex-wrap:wrap;gap:7px}
+  .theme{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+         border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--ink-faint);
+         background:none;cursor:pointer}
+  .theme:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .theme[aria-pressed="true"]{color:var(--ember);border-color:var(--ember-soft);background:var(--ember-ghost)}
+  .theme:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+  .leaf-stage{background:var(--desk);border-radius:6px;padding:clamp(26px,5vw,54px) clamp(14px,3vw,40px)
+              clamp(34px,6vw,60px);display:flex;justify-content:center}
+  .leaf-wrap{width:100%;max-width:430px;position:relative}
+  .rings{display:flex;justify-content:center;gap:74px;margin-bottom:-9px;position:relative;z-index:2}
+  .ring{width:15px;height:15px;border-radius:50%;border:2px solid var(--stock-faint);
+        border-bottom-color:transparent;background:none}
+  .leaf-top{background:var(--stock-dim);height:20px;border-radius:3px 3px 0 0;position:relative;
+            box-shadow:0 1px 0 rgba(0,0,0,.12)}
+  .leaf-top .hole{position:absolute;top:5px;width:9px;height:9px;border-radius:50%;background:var(--desk)}
+  .leaf-top .hole.l{left:calc(50% - 41px)} .leaf-top .hole.r{right:calc(50% - 41px)}
+  .leaf-perf{height:8px;background:var(--stock);position:relative}
+  .leaf-perf::after{content:"";position:absolute;inset:auto 9px 2px;height:0;
+                    border-bottom:2px dotted var(--stock-faint);opacity:.5}
+  .leaf{background:var(--stock);color:var(--stock-ink);border-radius:0 0 3px 3px;
+        padding:clamp(20px,4vw,30px) clamp(18px,4vw,32px) clamp(18px,3vw,26px);position:relative;
+        text-align:center;min-height:330px;display:flex;flex-direction:column;
+        box-shadow:0 1px 0 var(--stock-dim),0 3px 0 var(--stock),0 4px 0 var(--stock-dim),
+                   0 6px 0 var(--stock),0 7px 0 var(--stock-dim),0 16px 26px rgba(0,0,0,.26)}
+  .leaf-date{display:flex;align-items:baseline;justify-content:center;gap:12px;
+             padding-bottom:12px;border-bottom:1px solid var(--rule)}
+  .leaf-wd{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+           color:var(--stock-faint)}
+  .leaf-dd{font-family:var(--serif);font-size:clamp(44px,10vw,62px);line-height:.8;color:var(--red);
+           font-variant-numeric:lining-nums}
+  .leaf-mo{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+           color:var(--stock-ink)}
+  .leaf-body{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(20px,4vw,30px) 4px}
+  .leaf-text{font-family:var(--serif);font-size:clamp(19px,3.4vw,25px);line-height:1.34;
+             color:var(--stock-ink);max-width:26ch;text-wrap:balance}
+  .leaf-text.quote{font-style:italic}
+  .leaf-text .lead{display:block;font-family:var(--mono);font-size:9.5px;font-style:normal;
+                   letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:13px}
+  .leaf-foot{display:flex;justify-content:space-between;gap:12px;padding-top:12px;
+             border-top:1px solid var(--rule);font-family:var(--mono);font-size:9.5px;
+             letter-spacing:.1em;text-transform:uppercase;color:var(--stock-faint)}
+  .leaf.tearing{animation:tear .78s cubic-bezier(.32,.06,.4,1) forwards;transform-origin:14% 0;z-index:3}
+  .leaf.arriving{animation:arrive .42s ease-out}
+  @media (prefers-reduced-motion:reduce){.leaf.tearing,.leaf.arriving{animation:none}
+                                         .leaf.tearing{opacity:0}}
+
+  /* ---------- scratchpad ---------- */
+  .scratch{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:20px;
+           align-items:start}
+  @media (max-width:820px){.scratch{grid-template-columns:1fr}}
+  .scratch-card{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+                padding:clamp(16px,2.6vw,24px)}
+  .scratch-card h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+                   color:var(--ink-faint);font-weight:400;padding-bottom:12px;
+                   border-bottom:1px solid var(--line-soft);margin-bottom:14px;
+                   display:flex;justify-content:space-between;gap:12px}
+  #scratch-text{width:100%;min-height:330px;resize:vertical;border:0;padding:2px 4px;
+                font-family:var(--sans);font-size:15px;line-height:29px;color:var(--ink);
+                background:repeating-linear-gradient(var(--surface) 0 28px,var(--line-soft) 28px 29px)}
+  #scratch-text:focus{outline:none}
+  #scratch-text::placeholder{color:var(--ink-faint);opacity:.65}
+  .scratch-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px;
+                   padding-top:14px;border-top:1px solid var(--line-soft)}
+  .scratch-actions .msg{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);
+                        margin-right:auto;line-height:1.5}
+  .parsed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+  .parsed li{display:grid;grid-template-columns:auto 1fr;gap:11px;padding:10px 0;
+             border-bottom:1px solid var(--line-soft);font-size:13.5px;align-items:start}
+  .parsed li:last-child{border-bottom:0}
+  .parsed .slot-tag{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--ember);
+                    border:1px solid var(--ember-soft);border-radius:3px;padding:3px 6px;
+                    white-space:nowrap;background:var(--ember-ghost)}
+  .parsed li.bad .slot-tag{color:var(--ink-faint);border-color:var(--line);background:none}
+  .parsed li.bad{color:var(--ink-faint)}
+  .parsed .why{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:3px}
+  .parsed-empty{font-size:13.5px;color:var(--ink-faint)}
+
   .reveal{opacity:0;animation:fade .5s ease forwards}
   @keyframes fade{to{opacity:1}}
   @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1}}
@@ -377,6 +459,8 @@
       <button class="tab" id="tab-life" role="tab" aria-selected="true" aria-controls="view-life">Long view</button>
       <button class="tab" id="tab-today" role="tab" aria-selected="false" aria-controls="view-today">Today</button>
       <button class="tab" id="tab-pad" role="tab" aria-selected="false" aria-controls="view-pad">The pad</button>
+      <button class="tab" id="tab-leaf" role="tab" aria-selected="false" aria-controls="view-leaf">Tear-off</button>
+      <button class="tab" id="tab-scratch" role="tab" aria-selected="false" aria-controls="view-scratch">Scratchpad</button>
     </div>
     <div class="controls">
       <div class="field">
@@ -522,6 +606,9 @@
             <span id="sheet-score">0 of 24 flagged</span>
             <span id="sheet-note">today</span>
           </footer>
+          <p id="pad-daily" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);
+             font-family:var(--serif);font-style:italic;font-size:14px;color:var(--stock-faint);
+             text-align:center;line-height:1.4"></p>
           <div class="stamp" id="sheet-stamp" hidden>DAY COMPLETE</div>
         </div>
       </div>
@@ -532,6 +619,65 @@
       sheet is done and tears itself off, whatever time it is. Leave it alone and midnight tears
       it for you — the pad has exactly as many sheets in it as you have days.</p>
   </div><!-- /view-pad -->
+
+  <div id="view-leaf" hidden>
+    <div class="leaf-bar">
+      <p class="eyebrow" id="leaf-count">—</p>
+      <div class="themes" id="themes" role="group" aria-label="Daily theme"></div>
+      <button class="btn" id="leaf-tear">Tear off</button>
+    </div>
+
+    <div class="leaf-stage">
+      <div class="leaf-wrap">
+        <div class="rings" aria-hidden="true"><span class="ring"></span><span class="ring"></span></div>
+        <div class="leaf-top" aria-hidden="true"><span class="hole l"></span><span class="hole r"></span></div>
+        <div class="leaf-perf" aria-hidden="true"></div>
+        <div class="leaf" id="leaf">
+          <div class="leaf-date">
+            <span class="leaf-wd" id="leaf-wd">—</span>
+            <span class="leaf-dd" id="leaf-dd">—</span>
+            <span class="leaf-mo" id="leaf-mo">—</span>
+          </div>
+          <div class="leaf-body"><p class="leaf-text" id="leaf-text">—</p></div>
+          <div class="leaf-foot">
+            <span id="leaf-theme">—</span>
+            <span id="leaf-note">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="hero-lede" style="margin-top:22px;max-width:62ch;font-size:13.5px">
+      One line a day, fixed to the date — the same day always brings the same card back. Pick the
+      theme you need this season; the card also prints at the foot of your pad sheet.</p>
+  </div><!-- /view-leaf -->
+
+  <div id="view-scratch" hidden>
+    <div class="leaf-bar">
+      <p class="eyebrow">Scratchpad · sync into the calendar</p>
+    </div>
+
+    <div class="scratch">
+      <div class="scratch-card">
+        <h3><span>Write anything</span><span id="scratch-saved">saved</span></h3>
+        <textarea id="scratch-text" spellcheck="true" placeholder="Today I ate fruit at 2 pm&#10;Walked with Dad at 7am&#10;Yesterday 21:00 read two chapters&#10;5 Sep 9am — deep work on the pension numbers&#10;&#10;One line each. Say when it happened and it lands on that day and hour."></textarea>
+        <div class="scratch-actions">
+          <p class="msg" id="scratch-msg">Write a line, then sync it into the calendar.</p>
+          <button class="btn-quiet" id="scratch-clear">clear the pad</button>
+          <button class="btn" id="scratch-sync">Sync to calendar</button>
+        </div>
+      </div>
+
+      <div class="scratch-card">
+        <h3><span>What will be written</span><span id="parsed-count">—</span></h3>
+        <ul class="parsed" id="parsed"></ul>
+        <p class="parsed-empty" id="parsed-empty">Nothing to sync yet. Each line needs a time —
+          <em>2 pm</em>, <em>14:00</em>, <em>at 7am</em>, <em>noon</em> — and optionally a day
+          (<em>today</em>, <em>yesterday</em>, <em>Monday</em>, <em>5 Sep</em>). Without a day it goes
+          to today.</p>
+      </div>
+    </div>
+  </div><!-- /view-scratch -->
 
   <dialog class="hdlg" id="hour-dialog" aria-labelledby="hdlg-title">
     <form method="dialog" class="hdlg-in" id="hour-form">
@@ -569,11 +715,13 @@
   </dialog>
 
   <footer>
-    <p class="next"><b>What this preview is.</b> The countdown, the summers grid and the four
-      chapters, computed live from your date of birth. Change either field above and everything
-      recalculates.</p>
-    <p class="next"><b>Next to build.</b> Saved profile, checkable moves that persist, a weekly
-      "one thing" nudge, and money — target number, current trajectory, the gap.</p>
+    <p class="next"><b>What this preview is.</b> Five ways into the same date of birth: the long
+      view (summers, chapters), Today (an editable log of all 24 hours), The pad (a tear-off day
+      sheet), Tear-off (a themed line for every date) and the Scratchpad, which reads plain
+      sentences and files them into the right day and hour.</p>
+    <p class="next"><b>Next to build.</b> An account, so the record follows you between devices;
+      money — the target number, the trajectory, the gap; and a way to look back at the days you
+      have already torn off.</p>
   </footer>
 </div>
 
@@ -957,6 +1105,7 @@
     render();
   });
 
+  document.addEventListener("lifedata", function(){ load(); buildHours(); render(); });
   sealBtn.addEventListener("click", function(){ state.sealed = Date.now(); save(); buildHours(); render(); });
   reopenBtn.addEventListener("click", function(){ state.sealed = null; save(); buildHours(); render(); });
 
@@ -1008,7 +1157,7 @@
   function save(){ setRaw("lifeapp.pad." + current, JSON.stringify(data)); }
 
   /* ---- paper sounds, synthesized (no audio files) ---- */
-  var Sound = (function(){
+  var Sound = window.LifeSound = (function(){
     var ctx = null, on = getRaw("lifeapp.sound") !== "off";
     function ac(){
       if (ctx === false) return null;
@@ -1179,6 +1328,12 @@
   document.getElementById("age").addEventListener("input", render);
 
   document.addEventListener("viewchange", function(e){ if (e.detail === "pad") rollover(); });
+  document.addEventListener("lifedata", function(){
+    data = getJSON("lifeapp.pad." + current) || { tasks:{}, flags:{} };
+    if (!data.tasks) data.tasks = {};
+    if (!data.flags) data.flags = {};
+    render();                       // the pad draws its own lines inside render()
+  });
 
   function rollover(){
     if (tearing) return;
@@ -1195,6 +1350,320 @@
   load();
   render();
   setInterval(rollover, 20000);
+})();
+</script>
+
+<script>
+(function(){
+  var MS = 86400000;
+  var WD = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+  var WDS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var MO = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+  var MOS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  var LINES = {
+    hack: ["Do the two-minute jobs the moment they appear; a queue of them costs an hour.", "Put tomorrow's first task on paper tonight. Mornings are for doing, not deciding.", "Touch your phone after breakfast, not before. The first hour sets the other fifteen.", "Batch every errand into one loop of the town instead of four.", "Keep one notebook, not five apps. The searching is what kills you.", "Cook double. Tomorrow's dinner is the cheapest hour you will ever buy back.", "If a meeting has no agenda in writing, it is a phone call.", "Set the timer for twenty-five minutes and start badly. Starting is the whole trick.", "Put the thing you dread first. It shrinks the moment it is touched.", "Anything you use daily deserves to live within arm's reach. Move it today.", "Automate one recurring payment or reminder this week. Compound the freed attention.", "Say the number out loud before you agree to the cost.", "Leave the last ten minutes of the day for tidying the desk. You start tomorrow ahead.", "Unsubscribe instead of deleting. Deleting is a subscription to doing it again.", "When stuck, write the next physical action, not the goal.", "Walk while you think; sit only when you write.", "Keep a shutdown ritual: last email, tomorrow's three, lights off.", "Never leave a room empty-handed. Small entropy dies quietly.", "Put the gym clothes where you will trip over them.", "If you cannot decide in two minutes, the options are equally good. Pick one.", "Charge the phone outside the bedroom. You will read again within a week.", "Do the hard thinking in the hour your brain is best, whatever the calendar says.", "One inbox for paper, one for digital. Everything else is a pile.", "Cancel one subscription you have not opened in a month.", "Write the email, then cut it in half before you send.", "Learn the ten keyboard shortcuts of the tool you use most. It pays for years.", "Put a hard stop on the day. Work expands only if you let it.", "Keep a running list of questions. Ask five at once, not five times.", "Buy the good version of the thing you use every day; the cheap one twice costs more.", "Say no in one sentence. Explanations invite negotiation.", "Do it now if it takes less than the time to write it down.", "Put the recurring bill on a spreadsheet once a year and cut two lines.", "Read the manual for the thing you have owned for years.", "Split any task that scares you until one piece looks boring. Do the boring one.", "Never negotiate with the alarm. Decide the night before.", "Keep one drawer empty. Space is a tool, not a waste.", "Every file gets a date in its name. Your future self will thank you.", "Prepare the coffee tonight. Friction removed while calm is friction gone.", "When you finish, write the first line of tomorrow's work and stop mid-sentence.", "Book the appointment while you are thinking about it. Thinking twice costs more.", "Take the stairs when the lift will take longer than ninety seconds anyway.", "Group your calls into one block. Context switching is the tax nobody itemises.", "Delete the app for a week rather than promising to use it less.", "Keep a \"someday\" list so that ideas stop interrupting today.", "Halve the number of things on the desk. Then halve it again.", "Answer with the decision first, the reasoning second.", "Put your keys, wallet and glasses in exactly one place, forever.", "Make the healthy option the easy option; willpower is a poor plan.", "Ask \"what would make this unnecessary?\" before you optimise it.", "Keep a spare of anything whose absence stops your morning.", "Do the filing on the first of the month, not when you need the file.", "Write down the argument you keep having with yourself. It usually ends there.", "Walk the long way when you need to think and the short way when you need to act.", "Turn off every notification except people you would answer at midnight.", "Give each recurring task a home in the week, not a place in your head.", "Ten minutes of tidying beats an afternoon of it, four times over.", "When tired, lower the bar rather than the ambition. Do the smallest version.", "Put the deadline in the calendar as an event, not a task.", "Ask for the discount. The worst answer is the price you already had.", "Read one page before bed. A page a night is fifteen books a decade.", "Save the receipt in a photo, not a pocket.", "Have one meal you can cook without thinking. Use it on the bad days.", "Fix the small annoyance you have stepped over for a month. It takes ten minutes.", "Put your goals where you brush your teeth, not where you file things.", "Ask the person who did it last time before you invent the method again.", "Do your admin on the same day each week and never think about it in between.", "Stand up every time you take a call. It shortens them.", "Keep the boring backups boring: automatic, off-site, forgotten.", "Make the first version ugly on purpose. It kills the fear of the blank page.", "Put the return address on the parcel before you pack it.", "End every project with ten minutes of notes for the next one.", "Set an expiry date on every commitment when you make it.", "If it lives on a screen, it needs a folder; if it lives on paper, it needs a shelf.", "Practise the small talk you dread. It is a skill, not a personality.", "Do the washing up while the kettle boils. Dead time is free time.", "Decide the three that matter before you open anything that talks back.", "When you cannot start, tell someone what you are about to do.", "Wear the same thing on working days and save the choices for the work.", "Keep meetings standing and they finish themselves.", "Store passwords properly once, and stop paying interest on the mess.", "Make the appointment for the thing you have been putting off for a year. Today.", "Write the thank-you the same day. Later becomes never.", "Set the table before you are hungry.", "Do a five-minute reset of one room each evening. The house never falls apart.", "Ask what you would do if this took an hour instead of a week.", "Buy the ticket first. The plans arrange themselves around a booked date.", "Take the photo of where you parked. Cheap insurance against a stupid hour.", "Check the calendar the night before, not the morning of.", "Renegotiate one recurring cost each quarter: insurance, phone, energy.", "Keep a list of what worked when you were at your best. Read it when you are not.", "Leave earlier rather than driving faster."],
+    motivation: ["The years ahead are not spare. They are the whole allowance.", "Nobody is coming to make it happen for you, and that is the good news.", "You have never regretted the early start. Not once.", "Do it while it is still hard; that is the only time it counts.", "The version of you that quits looks exactly like the version that is tired.", "Small and daily beats big and occasional, every year of your life.", "You are not behind. You are simply not finished.", "Discipline is remembering what you actually want.", "The work you avoid is usually the work with your name on it.", "Consistency is what talent looks like from the outside.", "You will never feel ready. Begin anyway; readiness arrives later, if at all.", "The mood follows the motion. Move first.", "A year is short. A decade is not. Aim there.", "Ambition without a calendar is just a feeling.", "Someone with half your advantages is doing it today.", "The hard part is not knowing what to do. It is doing it on an ordinary Tuesday.", "Your future is built out of hours that felt unimportant at the time.", "If it matters, do it badly rather than not at all.", "Do not wait for a better time. This is the time you get.", "Effort compounds quietly, then all at once.", "The dip is not a sign to stop. It is the price of the far side.", "Be the person who finishes things. It is rarer than being clever.", "Progress you cannot see is still progress. Keep the receipts.", "Comfort is expensive. You pay for it in years.", "Excuses have a shelf life; yours expired a while ago.", "You do not need more time. You need fewer things.", "Nobody remembers the day you started. They remember that you kept going.", "Choose the discomfort that builds something.", "Half-hearted is the most expensive way to do anything.", "The plan does not need to be perfect. It needs to be started.", "Envy is just information about what you want. Use it, then drop it.", "Show up when it is boring; that is where the compounding hides.", "Your standards on a bad day are what you will actually average.", "There is no arriving. There is only the next honest hour.", "Do the thing your future self will thank you for at breakfast.", "You can do hard things; you have already done several.", "The best day to start was earlier. The only day available is this one.", "Motivation gets you going. Habit gets you home.", "Stop rehearsing the failure. Rehearse the work.", "If you are going to do it eventually, do it before it costs more.", "Fear of looking foolish has cost you more than failure ever did.", "The only unrecoverable mistake is not beginning.", "You are allowed to want more. Just do the work that goes with it.", "Momentum is manufactured, not found.", "Do it tired. Do it unsure. Just do it today.", "Nothing changes until something changes today.", "Big goals are just small mornings, repeated without drama.", "Give the first hour to the thing that matters and let the day argue after.", "Your energy is a budget. Stop spending it on people who never invoice you back.", "Anything worth having asks for a version of you that does not exist yet. Build them.", "The world rewards finished, not perfect.", "Do not confuse being busy with being on your way.", "When it gets ordinary, you are finally doing it right.", "The talent you neglect goes to someone who practised on their worst days.", "You will be older either way. Older with the work done is better.", "Standards, not moods.", "No one owes you the outcome. Everyone respects the attempt.", "Say the hard sentence. It gets easier and the year gets shorter.", "Trade an hour of scrolling for an hour of building and watch a year change.", "Ten years of half-effort is more tiring than three of the real thing.", "You do not rise to your hopes; you fall to your habits. Fix one habit today.", "The chapter you are in was once the thing you hoped for.", "Start before you believe it. Belief is a lagging indicator.", "Whatever you are avoiding is the door.", "Being good at the boring parts is the whole secret.", "Give it one more honest go before you call it impossible.", "The clock does not care how you feel about the deadline.", "Success is mostly attendance.", "You have time for what you decide is important, and only that.", "Pain of discipline, or pain of regret. Both are real; only one passes.", "Do it for the person you will be at sixty. They are watching.", "If not now, then when exactly? Put a date on it.", "Skill is just what happens to people who kept turning up.", "Nobody feels like it. The doers do it anyway.", "The next level costs what this one did, plus interest.", "Make the decision once, so you do not spend the year re-deciding.", "Be relentless about the few things and relaxed about the rest.", "The dream needs a Tuesday, not a sign.", "Do not stop when you are tired. Stop when you are done, or when it is time.", "Almost everything you admire took longer than you think.", "Keep going. Quiet years are still years of building.", "It only feels impossible until it is habit.", "You cannot buy the years back, but you can spend the next one well.", "Do it now; later is a place where good intentions go to die.", "Whatever it is, one hour today beats a plan for ten hours tomorrow.", "The finish line moves. Enjoy the running or change the race.", "Nobody is watching closely enough for shame to be a good reason to stop.", "Being uncomfortable is not being in danger.", "You are the only one who has to live inside your excuses.", "Small promises kept to yourself rebuild everything.", "Aim at something that would scare you to say out loud.", "Begin."],
+    gratitude: ["Name the ordinary thing today that you would miss most if it vanished.", "Someone made the road you drove on today. Consider them for a moment.", "Think of a person who was patient with you when you did not deserve it.", "Your body carried you through today without being asked. Thank it.", "Name a book that changed you and the stranger who wrote it.", "Consider the meal you did not have to worry about.", "Somebody taught you to read. Every day since has been their gift.", "Name the smallest kindness you received this week.", "Think of a friendship that survived your worst year.", "Your younger self would envy something about today. Name it.", "Notice the water that arrived when you turned the tap.", "Name a mistake you were forgiven for.", "Consider the door that closed and the room it pushed you into.", "Think of a teacher whose name you still remember.", "Somebody is glad you exist and has never told you. Assume they are right.", "Name a possession you take completely for granted.", "Consider the quiet hour you got today, however short.", "Think of a person you can call at two in the morning.", "Name something you once prayed for and now barely notice.", "The light came back this morning without being asked.", "Name a song that has never once let you down.", "Consider the people keeping things running while you slept.", "Think of a place where you have always felt safe.", "Name a skill you have that used to be impossible for you.", "Somebody's work made your last hour easier. Picture them.", "Consider the argument you did not have today.", "Name a smell that returns you to childhood.", "Think of the version of you from ten years ago and what they wanted.", "Name the thing you complained about today that most of history would envy.", "Consider the fact that you are able to read this at all.", "Think of a stranger who once helped you and vanished.", "Name a habit that saved you.", "Consider the roof, the walls, the door that locks.", "Think of someone who believed you before there was evidence.", "Name a fear that never came true.", "Consider that today was survivable, and you survived it.", "Think of the last time you laughed until it hurt.", "Name a family recipe you can still taste.", "Consider what your grandparents would make of your ordinary day.", "Think of a body of water you have loved.", "Name one thing that went right today, however small.", "Consider the medicine that exists because someone spent a life on it.", "Think of a moment this week you would happily live again.", "Name an old friend you have not thanked properly.", "Consider the sleep you got, and the bed you got it in.", "Think of a stranger's face that made you smile today.", "Name a difficult season that eventually ended.", "Consider the machines that carried your voice to someone far away.", "Think of the last good conversation you had.", "Name something growing near where you live.", "Consider that someone chose to be kind to you when they had every excuse not to be.", "Think of a tool you use daily that took centuries to invent.", "Name a chance you were given.", "Consider the smell of rain and the fact that it is free.", "Think of a person who taught you how to work.", "Name something you own that has lasted longer than expected.", "Consider the silence when the noise finally stops.", "Think of a journey that went exactly right.", "Name a worry that turned out to be nothing.", "Consider that you have been loved badly and well, and both taught you.", "Think of the first time something clicked and you understood.", "Name the part of your work you would do for free.", "Consider the ordinary Tuesday you will one day miss.", "Think of someone whose absence you feel; be glad they were here.", "Name the last time you were surprised by generosity.", "Consider your hands and everything they have made.", "Think of a hard truth someone told you kindly.", "Name an animal that has made your life better.", "Consider the road trip, the queue, the wait that turned out fine.", "Think of the ways today could have gone worse and did not.", "Name a promise someone kept to you.", "Consider how much of today required no courage at all.", "Think of the last thing you made with your own effort.", "Name a season of your life you are glad is over, and what it gave you.", "Consider the strangers who grew your food.", "Think of a joke that still makes you laugh years later.", "Name a place that has never disappointed you.", "Consider the ability to change your mind.", "Think of someone who waited for you.", "Name a comfort you would defend fiercely.", "Consider what you already have that you once called a dream.", "Think of the last time you were forgiven quickly.", "Name the person who makes the ordinary days good.", "Consider that boredom is a luxury.", "Think of a lesson that cost you nothing but attention.", "Name something beautiful you saw this week without paying for it.", "Consider today: it happened, and you were here for it.", "Think of a door someone held open for you, literally or otherwise.", "Name what you would tell your children was worth it.", "Consider the odds against you existing at all."],
+    prayer: ["Lord, let me be useful today, and quiet about it.", "Give me patience with the people I love most.", "Teach me to do small things with care.", "Let my work today be honest, whether or not it is seen.", "Keep me from borrowing tomorrow's worry.", "Make me slow to speak and quick to listen.", "Thank you for the ordinary mercy of another morning.", "Give me the courage to begin the thing I have been avoiding.", "Let me be kind to the person who tests me today.", "Steady my hands and my temper.", "Show me where I am needed, and let me go there.", "Keep my ambition from eating my gratitude.", "Let me forgive quickly and remember gently.", "Guard my tongue in the conversation I am dreading.", "Give me contentment that does not depend on the day going well.", "Make me generous before I am comfortable.", "Let me finish what I start, and start what matters.", "Keep me honest in the small accounting.", "Grant me rest that actually rests me.", "Let me carry someone's burden today without being asked twice.", "Teach me to hold my plans loosely.", "Give me eyes for what is already good here.", "Keep me from measuring my life against another's.", "Let me be the same person in private that I am in public.", "Make my home a place where people breathe more easily.", "Give me the humility to ask for help today.", "Let me not waste this hour on things I will not remember.", "Keep my heart soft in a hard season.", "Teach me to say enough and mean it.", "Let me love the people in front of me, not the idea of them.", "Give me strength for what is required and no more anxiety than that.", "Keep me faithful in the boring middle.", "Let my no be clean and my yes be whole.", "Make me quick to apologise and slow to explain.", "Guard those I love while I am not with them.", "Give me joy that does not need an occasion.", "Let me be trustworthy with what is not mine.", "Teach me to work as if it matters and rest as if I trust you.", "Keep me from cynicism; it is only cowardice, dressed up.", "Let my last hour today be peaceful.", "Grant me clarity, or the patience to wait for it.", "Let me be someone's easy day.", "Keep me grateful when it goes well and steady when it does not.", "Teach me to spend my strength on what lasts.", "Let me listen to the person who has nobody listening.", "Give me the wisdom to leave some things unsaid.", "Keep my fear from making my decisions.", "Let me hold my losses without letting them harden me.", "Make me diligent without becoming grim.", "Thank you for the people who carried me here.", "Let me be present for the meal, not thinking about the next thing.", "Give me the grace to be interrupted.", "Keep me from performing goodness.", "Let my money serve my values and not the other way round.", "Teach me to notice beauty at least once today.", "Give me courage for the honest conversation.", "Let me leave this place better than I found it, in some small way.", "Keep me from hurrying past my own life.", "Grant me a clear conscience tonight.", "Let me be gentle with myself without being slack.", "Show me what to let go of.", "Keep my promises larger than my excuses.", "Teach me the difference between what is urgent and what is mine.", "Let me be quick to notice when someone is struggling.", "Give me the discipline I have been asking others to have.", "Keep me steady when the news is heavy.", "Let me not confuse being busy with being faithful.", "Make me at home in silence.", "Grant me the humility to be wrong out loud.", "Let my rest be real and my work be wholehearted.", "Keep me from despising small beginnings.", "Teach me to see the years as a gift rather than a countdown.", "Let me be a good ancestor.", "Give me peace in the decision I keep revisiting.", "Keep me from bitterness towards those who have more.", "Let me be dependable in ordinary things.", "Teach me to receive kindness without deflecting it.", "Give me an unhurried heart today.", "Let me not be ruled by my phone or my moods.", "Keep my hope stubborn.", "Make me brave in the way that goes unnoticed.", "Let me forgive the version of me from ten years ago.", "Grant me one moment of stillness before the day starts.", "Teach me to number my days and use them well.", "Let my family see me choose them today.", "Keep me learning; keep me correctable.", "Give me courage to hope for good things again.", "Let my last thought tonight be thanks, not inventory.", "Whatever comes, let me meet it well."],
+    question: ["What did you avoid today, and what is it actually about?", "If this year were the last one that counted, what would you cut first?", "What are you doing out of habit that no longer serves you?", "Who do you need to forgive so that you can stop carrying it?", "What would you do this week if nobody would ever hear about it?", "What are you pretending not to know?", "Which hour of today was truly yours?", "What would make tomorrow a good day, specifically?", "Who taught you what work should feel like, and were they right?", "What do you own that owns you?", "What would you attempt if you had already been paid?", "Which relationship needs one honest sentence from you?", "What are you saving for that you might not live to spend?", "What did you learn today, and what did you only consume?", "Who have you not thanked?", "What is the smallest change that would improve every day this month?", "Where are you spending money to avoid a feeling?", "If you kept this pace for ten years, where would you land?", "Which of your standards are actually someone else's?", "What would you do differently if you trusted yourself more?", "Who in your life is genuinely glad when you do well?", "What would you regret leaving unsaid?", "What are you tolerating that could be fixed in an afternoon?", "Which part of your day would you happily automate away, and why haven't you?", "What is your version of enough?", "Who did you become this year without deciding to?", "What are you good at that you have stopped doing?", "Which fear is running more of your life than you admit?", "What is the most useful thing you could do in the next hour?", "Where are you being brave without recognising it?", "What would your sixty-year-old self ask you to stop?", "Which habit, dropped today, would you not miss in a month?", "What do you want more of, and what will you give up for it?", "What is the real reason you have not started?", "Who could you help this week with almost no effort?", "What does a good ordinary day look like for you?", "Which of your beliefs have you not examined in a decade?", "What is one thing you could simplify before the weekend?", "Where do you need to ask for more?", "What do you keep saying yes to and resenting?", "Which win have you not let yourself enjoy?", "What would you tell a friend in exactly your situation?", "What are you postponing until conditions are perfect?", "What would change if you assumed you had fifteen good years?", "Where are you competing in a race you never entered?", "What is the kindest thing you could do for tomorrow's you?", "Who do you want beside you at the finish?", "What did today cost, and was it worth it?", "What are you doing purely for someone else's approval?", "Which door is still open that will not stay open?", "Where has comfort quietly become a cage?", "What is the one number you are afraid to look at?", "Who would notice if you disappeared for a week, and does that tell you anything?", "What do you need to say no to, this month, out loud?", "What would make the work feel like yours again?", "Where are you overcomplicating something simple?", "Which memory do you want to make this season?", "What are you carrying that was never yours?", "If you could keep only three commitments, which?", "What are you waiting for permission to do?", "Which of your days lately would you want repeated?", "What is the difference between what you say matters and where the hours go?", "Who do you owe a conversation, not a message?", "What would make retirement worth reaching, rather than just arriving at?", "Where could you be more generous without noticing the cost?", "What are you good at that you have never been paid for?", "Which problem keeps returning because you keep treating the symptom?", "What did you want at twenty that still stands?", "Where are you spending attention like it is free?", "What is one thing you could learn this year that changes the next ten?", "Who would you like to be less afraid of?", "What are you doing today that will still matter in five years?", "Which small luxury is actually worth the money?", "Where are you settling because leaving would be inconvenient?", "What is the story you tell about yourself, and is it current?", "What would a braver version of this week look like?", "Which of your routines is quietly excellent?", "What do you need to finish before you start anything new?", "Where does your energy come back, and how often do you go there?", "What would you do with an extra hour a day, honestly?", "Who taught you generosity?", "What are you afraid people will find out, and does it matter?", "What is enough for today?", "Which promise to yourself have you broken most often?", "What could you stop doing entirely with no consequences?", "Where do you need patience rather than a plan?", "What deserves your full attention this evening?", "What would you like to be true a year from tonight?"],
+    memento: ["Today is one of a finite number. Spend it like the ration it is.", "You will not remember most of this year. Choose what you want to.", "The years get faster. Build in the ones that still feel slow.", "There are only so many summers left. Go outside in this one.", "Somebody would trade everything for the ordinary day you are having.", "You have already lived most of your Tuesdays.", "The people you love have a number of days too. Call one of them.", "Every hour spent waiting for the right time is spent.", "You are not running out of time in general, only of this particular day.", "The countdown does not pause for a bad mood.", "One day this will be the past you are nostalgic about.", "Nothing is later. Everything is now, or never quite.", "Your attention is the only currency that cannot be earned back.", "The best time to plant a tree was twenty years ago. The second best is this morning.", "You are older today than you have ever been, and younger than you will be again.", "A life is made of ordinary afternoons.", "Do not save the good china for a day that may not come.", "The hours you do not choose are chosen for you.", "Consider how you would spend today if it were being filmed for your children.", "There is no rehearsal. This is the performance.", "You have time for one great thing. Choose it deliberately.", "The unlived life is the only real loss.", "Each day is a small life. End this one well.", "You will be dead a long time; be alive today.", "The clock is honest even when you are not.", "Half your remaining weekends will be spent doing errands. Choose the other half well.", "What you do repeatedly becomes what you were.", "Time is passing whether or not you are paying attention. Pay attention.", "The date on your last day already exists in the calendar.", "Do not postpone joy for a scheduled retirement of it.", "An hour spent well is not an hour lost to work; it is the work.", "Someone is missing today the way you will one day miss this.", "The years ahead are fewer than the years behind. Weight them accordingly.", "Not everything worth doing has to be finished by you.", "You cannot save time; you can only spend it better.", "Spend less on things that will outlast your interest.", "The urgent will always win unless you decide otherwise before it starts.", "Look at the people around the table. This exact table will not always be set.", "There is no version of the future with more time in it than now.", "What you tolerate for a year, you tolerate for a chapter of your life.", "Every choice is a small burial of the alternatives. Bury them well.", "You will not get today back at any price.", "Ask whether this will matter in a decade. Then act like the answer is true.", "Rest is not stolen time. It is part of the ration.", "Nobody's last thought is about their inbox.", "This is the youth of your old age.", "Waiting is a way of spending time without receiving anything.", "The good years are not later; they are the ones you are in.", "Do the thing while your knees still agree.", "You will remember the trips, not the overtime.", "One hour a day is fifteen days a year. That is a holiday spent on anything you choose.", "Whatever you are putting off until you are ready is being put off forever.", "Life is long enough if you stop spending it twice on the same worry.", "Every day is a withdrawal. Make some of it visible.", "The person you will be at the end is being built by this afternoon.", "Time spent with your parents now is the rarest kind.", "A decade is only ten of these years, and they look like this one.", "The best use of a limited thing is a deliberate one.", "Do not confuse a full calendar with a full life.", "Count the summers, not the salary.", "There is a last time for everything, usually unannounced.", "Ordinary days are the ones you will beg to have back.", "The point of counting the days is to stop wasting them, not to fear them.", "Be present here; there is nowhere else you can actually be.", "Your list will outlive you. Choose what actually goes on it.", "The gap between knowing and doing is where the years disappear.", "You can start over today, but not yesterday.", "Live so that a day repeated a thousand times would build a life you want.", "Somebody who died this year would take this day gladly.", "Later is a story we tell ourselves about a person who does not exist yet.", "The calendar is not a suggestion.", "Whatever you are waiting to enjoy, enjoy a small version of it now.", "The only guaranteed hour is this one.", "Time is fair: everyone gets the same day and spends it differently.", "Do not spend a good decade preparing for a hypothetical one.", "Nothing focuses the mind like a real number on the wall.", "The busy years are the ones that vanish first. Slow one hour down today.", "Habits are what you are doing with the rest of your life.", "Being remembered is not the point; being here is.", "Spend an hour today on something no one is paying you for.", "An unhurried hour is a luxury you can grant yourself for free.", "There is still time to become the person you meant to be.", "Yesterday is a closed account. Today is open.", "Do not let the countdown make you anxious; let it make you decisive.", "You are allowed to change the plan. You are not allowed to wait forever.", "Look up. This is it. This is the life."]
+  };
+  var THEMES = [
+    { id:"hack",       name:"Daily hack",  kicker:"Daily hack",  quote:false },
+    { id:"motivation", name:"Motivation",  kicker:"Motivation",  quote:true  },
+    { id:"gratitude",  name:"Gratitude",   kicker:"Gratitude",   quote:false },
+    { id:"prayer",     name:"Prayer",      kicker:"A prayer",    quote:true  },
+    { id:"question",   name:"One question",kicker:"One question",quote:true  },
+    { id:"memento",    name:"Memento",     kicker:"Memento",     quote:true  }
+  ];
+
+  function p2(v){ return String(v).padStart(2,"0"); }
+  function fmt(n){ return n.toLocaleString("en-GB"); }
+  function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function dkey(d){ return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); }
+  function parseKey(k){ var a=String(k).split("-"); return new Date(+a[0], +a[1]-1, +a[2]); }
+  function todayKey(){ return dkey(new Date()); }
+  function getRaw(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+  function setRaw(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+  function getJSON(k){ try { var r=localStorage.getItem(k); return r?JSON.parse(r):null; } catch(e){ return null; } }
+  function setJSON(k,v){ try { localStorage.setItem(k,JSON.stringify(v)); } catch(e){} }
+  function dayOfYear(d){ return Math.round((midnight(d) - new Date(d.getFullYear(),0,1))/MS) + 1; }
+  function daysToRetirement(from){
+    var parts=document.getElementById("dob").value.split("-");
+    if(parts.length!==3) return null;
+    var dob=new Date(+parts[0],+parts[1]-1,+parts[2]);
+    var age=Math.max(40,Math.min(90,+document.getElementById("age").value||60));
+    return Math.max(0, Math.round((new Date(dob.getFullYear()+age,dob.getMonth(),dob.getDate()) - midnight(from))/MS));
+  }
+  function sound(kind){
+    var S = window.LifeSound;
+    if (S && typeof S[kind] === "function") S[kind]();
+  }
+
+  /* ================= tear-off ================= */
+  var leaf = document.getElementById("leaf"), themesEl = document.getElementById("themes");
+  var themeId = getRaw("lifeapp.leaf.theme") || "hack";
+  if (!THEMES.some(function(t){ return t.id === themeId; })) themeId = "hack";
+  var leafDate = getRaw("lifeapp.leaf.date") || todayKey();
+  if (leafDate < todayKey()) leafDate = todayKey();
+  var tearing = false;
+
+  function theme(){ return THEMES.filter(function(t){ return t.id === themeId; })[0]; }
+  function pool(){ return LINES[themeId] || []; }
+  function indexFor(d){ var p = pool(); return p.length ? (dayOfYear(d) - 1) % p.length : 0; }
+  function lineFor(d){ var p = pool(); return p.length ? p[indexFor(d)] : ""; }
+
+  function paintThemes(){
+    themesEl.innerHTML = THEMES.map(function(t){
+      return '<button class="theme" type="button" data-t="' + t.id + '" aria-pressed="' +
+             (t.id === themeId) + '">' + t.name + '</button>';
+    }).join("");
+  }
+
+  function paintLeaf(){
+    var d = parseKey(leafDate), t = theme(), p = pool();
+    document.getElementById("leaf-wd").textContent = WD[d.getDay()];
+    document.getElementById("leaf-dd").textContent = d.getDate();
+    document.getElementById("leaf-mo").textContent = MO[d.getMonth()] + " " + d.getFullYear();
+    document.getElementById("leaf-text").innerHTML =
+      '<span class="lead">' + t.kicker + '</span>' + lineFor(d).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+    document.getElementById("leaf-text").className = "leaf-text" + (t.quote ? " quote" : "");
+    document.getElementById("leaf-theme").textContent = "No. " + (indexFor(d)+1) + " of " + p.length;
+    var left = daysToRetirement(d);
+    document.getElementById("leaf-note").textContent = left === null ? "" : "one of your " + fmt(left);
+    var ahead = Math.round((parseKey(leafDate) - parseKey(todayKey()))/MS);
+    document.getElementById("leaf-count").textContent =
+      ahead <= 0 ? "Today's page" : ahead === 1 ? "Tomorrow's page · torn early" : "+" + ahead + " days ahead";
+    var pd = document.getElementById("pad-daily");
+    if (pd){
+      var padDay = getRaw("lifeapp.pad.current") || todayKey();
+      pd.textContent = lineFor(parseKey(padDay));
+    }
+  }
+
+  function tearLeaf(){
+    if (tearing) return;
+    tearing = true;
+    var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    sound("tear");
+    var finish = function(){
+      leaf.classList.remove("tearing");
+      var next = parseKey(leafDate); next.setDate(next.getDate()+1);
+      leafDate = dkey(next);
+      if (leafDate < todayKey()) leafDate = todayKey();
+      setRaw("lifeapp.leaf.date", leafDate);
+      paintLeaf();
+      sound("rustle");
+      if (!reduced){ leaf.classList.add("arriving"); setTimeout(function(){ leaf.classList.remove("arriving"); }, 440); }
+      tearing = false;
+    };
+    if (reduced){ finish(); return; }
+    leaf.classList.add("tearing");
+    setTimeout(finish, 780);
+  }
+
+  themesEl.addEventListener("click", function(e){
+    var b = e.target.closest(".theme");
+    if (!b) return;
+    themeId = b.dataset.t;
+    setRaw("lifeapp.leaf.theme", themeId);
+    paintThemes(); paintLeaf(); sound("tick");
+  });
+  document.getElementById("leaf-tear").addEventListener("click", tearLeaf);
+
+  /* ================= scratchpad ================= */
+  var ta = document.getElementById("scratch-text"),
+      parsedEl = document.getElementById("parsed"),
+      emptyEl = document.getElementById("parsed-empty"),
+      countEl = document.getElementById("parsed-count"),
+      msgEl = document.getElementById("scratch-msg");
+  var MONTH_RE = "jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec";
+
+  function monthIndex(word){
+    var w = word.toLowerCase().slice(0,3);
+    return ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"].indexOf(w);
+  }
+
+  function parseLine(raw, now){
+    var line = String(raw == null ? "" : raw).replace(/\s+/g," ").trim();
+    if (!line || line.charAt(0) === "#") return null;                    // blank or comment
+    var work = " " + line + " ", date = null, hour = null, assumed = "";
+    function eat(re){
+      var m = work.match(re);
+      if (m) work = work.replace(m[0], " ");
+      return m;
+    }
+
+    // ---- date ----
+    var m = eat(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+    if (m) date = new Date(+m[1], +m[2]-1, +m[3]);
+    if (!date && (m = eat(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/))){
+      var y = m[3] ? (+m[3] < 100 ? 2000 + +m[3] : +m[3]) : now.getFullYear();
+      date = new Date(y, +m[2]-1, +m[1]);                                 // day-first
+    }
+    if (!date && (m = eat(new RegExp("\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+("+MONTH_RE+")[a-z]*\\.?(?:\\s+(\\d{4}))?\\b","i")))){
+      date = new Date(m[3] ? +m[3] : now.getFullYear(), monthIndex(m[2]), +m[1]);
+    }
+    if (!date && (m = eat(new RegExp("\\b("+MONTH_RE+")[a-z]*\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:,?\\s+(\\d{4}))?\\b","i")))){
+      date = new Date(m[3] ? +m[3] : now.getFullYear(), monthIndex(m[1]), +m[2]);
+    }
+    if (!date && eat(/\byesterday\b/i)){ date = new Date(now); date.setDate(date.getDate()-1); }
+    if (!date && eat(/\btomorrow\b/i)){ date = new Date(now); date.setDate(date.getDate()+1); }
+    if (!date && eat(/\b(today|tonight|this morning|this afternoon|this evening)\b/i)) date = new Date(now);
+    if (!date){
+      var wm = eat(/\b(?:last\s+|on\s+)?(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b/i);
+      if (wm){
+        var want = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"].indexOf(wm[1].toLowerCase());
+        date = new Date(now);
+        var back = (now.getDay() - want + 7) % 7;                          // most recent, today included
+        date.setDate(date.getDate() - back);
+      }
+    }
+    if (!date) date = new Date(now);
+    date = midnight(date);
+    if (isNaN(date.getTime())) return { error:"that date did not make sense", line:line };
+
+    // ---- time (ranges first, so "2-3pm" means 2) ----
+    m = eat(/\b(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?\s*(?:-|–|—|to|till|until)\s*(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)\b/i);
+    if (m){
+      hour = +m[1] % 12;
+      var mer = m[3] || m[6];
+      if (/p/i.test(mer)) hour += 12;
+      if (+m[1] === 12 && /a/i.test(mer)) hour = 0;
+    }
+    if (hour === null && (m = eat(/\b(\d{1,2})(?:[:.](\d{2}))?\s*(a\.?m\.?|p\.?m\.?)\b/i))){
+      hour = +m[1] % 12;
+      if (/p/i.test(m[3])) hour += 12;
+    }
+    if (hour === null && (m = eat(/\b([01]?\d|2[0-3]):([0-5]\d)\b/))) hour = +m[1];
+    if (hour === null && (m = eat(/\b(?:at|from|around|about|by)\s+(\d{1,2})\b/i)) && +m[1] <= 23){
+      hour = +m[1];
+      if (hour >= 1 && hour <= 7) assumed = "taken as " + p2(hour) + ":00 — write " + hour + "pm if you meant the evening";
+    }
+    if (hour === null && eat(/\b(noon|midday)\b/i)) hour = 12;
+    if (hour === null && eat(/\bmidnight\b/i)) hour = 0;
+    if (hour === null && eat(/\b(morning)\b/i)){ hour = 9; assumed = "morning taken as 09:00"; }
+    if (hour === null && eat(/\b(afternoon)\b/i)){ hour = 14; assumed = "afternoon taken as 14:00"; }
+    if (hour === null && eat(/\b(evening)\b/i)){ hour = 19; assumed = "evening taken as 19:00"; }
+    if (hour === null && eat(/\b(night)\b/i)){ hour = 21; assumed = "night taken as 21:00"; }
+    if (hour === null) return { error:"no time in this line", line:line };
+    if (hour < 0 || hour > 23) return { error:"that hour is out of range", line:line };
+
+    // ---- what is left is the task ----
+    var STOP = /^(?:i|we|at|on|in|the|a|an|of|for|by|from|around|about|was|were)$/i;
+    var words = work.replace(/[\-–—•*·]+/g," ").replace(/\s+/g," ").trim().split(" ").filter(Boolean);
+    while (words.length && (STOP.test(words[0]) || /^[,:;.]+$/.test(words[0]))) words.shift();
+    while (words.length && (STOP.test(words[words.length-1]) || /^[,:;.]+$/.test(words[words.length-1]))) words.pop();
+    var text = words.join(" ").replace(/^[\s,:;.]+/,"").replace(/[\s,:;]+$/,"").trim();
+    if (!text) return { error:"nothing to write for that hour", line:line };
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    return { date:date, hour:hour, text:text, assumed:assumed, line:line };
+  }
+
+  function entries(){
+    var now = new Date(), out = [];
+    ta.value.split("\n").forEach(function(l){
+      var e = parseLine(l, now);
+      if (e) out.push(e);
+    });
+    return out;
+  }
+
+  function slotLabel(e){
+    var d = e.date, today = midnight(new Date());
+    var when = dkey(d) === dkey(today) ? "Today"
+             : WDS[d.getDay()] + " " + d.getDate() + " " + MOS[d.getMonth()];
+    return when + " · " + p2(e.hour) + ":00";
+  }
+
+  function paintPreview(){
+    var list = entries(), good = list.filter(function(e){ return !e.error; });
+    countEl.textContent = list.length ? good.length + " ready" : "—";
+    emptyEl.hidden = list.length > 0;
+    parsedEl.innerHTML = list.map(function(e){
+      if (e.error){
+        return '<li class="bad"><span class="slot-tag">skip</span><span>' + esc(e.line) +
+               '<span class="why">' + e.error + '</span></span></li>';
+      }
+      return '<li><span class="slot-tag">' + esc(slotLabel(e)) + '</span><span>' + esc(e.text) +
+             (e.assumed ? '<span class="why">' + e.assumed + '</span>' : "") + '</span></li>';
+    }).join("");
+  }
+  function esc(v){ return String(v == null ? "" : v).replace(/[&<>"]/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+
+  function merge(existing, add){
+    existing = String(existing || "").trim();
+    if (!existing) return add;
+    if (existing.toLowerCase().indexOf(add.toLowerCase()) !== -1) return existing;
+    return existing + " · " + add;
+  }
+
+  function writeEntry(e){
+    var k = dkey(e.date);
+    var log = getJSON("lifeapp.day." + k) || { hours:{}, sealed:null };
+    if (!log.hours) log.hours = {};
+    var cell = log.hours[e.hour] || { text:"", notes:"", status:"not_started" };
+    cell.text = merge(cell.text, e.text);
+    if (!cell.notes) cell.notes = "";
+    if (!cell.status) cell.status = "not_started";
+    log.hours[e.hour] = cell;
+    setJSON("lifeapp.day." + k, log);
+
+    var pad = getJSON("lifeapp.pad." + k) || { tasks:{}, flags:{} };
+    if (!pad.tasks) pad.tasks = {};
+    if (!pad.flags) pad.flags = {};
+    pad.tasks[e.hour] = merge(pad.tasks[e.hour], e.text);
+    setJSON("lifeapp.pad." + k, pad);
+    return k;
+  }
+
+  function syncNow(){
+    var list = entries(), days = {}, wrote = 0, bad = 0;
+    list.forEach(function(e){
+      if (e.error){ bad++; return; }
+      days[writeEntry(e)] = true;
+      wrote++;
+    });
+    var dayCount = Object.keys(days).length;
+    msgEl.textContent = wrote
+      ? wrote + " entr" + (wrote === 1 ? "y" : "ies") + " written into " + dayCount + " day" +
+        (dayCount === 1 ? "" : "s") + (bad ? " · " + bad + " line" + (bad === 1 ? "" : "s") + " skipped" : "") +
+        " · check Today and The pad"
+      : (bad ? "Nothing written — " + bad + " line" + (bad === 1 ? "" : "s") + " had no time in them."
+             : "Nothing to sync yet.");
+    if (wrote){ sound("tick"); document.dispatchEvent(new CustomEvent("lifedata")); }
+    paintPreview();
+  }
+
+  ta.value = getRaw("lifeapp.scratch.text") || "";
+  ta.addEventListener("input", function(){
+    setRaw("lifeapp.scratch.text", ta.value);
+    document.getElementById("scratch-saved").textContent = "saved";
+    paintPreview();
+  });
+  document.getElementById("scratch-sync").addEventListener("click", syncNow);
+  document.getElementById("scratch-clear").addEventListener("click", function(){
+    if (!ta.value) return;
+    ta.value = ""; setRaw("lifeapp.scratch.text", "");
+    msgEl.textContent = "Cleared. Anything already synced stays in the calendar.";
+    paintPreview();
+  });
+
+  document.addEventListener("viewchange", function(e){
+    if (e.detail === "leaf" || e.detail === "pad") paintLeaf();
+    if (e.detail === "scratch") paintPreview();
+  });
+  document.getElementById("dob").addEventListener("change", paintLeaf);
+  document.getElementById("age").addEventListener("input", paintLeaf);
+
+  paintThemes(); paintLeaf(); paintPreview();
+  if (location.hash === "#leaf" || location.hash === "#scratch"){
+    var b = document.getElementById("tab-" + location.hash.slice(1));
+    if (b) b.click();
+  }
+  window.LifeScratch = { parse: parseLine };          // used by the test harness
 })();
 </script>
 

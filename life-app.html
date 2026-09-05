@@ -257,10 +257,32 @@
   .month-bar .eyebrow{margin-right:auto}
   .mnav{display:flex;align-items:center;gap:6px}
   .mnav .daynav{width:42px;height:42px}
-  .mtitle{display:flex;align-items:center;justify-content:center;height:42px;min-width:186px;
+  .mtitle-wrap{position:relative;display:inline-flex}
+  .mtitle{display:flex;align-items:center;justify-content:center;gap:10px;height:42px;min-width:196px;
           padding:0 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:3px;
           font-family:var(--mono);font-size:12.5px;letter-spacing:.15em;text-transform:uppercase;
-          color:var(--ink);white-space:nowrap}
+          color:var(--ink);white-space:nowrap;cursor:pointer}
+  .mtitle:hover{border-color:var(--ash-deep)}
+  .mtitle:hover .caret{color:var(--ember)}
+  .mtitle:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .mtitle[aria-expanded="true"]{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-ghost)}
+  .caret{width:9px;height:9px;flex:none;color:var(--brass);fill:currentColor}
+
+  .mpick{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);z-index:30;
+         width:250px;text-align:center;background:var(--surface);border:1px solid var(--line);
+         border-radius:4px;padding:13px;box-shadow:0 20px 44px rgba(0,0,0,.30)}
+  .mpick-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+  .mpick-yr{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--ink);
+            font-variant-numeric:tabular-nums}
+  .mpick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .mpick-grid button{height:38px;padding:0;border:1px solid var(--line);border-radius:3px;
+                     background:none;cursor:pointer;font-family:var(--mono);font-size:10px;
+                     letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .mpick-grid button:hover{border-color:var(--ash-deep);color:var(--ink)}
+  .mpick-grid button.now{border-color:var(--ember-soft);color:var(--ember)}
+  .mpick-grid button.sel{background:var(--ember);border-color:var(--ember);color:var(--btn-ink)}
+  .mpick-grid button:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  @media (max-width:560px){.mpick{left:auto;right:0;transform:none}}
 
   .month-card{background:var(--surface);border:1px solid var(--line);border-radius:5px;
               padding:clamp(16px,3vw,28px)}
@@ -290,8 +312,11 @@
   .mcell.done .mday{filter:saturate(.82)}
   .crossmark,.reticle{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
         overflow:visible;fill:none;stroke:currentColor;stroke-linecap:round}
-  .crossmark{stroke-width:2.1;opacity:.62}
-  .mcell.past .crossmark{stroke-width:2.4;opacity:.5}
+  .crossmark{stroke-width:2.1;opacity:.6}
+  .mcell.past .crossmark{stroke-width:2.4;opacity:.46}
+  .crossmark.manual{opacity:.8}
+  .mcell.past .crossmark.manual{opacity:.66}
+  .crossmark .mstamp{fill:currentColor;stroke:none;opacity:.5}
   .reticle{stroke-width:2.2;opacity:.9}
   .reticle circle.pip{fill:currentColor;stroke:none}
   .mcell.today{z-index:2}
@@ -757,7 +782,25 @@
       <button class="btn-quiet" id="month-now" hidden>This month</button>
       <div class="mnav">
         <button class="daynav" type="button" id="month-prev" aria-label="Previous month">‹</button>
-        <span class="mtitle" id="month-title" aria-live="polite">—</span>
+        <span class="mtitle-wrap">
+          <button class="mtitle" type="button" id="month-title-btn" aria-haspopup="dialog"
+                  aria-expanded="false" aria-label="Choose a month and year">
+            <span id="month-title" aria-live="polite">—</span>
+            <svg class="caret" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3 L5 8 L9 3 Z"/></svg>
+          </button>
+          <div class="mpick" id="month-picker" role="dialog" aria-label="Choose a month and year" hidden>
+            <div class="mpick-head">
+              <button class="dpick-nav" type="button" id="mp-prev-year" aria-label="Previous year">‹</button>
+              <span class="mpick-yr" id="mp-year">—</span>
+              <button class="dpick-nav" type="button" id="mp-next-year" aria-label="Next year">›</button>
+            </div>
+            <div class="mpick-grid" id="mp-grid"></div>
+            <div class="dpick-foot">
+              <button class="btn-quiet" type="button" id="mp-now">This month</button>
+              <button class="btn-quiet" type="button" id="mp-close">Close</button>
+            </div>
+          </div>
+        </span>
         <button class="daynav" type="button" id="month-next" aria-label="Next month">›</button>
       </div>
     </div>
@@ -765,7 +808,7 @@
     <div class="month-card">
       <div class="msum">
         <div><span class="v num" id="m-done">0</span><span class="k">days crossed off</span></div>
-        <div><span class="v num" id="m-left">0</span><span class="k">days left in the month</span></div>
+        <div><span class="v num" id="m-left">0</span><span class="k">days remaining</span></div>
         <div><span class="v num" id="m-gone">0</span><span class="k">days elapsed</span></div>
         <div class="now"><span class="k" id="m-today">—</span></div>
       </div>
@@ -2112,6 +2155,9 @@
   // running past the square's edges the way a reticle does.
   var CROSS = '<svg class="crossmark" viewBox="0 0 100 100" aria-hidden="true">' +
               '<path d="M15 15 L85 85 M85 15 L15 85"/></svg>';
+  var CROSS_MANUAL = '<svg class="crossmark manual" viewBox="0 0 100 100" aria-hidden="true">' +
+              '<path d="M15 15 L85 85 M85 15 L15 85"/>' +
+              '<circle class="mstamp" cx="50" cy="50" r="9"/></svg>';
   var RETICLE = '<svg class="reticle" viewBox="0 0 100 100" aria-hidden="true">' +
                 '<circle cx="50" cy="50" r="21"/><circle cx="50" cy="50" r="11"/>' +
                 '<circle class="pip" cx="50" cy="50" r="3"/>' +
@@ -2169,19 +2215,24 @@
     for (var i = 0; i < lead; i++) html += '<div class="mcell pad" aria-hidden="true"></div>';
     for (var day = 1; day <= days; day++){
       var d = new Date(first.getFullYear(), first.getMonth(), day), k = dkey(d);
-      var rec = readDay(k), crossed = isDone(rec);
+      var rec = readDay(k), manual = isDone(rec);
+      // Elapsed is read off the calendar, never stored: a day earlier than today
+      // has been spent whether or not anyone marked it.
       var past = k < t, isToday = k === t;
+      var crossed = past || manual;
       if (crossed) done++;
       if (past) gone++; else left++;
       var cls = "mcell" + (past ? " past" : "") + (isToday ? " today" : "") +
-                (crossed ? " done" : "") + (hasRecord(rec) ? " has" : "");
+                (crossed ? " done" : "") + (manual ? " manual" : "") +
+                (hasRecord(rec) ? " has" : "");
+      var state = isToday ? "today" : past ? "elapsed" : "day ahead";
+      var mark = manual ? ", completed by you" : past ? ", crossed off by the calendar" : "";
       var label = DAYS_T[d.getDay()] + " " + day + " " + MONTHS_T[d.getMonth()] + " " + d.getFullYear() +
-                  ", " + (isToday ? "today" : past ? "past day" : "day ahead") +
-                  ", " + (crossed ? "crossed off" : "not crossed off");
-      var marks = (crossed ? CROSS : "") + (isToday ? RETICLE : "");
+                  ", " + state + mark;
+      var marks = (crossed ? (manual ? CROSS_MANUAL : CROSS) : "") + (isToday ? RETICLE : "");
       html += '<div class="' + cls + '">' +
-              '<button class="mday" type="button" data-d="' + k + '" aria-pressed="' + crossed +
-              '" aria-label="' + label + '. Press to ' + (crossed ? "uncross" : "cross off") + '."><span>' +
+              '<button class="mday" type="button" data-d="' + k + '" aria-pressed="' + manual +
+              '" aria-label="' + label + '. Press to ' + (manual ? "unmark" : "mark") + ' it completed."><span>' +
               p2(day) + '</span>' + marks + '</button>' +
               '<button class="mopen" type="button" data-open="' + k + '" tabindex="-1" ' +
               'aria-label="Open ' + day + " " + MONTHS_T[d.getMonth()] + ' in Today">›</button>' +
@@ -2192,8 +2243,8 @@
     grid.innerHTML = html;
 
     document.getElementById("m-done").textContent = done + " / " + days;
-    document.getElementById("m-left").textContent = sameMonth ? left : (past2(first, today) ? 0 : days);
-    document.getElementById("m-gone").textContent = sameMonth ? gone : (past2(first, today) ? days : 0);
+    document.getElementById("m-left").textContent = left;      // today counts as remaining
+    document.getElementById("m-gone").textContent = gone;      // days that ended before today
     document.getElementById("m-today").textContent = sameMonth
       ? "Today is the " + ORD(today.getDate()) + " of " + days
       : (past2(first, today) ? "a month already spent" : "a month still ahead");
@@ -2240,6 +2291,84 @@
     var target = grid.querySelector('.mday[data-d="' + dkey(next) + '"]');
     if (target) target.focus();
   });
+  /* ---- month / year picker on the centre control ---- */
+  var MON3 = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var titleBtn = document.getElementById("month-title-btn"),
+      mpick = document.getElementById("month-picker"),
+      mpGrid = document.getElementById("mp-grid"),
+      mpYear = document.getElementById("mp-year");
+  var pickYear = null;
+
+  function paintMonthPicker(){
+    var now = new Date();
+    mpYear.textContent = pickYear;
+    mpGrid.innerHTML = MON3.map(function(m, i){
+      var sel = (pickYear === cursor.getFullYear() && i === cursor.getMonth());
+      var isNow = (pickYear === now.getFullYear() && i === now.getMonth());
+      return '<button type="button" data-m="' + i + '" class="' + (sel ? "sel " : "") + (isNow ? "now" : "") +
+             '"' + (sel ? ' aria-current="true"' : "") + ' aria-label="' + MONTHS_T[i] + " " + pickYear +
+             '">' + m + '</button>';
+    }).join("");
+  }
+  function openMonthPicker(){
+    pickYear = cursor.getFullYear();
+    paintMonthPicker();
+    mpick.hidden = false;
+    titleBtn.setAttribute("aria-expanded","true");
+    var sel = mpGrid.querySelector(".sel") || mpGrid.querySelector("button");
+    if (sel) sel.focus();
+  }
+  function closeMonthPicker(back){
+    if (mpick.hidden) return;
+    mpick.hidden = true;
+    titleBtn.setAttribute("aria-expanded","false");
+    if (back) titleBtn.focus();
+  }
+  function goToMonth(y, m){
+    var target = new Date(y, m, 1), back = target < cursor;
+    cursor = target;
+    paint();
+    grid.classList.remove("nav-back","nav-fwd");
+    void grid.offsetWidth;
+    grid.classList.add(back ? "nav-back" : "nav-fwd");
+  }
+
+  titleBtn.addEventListener("click", function(){
+    if (mpick.hidden) openMonthPicker(); else closeMonthPicker(true);
+  });
+  document.getElementById("mp-prev-year").addEventListener("click", function(){ pickYear--; paintMonthPicker(); });
+  document.getElementById("mp-next-year").addEventListener("click", function(){ pickYear++; paintMonthPicker(); });
+  document.getElementById("mp-close").addEventListener("click", function(){ closeMonthPicker(true); });
+  document.getElementById("mp-now").addEventListener("click", function(){
+    var n = new Date();
+    goToMonth(n.getFullYear(), n.getMonth());
+    closeMonthPicker(true);
+  });
+  mpGrid.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-m]");
+    if (!b) return;
+    goToMonth(pickYear, +b.dataset.m);
+    closeMonthPicker(true);
+  });
+  mpick.addEventListener("keydown", function(e){
+    if (e.key === "Escape"){ e.preventDefault(); closeMonthPicker(true); return; }
+    var b = e.target.closest("button[data-m]");
+    if (!b) return;
+    var n = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 :
+            e.key === "ArrowUp" ? -3 : e.key === "ArrowDown" ? 3 : 0;
+    if (!n) return;
+    e.preventDefault();
+    var i = +b.dataset.m + n;
+    if (i < 0){ pickYear--; i += 12; paintMonthPicker(); }
+    else if (i > 11){ pickYear++; i -= 12; paintMonthPicker(); }
+    var next = mpGrid.querySelector('[data-m="' + i + '"]');
+    if (next) next.focus();
+  });
+  document.addEventListener("click", function(e){
+    if (mpick.hidden) return;
+    if (!e.target.closest(".mtitle-wrap")) closeMonthPicker(false);
+  });
+
   document.getElementById("month-prev").addEventListener("click", function(){ stepMonth(-1); });
   document.getElementById("month-next").addEventListener("click", function(){ stepMonth(1); });
   nowBtn.addEventListener("click", function(){
@@ -2253,6 +2382,20 @@
   });
 
   document.addEventListener("viewchange", function(e){ if (e.detail === "month") paint(); });
+  var lastSeen = todayKey();
+  setInterval(function(){                       // at midnight yesterday crosses itself
+    var now = todayKey();
+    if (now === lastSeen) return;
+    var was = parseKey(lastSeen), is = parseKey(now);
+    // If you were watching the month the calendar just left, follow it over —
+    // the same rule My Day uses for the day. Otherwise stay where you are put.
+    if (cursor.getFullYear() === was.getFullYear() && cursor.getMonth() === was.getMonth() &&
+        (is.getFullYear() !== was.getFullYear() || is.getMonth() !== was.getMonth())){
+      cursor = new Date(is.getFullYear(), is.getMonth(), 1);
+    }
+    lastSeen = now;
+    paint();
+  }, 20000);
   document.addEventListener("lifedata", function(){ if (!document.getElementById("view-month").hidden) paint(); });
 
   var now0 = new Date();

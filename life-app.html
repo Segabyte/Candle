@@ -287,12 +287,15 @@
   .mcell.today .mday{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ember)}
   .mday:hover{filter:brightness(.94)}
   .mday:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-  .mcell.done .mday::after{content:"";position:absolute;inset:22%;opacity:.85;
-        background:linear-gradient(to bottom right,transparent calc(50% - 1px),currentColor calc(50% - 1px)
-                   calc(50% + 1px),transparent calc(50% + 1px)),
-                   linear-gradient(to bottom left,transparent calc(50% - 1px),currentColor calc(50% - 1px)
-                   calc(50% + 1px),transparent calc(50% + 1px))}
-  .mcell.done .mday{filter:saturate(.75)}
+  .mcell.done .mday{filter:saturate(.82)}
+  .crossmark,.reticle{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+        overflow:visible;fill:none;stroke:currentColor;stroke-linecap:round}
+  .crossmark{stroke-width:2.1;opacity:.62}
+  .mcell.past .crossmark{stroke-width:2.4;opacity:.5}
+  .reticle{stroke-width:2.2;opacity:.9}
+  .reticle circle.pip{fill:currentColor;stroke:none}
+  .mcell.today{z-index:2}
+  .mcell.today.done .reticle{opacity:.4}
   .mcell.has .mday::before{content:"";position:absolute;right:6px;bottom:6px;width:4px;height:4px;
         border-radius:50%;background:currentColor;opacity:.75}
   .mopen{position:absolute;right:2px;top:2px;width:22px;height:22px;display:grid;place-items:center;
@@ -309,9 +312,10 @@
            color:var(--ink-faint);letter-spacing:.04em}
   .mlegend span{display:flex;align-items:center;gap:7px}
   .mlegend i{width:11px;height:11px;border-radius:2px;display:block;position:relative}
-  .mlegend i.x::after{content:"";position:absolute;inset:1px;
-        background:linear-gradient(to bottom right,transparent 45%,var(--btn-ink) 45% 55%,transparent 55%),
-                   linear-gradient(to bottom left,transparent 45%,var(--btn-ink) 45% 55%,transparent 55%)}
+  .mlegend i.glyph{color:var(--btn-ink)}
+  .mlegend i.glyph svg{position:absolute;inset:1px;width:calc(100% - 2px);height:calc(100% - 2px);
+        fill:none;stroke:currentColor;stroke-width:9;stroke-linecap:round}
+  .mlegend i.glyph svg .pip{fill:currentColor;stroke:none}
   .mgrid.nav-back{animation:navBack .26s ease-out}
   .mgrid.nav-fwd{animation:navFwd .26s ease-out}
   @media (prefers-reduced-motion:reduce){.mgrid.nav-back,.mgrid.nav-fwd{animation:none}}
@@ -772,8 +776,8 @@
       <div class="mlegend">
         <span><i style="background:var(--ash-ghost)"></i> Spent</span>
         <span><i style="background:var(--ember)"></i> Left in the month</span>
-        <span><i style="background:var(--ember);box-shadow:0 0 0 1px var(--surface),0 0 0 2px var(--ember)"></i> Today</span>
-        <span><i class="x" style="background:var(--ember)"></i> Crossed off</span>
+        <span><i class="glyph" style="background:var(--ember)"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="30"/><circle class="pip" cx="50" cy="50" r="9"/><path d="M50 2 V22 M50 78 V98 M2 50 H22 M78 50 H98"/></svg></i> Today</span>
+        <span><i class="glyph" style="background:var(--ash-ghost);color:var(--ash-deep)"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 18 L82 82 M82 18 L18 82"/></svg></i> Crossed off</span>
         <span><i style="background:var(--ash-ghost)"></i>· dot = the day has a record</span>
       </div>
     </div>
@@ -2104,6 +2108,15 @@
       nowBtn = document.getElementById("month-now");
   var cursor = null;                                   // first of the displayed month
 
+  // A day crossed off is struck through; today is sighted, with the crosshair
+  // running past the square's edges the way a reticle does.
+  var CROSS = '<svg class="crossmark" viewBox="0 0 100 100" aria-hidden="true">' +
+              '<path d="M15 15 L85 85 M85 15 L15 85"/></svg>';
+  var RETICLE = '<svg class="reticle" viewBox="0 0 100 100" aria-hidden="true">' +
+                '<circle cx="50" cy="50" r="21"/><circle cx="50" cy="50" r="11"/>' +
+                '<circle class="pip" cx="50" cy="50" r="3"/>' +
+                '<path d="M50 -14 V27 M50 73 V114 M-14 50 H27 M73 50 H114"/></svg>';
+
   function p2(v){ return String(v).padStart(2,"0"); }
   function dkey(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
   function parseKey(k){ var a = String(k).split("-"); return new Date(+a[0], +a[1]-1, +a[2]); }
@@ -2165,10 +2178,11 @@
       var label = DAYS_T[d.getDay()] + " " + day + " " + MONTHS_T[d.getMonth()] + " " + d.getFullYear() +
                   ", " + (isToday ? "today" : past ? "past day" : "day ahead") +
                   ", " + (crossed ? "crossed off" : "not crossed off");
+      var marks = (crossed ? CROSS : "") + (isToday ? RETICLE : "");
       html += '<div class="' + cls + '">' +
               '<button class="mday" type="button" data-d="' + k + '" aria-pressed="' + crossed +
               '" aria-label="' + label + '. Press to ' + (crossed ? "uncross" : "cross off") + '."><span>' +
-              p2(day) + '</span></button>' +
+              p2(day) + '</span>' + marks + '</button>' +
               '<button class="mopen" type="button" data-open="' + k + '" tabindex="-1" ' +
               'aria-label="Open ' + day + " " + MONTHS_T[d.getMonth()] + ' in Today">›</button>' +
               '</div>';

@@ -251,6 +251,76 @@
     .ladder.nav-back,.ladder.nav-fwd,.ladder.nav-jump{animation:none}
   }
 
+  /* ---------- month · the summers grid, one month wide ---------- */
+  .month-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;
+             padding:clamp(26px,4vw,44px) 0 20px}
+  .month-bar .eyebrow{margin-right:auto}
+  .mnav{display:flex;align-items:center;gap:6px}
+  .mnav .daynav{width:42px;height:42px}
+  .mtitle{display:flex;align-items:center;justify-content:center;height:42px;min-width:186px;
+          padding:0 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:3px;
+          font-family:var(--mono);font-size:12.5px;letter-spacing:.15em;text-transform:uppercase;
+          color:var(--ink);white-space:nowrap}
+
+  .month-card{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+              padding:clamp(16px,3vw,28px)}
+  .msum{display:flex;flex-wrap:wrap;gap:10px 30px;padding-bottom:16px;margin-bottom:18px;
+        border-bottom:1px solid var(--line-soft)}
+  .msum div{display:flex;flex-direction:column;gap:3px}
+  .msum .v{font-family:var(--serif);font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+  .msum .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--ink-faint)}
+  .msum .now{margin-left:auto;align-self:flex-end;text-align:right}
+
+  .mwd{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px,.9vw,9px);margin-bottom:7px;
+       font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+       color:var(--ink-faint);text-align:center}
+  .mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(4px,.9vw,9px)}
+  .mcell{position:relative;aspect-ratio:1;min-width:0;min-height:0}
+  .mcell.pad{visibility:hidden}
+  .mday{position:absolute;inset:0;width:100%;height:100%;border:1px solid transparent;border-radius:2px;
+        background:var(--ember);color:var(--btn-ink);cursor:pointer;padding:0;
+        font-family:var(--mono);font-size:clamp(10px,1.5vw,13px);font-variant-numeric:tabular-nums;
+        display:flex;align-items:flex-start;justify-content:flex-start}
+  .mday span{padding:6px 0 0 7px;line-height:1}
+  .mcell.past .mday{background:var(--ash-ghost);color:var(--ink-faint)}
+  .mcell.today .mday{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ember)}
+  .mday:hover{filter:brightness(.94)}
+  .mday:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .mcell.done .mday::after{content:"";position:absolute;inset:22%;opacity:.85;
+        background:linear-gradient(to bottom right,transparent calc(50% - 1px),currentColor calc(50% - 1px)
+                   calc(50% + 1px),transparent calc(50% + 1px)),
+                   linear-gradient(to bottom left,transparent calc(50% - 1px),currentColor calc(50% - 1px)
+                   calc(50% + 1px),transparent calc(50% + 1px))}
+  .mcell.done .mday{filter:saturate(.75)}
+  .mcell.has .mday::before{content:"";position:absolute;right:6px;bottom:6px;width:4px;height:4px;
+        border-radius:50%;background:currentColor;opacity:.75}
+  .mopen{position:absolute;right:2px;top:2px;width:22px;height:22px;display:grid;place-items:center;
+         border:0;background:none;padding:0;cursor:pointer;color:currentColor;
+         font-family:var(--mono);font-size:11px;line-height:1;opacity:.4;transition:opacity .15s ease}
+  .mcell .mopen{color:var(--btn-ink)}
+  .mcell.past .mopen{color:var(--ink-faint)}
+  .mcell:hover .mopen,.mopen:focus-visible,.mopen:hover{opacity:1}
+  .mopen:focus-visible{outline:2px solid var(--ink);outline-offset:1px;border-radius:2px}
+  @media (hover:none){.mopen{opacity:.6}}
+
+  .mlegend{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;padding-top:16px;
+           border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:10.5px;
+           color:var(--ink-faint);letter-spacing:.04em}
+  .mlegend span{display:flex;align-items:center;gap:7px}
+  .mlegend i{width:11px;height:11px;border-radius:2px;display:block;position:relative}
+  .mlegend i.x::after{content:"";position:absolute;inset:1px;
+        background:linear-gradient(to bottom right,transparent 45%,var(--btn-ink) 45% 55%,transparent 55%),
+                   linear-gradient(to bottom left,transparent 45%,var(--btn-ink) 45% 55%,transparent 55%)}
+  .mgrid.nav-back{animation:navBack .26s ease-out}
+  .mgrid.nav-fwd{animation:navFwd .26s ease-out}
+  @media (prefers-reduced-motion:reduce){.mgrid.nav-back,.mgrid.nav-fwd{animation:none}}
+  @media (max-width:560px){
+    .mday span{padding:4px 0 0 5px}
+    .msum{gap:8px 18px}
+    .msum .v{font-size:22px}
+  }
+
   .ladder{background:var(--surface);border:1px solid var(--line);border-radius:5px;
           padding:clamp(15px,2.4vw,24px)}
   .ladder-head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
@@ -522,6 +592,7 @@
     <div class="tabs" role="tablist">
       <button class="tab" id="tab-life" role="tab" aria-selected="true" aria-controls="view-life">Long view</button>
       <button class="tab" id="tab-today" role="tab" aria-selected="false" aria-controls="view-today">Today</button>
+      <button class="tab" id="tab-month" role="tab" aria-selected="false" aria-controls="view-month">Month</button>
       <button class="tab" id="tab-pad" role="tab" aria-selected="false" aria-controls="view-pad">The pad</button>
       <button class="tab" id="tab-leaf" role="tab" aria-selected="false" aria-controls="view-leaf">Tear-off</button>
       <button class="tab" id="tab-scratch" role="tab" aria-selected="false" aria-controls="view-scratch">Scratchpad</button>
@@ -675,6 +746,42 @@
       00:00 and correct any hour: change the task, add notes, mark it complete or skipped. The
       record is kept on this device for today only.</p>
   </div><!-- /view-today -->
+
+  <div id="view-month" hidden>
+    <div class="month-bar">
+      <p class="eyebrow" id="month-eyebrow">—</p>
+      <button class="btn-quiet" id="month-now" hidden>This month</button>
+      <div class="mnav">
+        <button class="daynav" type="button" id="month-prev" aria-label="Previous month">‹</button>
+        <span class="mtitle" id="month-title" aria-live="polite">—</span>
+        <button class="daynav" type="button" id="month-next" aria-label="Next month">›</button>
+      </div>
+    </div>
+
+    <div class="month-card">
+      <div class="msum">
+        <div><span class="v num" id="m-done">0</span><span class="k">days crossed off</span></div>
+        <div><span class="v num" id="m-left">0</span><span class="k">days left in the month</span></div>
+        <div><span class="v num" id="m-gone">0</span><span class="k">days elapsed</span></div>
+        <div class="now"><span class="k" id="m-today">—</span></div>
+      </div>
+
+      <div class="mwd" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div class="mgrid" id="mgrid" role="group" aria-label="Days of the month"></div>
+
+      <div class="mlegend">
+        <span><i style="background:var(--ash-ghost)"></i> Spent</span>
+        <span><i style="background:var(--ember)"></i> Left in the month</span>
+        <span><i style="background:var(--ember);box-shadow:0 0 0 1px var(--surface),0 0 0 2px var(--ember)"></i> Today</span>
+        <span><i class="x" style="background:var(--ember)"></i> Crossed off</span>
+        <span><i style="background:var(--ash-ghost)"></i>· dot = the day has a record</span>
+      </div>
+    </div>
+
+    <p class="hero-lede" style="margin-top:22px;max-width:62ch;font-size:13.5px">
+      The same reckoning as the summers grid, one month wide: ash for what is spent, ember for what
+      is still yours. Click a day to cross it off; the arrow in its corner opens it in Today.</p>
+  </div><!-- /view-month -->
 
   <div id="view-pad" hidden>
     <div class="pad-bar">
@@ -1404,11 +1511,15 @@
   document.addEventListener("lifedata", function(){ load(); buildHours(); render(); });
   sealBtn.addEventListener("click", function(){
     if (!isToday()) return;                     // only the active day can be closed
-    state.sealed = Date.now(); state.closedBy = "hand"; save(); buildHours(); render();
+    state.sealed = Date.now(); state.closedBy = "hand";
+    state.dayDone = true; state.doneAt = Date.now();
+    save(); buildHours(); render();
   });
   reopenBtn.addEventListener("click", function(){
     if (!isToday()) return;
-    state.sealed = null; state.closedBy = null; save(); buildHours(); render();
+    state.sealed = null; state.closedBy = null;
+    state.dayDone = false; state.doneAt = null;
+    save(); buildHours(); render();
   });
 
   // view switching
@@ -1975,6 +2086,169 @@
     if (b) b.click();
   }
   window.LifeScratch = { parse: parseLine };          // used by the test harness
+})();
+</script>
+
+<script>
+(function(){
+  var MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+  var MONTHS_T = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DAYS_T = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var ORD = function(n){
+    var s = ["th","st","nd","rd"], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  };
+
+  var grid = document.getElementById("mgrid"),
+      titleEl = document.getElementById("month-title"),
+      nowBtn = document.getElementById("month-now");
+  var cursor = null;                                   // first of the displayed month
+
+  function p2(v){ return String(v).padStart(2,"0"); }
+  function dkey(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
+  function parseKey(k){ var a = String(k).split("-"); return new Date(+a[0], +a[1]-1, +a[2]); }
+  function todayKey(){ return dkey(new Date()); }
+  function recKey(k){ return "lifeapp.day." + k; }
+  function readDay(k){
+    try { var r = localStorage.getItem(recKey(k)); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  }
+  function writeDay(k, rec){ try { localStorage.setItem(recKey(k), JSON.stringify(rec)); } catch(e){} }
+  function hasRecord(rec){
+    if (!rec || !rec.hours) return false;
+    for (var h in rec.hours){
+      if (!Object.prototype.hasOwnProperty.call(rec.hours, h)) continue;
+      var c = rec.hours[h];
+      if (c && (c.text || c.notes || (c.status && c.status !== "not_started"))) return true;
+    }
+    return false;
+  }
+  // "Completed" is one flag on the day's own record — the same record My Day writes,
+  // so closing a day there crosses it off here, and nothing is stored twice.
+  function isDone(rec){ return !!(rec && rec.dayDone); }
+
+  function toggle(k){
+    var rec = readDay(k) || { hours:{}, sealed:null };
+    if (!rec.hours) rec.hours = {};
+    if (rec.dayDone){ rec.dayDone = false; rec.doneAt = null; }
+    else { rec.dayDone = true; rec.doneAt = Date.now(); }
+    writeDay(k, rec);
+    paint();
+    document.dispatchEvent(new CustomEvent("lifedata"));
+  }
+
+  function openInDay(k){
+    var tab = document.getElementById("tab-today");
+    if (tab) tab.click();
+    if (window.LifeDay && window.LifeDay.go) window.LifeDay.go(k, 0);
+  }
+
+  function paint(){
+    var first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    var days = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();   // handles leap years
+    var lead = (first.getDay() + 6) % 7;                                             // Monday-first
+    var t = todayKey(), today = new Date();
+    var sameMonth = today.getFullYear() === first.getFullYear() && today.getMonth() === first.getMonth();
+
+    titleEl.textContent = MONTHS[first.getMonth()] + " " + first.getFullYear();
+    nowBtn.hidden = sameMonth;
+
+    var html = "", done = 0, gone = 0, left = 0;
+    for (var i = 0; i < lead; i++) html += '<div class="mcell pad" aria-hidden="true"></div>';
+    for (var day = 1; day <= days; day++){
+      var d = new Date(first.getFullYear(), first.getMonth(), day), k = dkey(d);
+      var rec = readDay(k), crossed = isDone(rec);
+      var past = k < t, isToday = k === t;
+      if (crossed) done++;
+      if (past) gone++; else left++;
+      var cls = "mcell" + (past ? " past" : "") + (isToday ? " today" : "") +
+                (crossed ? " done" : "") + (hasRecord(rec) ? " has" : "");
+      var label = DAYS_T[d.getDay()] + " " + day + " " + MONTHS_T[d.getMonth()] + " " + d.getFullYear() +
+                  ", " + (isToday ? "today" : past ? "past day" : "day ahead") +
+                  ", " + (crossed ? "crossed off" : "not crossed off");
+      html += '<div class="' + cls + '">' +
+              '<button class="mday" type="button" data-d="' + k + '" aria-pressed="' + crossed +
+              '" aria-label="' + label + '. Press to ' + (crossed ? "uncross" : "cross off") + '."><span>' +
+              p2(day) + '</span></button>' +
+              '<button class="mopen" type="button" data-open="' + k + '" tabindex="-1" ' +
+              'aria-label="Open ' + day + " " + MONTHS_T[d.getMonth()] + ' in Today">›</button>' +
+              '</div>';
+    }
+    var trail = (7 - ((lead + days) % 7)) % 7;
+    for (var j = 0; j < trail; j++) html += '<div class="mcell pad" aria-hidden="true"></div>';
+    grid.innerHTML = html;
+
+    document.getElementById("m-done").textContent = done + " / " + days;
+    document.getElementById("m-left").textContent = sameMonth ? left : (past2(first, today) ? 0 : days);
+    document.getElementById("m-gone").textContent = sameMonth ? gone : (past2(first, today) ? days : 0);
+    document.getElementById("m-today").textContent = sameMonth
+      ? "Today is the " + ORD(today.getDate()) + " of " + days
+      : (past2(first, today) ? "a month already spent" : "a month still ahead");
+    document.getElementById("month-eyebrow").textContent =
+      sameMonth ? "This month" : (past2(first, today) ? "A month behind you" : "A month ahead");
+  }
+  function past2(first, today){
+    return first.getFullYear() < today.getFullYear() ||
+           (first.getFullYear() === today.getFullYear() && first.getMonth() < today.getMonth());
+  }
+
+  function stepMonth(n){
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + n, 1);   // calendar-safe, wraps years
+    paint();
+    grid.classList.remove("nav-back","nav-fwd");
+    void grid.offsetWidth;
+    grid.classList.add(n < 0 ? "nav-back" : "nav-fwd");
+  }
+
+  grid.addEventListener("click", function(e){
+    var open = e.target.closest("[data-open]");
+    if (open){ openInDay(open.dataset.open); return; }
+    var cell = e.target.closest(".mday");
+    if (!cell) return;
+    if (e.shiftKey){ openInDay(cell.dataset.d); return; }      // shift-click opens the day
+    toggle(cell.dataset.d);
+    var again = grid.querySelector('.mday[data-d="' + cell.dataset.d + '"]');
+    if (again) again.focus();
+  });
+  grid.addEventListener("keydown", function(e){
+    var cell = e.target.closest(".mday");
+    if (!cell) return;
+    if (e.key === "o" || e.key === "O"){ e.preventDefault(); openInDay(cell.dataset.d); return; }
+    var n = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 :
+            e.key === "ArrowUp" ? -7 : e.key === "ArrowDown" ? 7 : 0;
+    if (!n) return;
+    e.preventDefault();
+    var d = parseKey(cell.dataset.d);
+    var next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+    if (next.getMonth() !== cursor.getMonth() || next.getFullYear() !== cursor.getFullYear()){
+      cursor = new Date(next.getFullYear(), next.getMonth(), 1);
+      paint();
+    }
+    var target = grid.querySelector('.mday[data-d="' + dkey(next) + '"]');
+    if (target) target.focus();
+  });
+  document.getElementById("month-prev").addEventListener("click", function(){ stepMonth(-1); });
+  document.getElementById("month-next").addEventListener("click", function(){ stepMonth(1); });
+  nowBtn.addEventListener("click", function(){
+    var n = new Date();
+    var back = past2(cursor, n);
+    cursor = new Date(n.getFullYear(), n.getMonth(), 1);
+    paint();
+    grid.classList.remove("nav-back","nav-fwd");
+    void grid.offsetWidth;
+    grid.classList.add(back ? "nav-fwd" : "nav-back");
+  });
+
+  document.addEventListener("viewchange", function(e){ if (e.detail === "month") paint(); });
+  document.addEventListener("lifedata", function(){ if (!document.getElementById("view-month").hidden) paint(); });
+
+  var now0 = new Date();
+  cursor = new Date(now0.getFullYear(), now0.getMonth(), 1);
+  paint();
+  if (location.hash === "#month"){
+    var tab = document.getElementById("tab-month");
+    if (tab) tab.click();
+  }
+  window.LifeMonth = { paint: paint, step: stepMonth, cursor: function(){ return dkey(cursor); } };
 })();
 </script>
 

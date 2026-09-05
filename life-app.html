@@ -18,7 +18,7 @@
     --ash:#B0B4AB; --ash-deep:#8D9289;
     --ember:#B3441C; --ember-soft:#D9713F;
     --brass:#8E6B1E; --ember-ghost:#E7D2C7; --ash-ghost:#DCDDD4; --btn-ink:#F8F4F0;
-    --desk:#C8C4B4; --stock:#F7F2E4; --stock-dim:#E7E0CB; --stock-ink:#2A2620;
+    --scheme:light; --desk:#C8C4B4; --stock:#F7F2E4; --stock-dim:#E7E0CB; --stock-ink:#2A2620;
     --rule:#CDC9B6; --stock-faint:#918B78; --red:#B93B2B;
     --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
     --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -33,7 +33,7 @@
       --ash:#454D4A; --ash-deep:#5C635F;
       --ember:#E07347; --ember-soft:#B85630;
       --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
-      --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
+      --scheme:dark; --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
       --rule:#BAB39D; --stock-faint:#7C7663; --red:#A93425;
     }
   }
@@ -44,7 +44,7 @@
     --ash:#454D4A; --ash-deep:#5C635F;
     --ember:#E07347; --ember-soft:#B85630;
     --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
-      --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
+      --scheme:dark; --desk:#0B0F0E; --stock:#E6DECA; --stock-dim:#D2C9B1; --stock-ink:#241F18;
       --rule:#BAB39D; --stock-faint:#7C7663; --red:#A93425;
   }
 
@@ -70,7 +70,7 @@
   .field label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
                color:var(--ink-faint)}
   .field input{font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--surface);
-               border:1px solid var(--line);border-radius:3px;padding:7px 9px}
+               border:1px solid var(--line);border-radius:3px;padding:7px 9px;color-scheme:var(--scheme)}
   .field input:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
   .field input[type=number]{width:76px}
 
@@ -171,7 +171,7 @@
 
 
   /* ---------- view tabs ---------- */
-  .tabs{display:flex;gap:2px;background:var(--surface-2);border:1px solid var(--line);
+  .tabs{display:flex;flex-wrap:wrap;gap:2px;background:var(--surface-2);border:1px solid var(--line);
         border-radius:4px;padding:2px}
   .tab{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
        color:var(--ink-faint);background:none;border:0;padding:7px 13px;border-radius:3px;cursor:pointer}
@@ -186,6 +186,42 @@
   .day-count u{text-decoration:none;font-style:italic;font-size:.34em;color:var(--ink);
                margin:0 .18em 0 .04em}
   @media (max-width:680px){.day-hero{grid-template-columns:1fr}}
+
+  /* ---------- date navigation (view clock, not the life clock) ---------- */
+  .datenav{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:16px}
+  .daynav{width:42px;height:42px;display:grid;place-items:center;font-family:var(--serif);
+          font-size:23px;line-height:1;color:var(--ink-soft);background:var(--surface);
+          border:1px solid var(--line);border-radius:3px;cursor:pointer;padding:0}
+  .daynav:hover{color:var(--ember);border-color:var(--ember-soft)}
+  .daynav:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .datefield{position:relative;display:flex;align-items:center;justify-content:center;height:42px;
+             min-width:132px;padding:0 12px;background:var(--surface-2);border:1px solid var(--line);
+             border-radius:3px}
+  .datefield:hover{border-color:var(--ash-deep)}
+  .datefield:focus-within{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-ghost)}
+  .datelabel{font-family:var(--mono);font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;
+             color:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none;white-space:nowrap}
+  .datefield input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;
+                   border:0;cursor:pointer;color-scheme:var(--scheme);font-family:var(--mono)}
+  .datemeta{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:9px;
+            min-height:20px}
+  .datestatus{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+              color:var(--brass)}
+  #day-today{padding:0}
+  @media (max-width:680px){
+    .datenav,.datemeta{justify-content:flex-start}
+    .datefield{flex:0 1 auto;min-width:118px}
+    .clock{white-space:normal}
+  }
+  .ladder.nav-back{animation:navBack .26s ease-out}
+  .ladder.nav-fwd{animation:navFwd .26s ease-out}
+  .ladder.nav-jump{animation:navJump .24s ease-out}
+  @keyframes navBack{from{transform:translateX(-16px);opacity:.3}to{transform:none;opacity:1}}
+  @keyframes navFwd{from{transform:translateX(16px);opacity:.3}to{transform:none;opacity:1}}
+  @keyframes navJump{from{opacity:.25}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    .ladder.nav-back,.ladder.nav-fwd,.ladder.nav-jump{animation:none}
+  }
 
   .ladder{background:var(--surface);border:1px solid var(--line);border-radius:5px;
           padding:clamp(15px,2.4vw,24px)}
@@ -554,8 +590,20 @@
           went on — every hour of today stays editable, however late you get to it.</p>
       </div>
       <div class="clock">
-        of the 24 you were given
+        <span id="day-clock-label">of the 24 you were given</span>
         <span class="big" id="day-spent">—</span>
+        <div class="datenav">
+          <button class="daynav" type="button" id="day-prev" aria-label="Previous day" title="Previous day">‹</button>
+          <span class="datefield">
+            <span class="datelabel" id="day-date-label">—</span>
+            <input type="date" id="day-date-input" aria-label="Jump to a date">
+          </span>
+          <button class="daynav" type="button" id="day-next" aria-label="Next day" title="Next day">›</button>
+        </div>
+        <div class="datemeta">
+          <button class="btn-quiet" type="button" id="day-today" hidden>Today</button>
+          <span class="datestatus" id="day-status">—</span>
+        </div>
       </div>
     </div>
 
@@ -888,6 +936,7 @@
   var MS = 86400000;
   var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var MON3 = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var STATUS = { not_started:"Not started", completed:"Completed", skipped:"Skipped" };
 
   var hoursEl = document.getElementById("hours"),
@@ -895,18 +944,35 @@
       sealBtn = document.getElementById("seal-btn"),
       reopenBtn = document.getElementById("reopen"),
       dlg = document.getElementById("hour-dialog"),
-      form = document.getElementById("hour-form");
-  var day = null, key = "", state = { hours:{}, sealed:null }, editing = null;
-  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      form = document.getElementById("hour-form"),
+      prevBtn = document.getElementById("day-prev"),
+      nextBtn = document.getElementById("day-next"),
+      todayBtn = document.getElementById("day-today"),
+      dateInput = document.getElementById("day-date-input"),
+      dateLabel = document.getElementById("day-date-label");
+
+  // Two clocks, deliberately separate:
+  //   activeKey — the life clock: the real day the tear-off chronology is on.
+  //   viewKey   — the viewing calendar: the day being read or edited.
+  var activeKey = null, viewKey = null;
+  var state = { hours:{}, sealed:null }, editing = null;
 
   function p2(v){ return String(v).padStart(2,"0"); }
   function fmt(n){ return n.toLocaleString("en-GB"); }
   function esc(v){ return String(v == null ? "" : v).replace(/[&<>"]/g, function(c){
     return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
   function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function dkey(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
+  function parseKey(k){ var a = String(k).split("-"); return new Date(+a[0], +a[1]-1, +a[2]); }
+  function todayKey(){ return dkey(new Date()); }
   function longDate(d){ return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function shortDate(d){ return p2(d.getDate()) + " " + MON3[d.getMonth()] + " " + d.getFullYear(); }
   function dayDiff(a,b){ return Math.round((midnight(b) - midnight(a)) / MS); }
-  function keyFor(d){ return "lifeapp.day." + d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
+  function storeKey(k){ return "lifeapp.day." + k; }
+
+  function isToday(){ return viewKey === activeKey; }
+  function offset(){ return dayDiff(parseKey(activeKey), parseKey(viewKey)); }
+  function locked(){ return isToday() && !!state.sealed; }   // only the active day can be closed
 
   function blank(){ return { text:"", notes:"", status:"not_started" }; }
   function hour(h){
@@ -920,9 +986,10 @@
     save();
   }
 
+  // Records are per calendar date and created lazily: nothing is written until an edit.
   function load(){
     var raw = null, parsed = null;
-    try { raw = localStorage.getItem(key); } catch(e){}
+    try { raw = localStorage.getItem(storeKey(viewKey)); } catch(e){}
     try { parsed = raw ? JSON.parse(raw) : null; } catch(e){ parsed = null; }
     if (!parsed || typeof parsed !== "object") parsed = {};
     if (!parsed.hours){                                   // migrate the earlier flag-only record
@@ -932,12 +999,12 @@
           hrs[h] = { text: String(parsed.flags[h] || ""), notes:"", status:"completed" };
         });
       }
-      parsed = { hours: hrs, sealed: parsed.sealed || null };
+      parsed = { hours: hrs, sealed: parsed.sealed || null, closedBy: parsed.closedBy || null };
     }
     if (!parsed.hours || typeof parsed.hours !== "object") parsed.hours = {};
     state = parsed;
   }
-  function save(){ try { localStorage.setItem(key, JSON.stringify(state)); } catch(e){} }
+  function save(){ try { localStorage.setItem(storeKey(viewKey), JSON.stringify(state)); } catch(e){} }
 
   function tally(){
     var t = { done:0, skipped:0, logged:0 };
@@ -951,33 +1018,43 @@
   }
   function span(h){ return p2(h) + ":00 – " + p2((h+1) % 24) + ":00"; }
   function kind(h){
+    if (!isToday()) return offset() < 0 ? "Past day" : "Planned day";
     var n = new Date().getHours();
     return h < n ? "Past hour" : h === n ? "Current hour" : "Future hour";
   }
+  function daysToRetirement(from){
+    var parts = document.getElementById("dob").value.split("-");
+    if (parts.length !== 3) return null;
+    var dob = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    var age = Math.max(40, Math.min(90, +document.getElementById("age").value || 60));
+    return Math.max(0, dayDiff(from, new Date(dob.getFullYear()+age, dob.getMonth(), dob.getDate())));
+  }
 
   function buildHours(){
-    var now = new Date(), html = "";
+    var now = new Date(), today = isToday(), off = offset(), html = "";
     for (var h = 0; h < 24; h++){
-      var d = hour(h), past = h < now.getHours(), isNow = h === now.getHours();
+      var d = hour(h);
+      var past = today ? h < now.getHours() : off < 0;     // a whole past day reads as spent
+      var isNow = today && h === now.getHours();           // NOW only ever on the real today
       var cls = "hour" + (past ? " past" : "") + (isNow ? " now" : "") +
                 (d.status === "completed" ? " done" : "") + (d.status === "skipped" ? " skip" : "");
       var style = "";
-      if (isNow && !state.sealed && d.status === "not_started"){
+      if (isNow && !locked() && d.status === "not_started"){
         var pct = Math.round((now.getMinutes()/60)*100);
         style = ' style="background:linear-gradient(90deg,var(--ash-ghost) 0 ' + pct +
                 '%,var(--ember-ghost) ' + pct + '% 100%)"';
       }
-      var locked = !!state.sealed;
+      var lock = locked();
       html += '<div class="' + cls + '" data-h="' + h + '">' +
               '<span class="hh">' + p2(h) + '</span>' +
               '<button class="slot" type="button"' + style + ' aria-pressed="' + (d.status === "completed") +
               '" aria-label="Mark ' + span(h) + (d.status === "completed" ? " not started" : " completed") + '"' +
-              (locked ? " disabled" : "") + '></button>' +
+              (lock ? " disabled" : "") + '></button>' +
               '<input class="what" type="text" maxlength="80" value="' + esc(d.text) + '" ' +
-              'placeholder="' + (locked ? "" : "what went on?") + '" aria-label="Task for ' + span(h) + '"' +
-              (locked ? " disabled" : "") + '>' +
+              'placeholder="' + (lock ? "" : (off > 0 ? "plan this hour" : "what went on?")) +
+              '" aria-label="Task for ' + span(h) + '"' + (lock ? " disabled" : "") + '>' +
               '<button class="pill" type="button" aria-label="Edit ' + span(h) + ", " + STATUS[d.status] + '"' +
-              (locked ? " disabled" : "") + '>' + STATUS[d.status] +
+              (lock ? " disabled" : "") + '>' + STATUS[d.status] +
               (d.notes ? ' <span class="dot" aria-hidden="true">•</span>' : "") + '</button>' +
               '</div>';
     }
@@ -985,62 +1062,152 @@
   }
 
   function render(){
-    var now = new Date();
-    var spentMin = now.getHours()*60 + now.getMinutes(), leftMin = 1440 - spentMin;
-    var t = tally(), hoursLeft = Math.ceil(leftMin/60);
-    var d = null;
-    var parts = document.getElementById("dob").value.split("-");
-    if (parts.length === 3){
-      var dob = new Date(+parts[0], +parts[1]-1, +parts[2]);
-      var age = Math.max(40, Math.min(90, +document.getElementById("age").value || 60));
-      d = Math.max(0, dayDiff(midnight(now), new Date(dob.getFullYear()+age, dob.getMonth(), dob.getDate())));
-    }
+    var now = new Date(), d = parseKey(viewKey), off = offset(), t = tally(), today = isToday();
+    var left = daysToRetirement(d);
+
+    // --- date navigation ---
+    dateInput.value = viewKey;
+    dateLabel.textContent = shortDate(d);
+    todayBtn.hidden = today;
+    document.getElementById("day-status").textContent =
+      off === 0 ? "Today" : off === -1 ? "Yesterday" : off === 1 ? "Tomorrow" :
+      off < 0 ? "Past day" : "Planned day";
 
     document.getElementById("day-date").textContent =
-      DAYS[now.getDay()] + " " + longDate(now) + (d === null ? "" : " · one of the " + fmt(d));
-    document.getElementById("day-left").innerHTML =
-      Math.floor(leftMin/60) + "<u>h</u>" + p2(leftMin%60) + "<u>m</u>";
-    document.getElementById("day-spent").textContent =
-      Math.floor(spentMin/60) + "h " + p2(spentMin%60) + "m spent";
+      DAYS[d.getDay()] + " " + longDate(d) + (left === null ? "" : " · one of the " + fmt(left));
 
-    document.getElementById("day-lede").innerHTML = state.sealed
-      ? "The day is closed. Reopen it if you still need to correct an hour."
-      : "Twenty-four hours arrived this morning; <b>" + Math.floor(spentMin/60) + "</b> are already " +
-        "spent. Log what each one went on — every hour of today stays editable, however late you get to it.";
+    // --- the big figure only measures live time on the real today ---
+    var bigEl = document.getElementById("day-left"),
+        labelEl = document.getElementById("day-clock-label"),
+        spentEl = document.getElementById("day-spent"),
+        ledeEl = document.getElementById("day-lede");
+    if (today){
+      var spentMin = now.getHours()*60 + now.getMinutes(), leftMin = 1440 - spentMin;
+      var hoursLeft = Math.ceil(leftMin/60);
+      bigEl.innerHTML = Math.floor(leftMin/60) + "<u>h</u>" + p2(leftMin%60) + "<u>m</u>";
+      labelEl.textContent = "of the 24 you were given";
+      spentEl.textContent = Math.floor(spentMin/60) + "h " + p2(spentMin%60) + "m spent";
+      ledeEl.innerHTML = state.sealed
+        ? "The day is closed. Reopen it if you still need to correct an hour."
+        : "Twenty-four hours arrived this morning; <b>" + Math.floor(spentMin/60) + "</b> are already " +
+          "spent. Log what each one went on — every hour of today stays editable, however late you get to it.";
+      document.getElementById("ladder-tally").textContent =
+        t.done + " done · " + t.skipped + " skipped · " + hoursLeft + " hour" + (hoursLeft === 1 ? "" : "s") + " left";
+    } else if (off < 0){
+      bigEl.innerHTML = t.done + "<u>of 24</u>";
+      labelEl.textContent = "hours completed that day";
+      spentEl.textContent = state.sealed
+        ? "closed at " + p2(new Date(state.sealed).getHours()) + ":" + p2(new Date(state.sealed).getMinutes())
+        : "ended at midnight";
+      ledeEl.innerHTML = "This day has already ended, but its record has not. Correct any hour — " +
+        "what you write here does not change how the day itself closed.";
+      document.getElementById("ladder-tally").textContent =
+        t.done + " of 24 completed · " + t.skipped + " skipped · " + t.logged + " logged";
+    } else {
+      bigEl.innerHTML = t.logged + "<u>of 24</u>";
+      labelEl.textContent = "hours planned so far";
+      spentEl.textContent = "not started yet";
+      ledeEl.innerHTML = "Nothing has happened here yet. Plan the hours you mean to protect — " +
+        "nothing counts as done until you mark it, on the day itself.";
+      document.getElementById("ladder-tally").textContent =
+        t.logged + " of 24 planned · " + t.done + " marked done";
+    }
 
-    document.getElementById("ladder-tally").textContent =
-      t.done + " done · " + t.skipped + " skipped · " + hoursLeft + " hour" + (hoursLeft === 1 ? "" : "s") + " left";
-
+    // --- closing a day belongs to the life clock, so only the active day offers it ---
     var line = document.getElementById("seal-line");
-    if (state.sealed){
+    if (!today){
+      sealBtn.hidden = true; reopenBtn.hidden = true;
+      ladder.classList.remove("sealed");
+      line.innerHTML = off < 0
+        ? (state.sealed
+            ? "Closed by hand at <b>" + p2(new Date(state.sealed).getHours()) + ":" +
+              p2(new Date(state.sealed).getMinutes()) + "</b>. That stands — editing an hour does not reopen it."
+            : "Ended at <b>midnight</b>, as days do. The record stays open for corrections.")
+        : "A planned day. It becomes the active day when the date arrives — nothing here is counted until then.";
+    } else if (state.sealed){
       var st = new Date(state.sealed);
       line.innerHTML = "Closed at <b>" + p2(st.getHours()) + ":" + p2(st.getMinutes()) + "</b>. <b>" +
         t.done + " of 24</b> hours completed" + (t.skipped ? ", " + t.skipped + " skipped" : "") + ". " +
-        (d === null ? "" : "<b>" + fmt(Math.max(0, d - 1)) + "</b> days left after tonight.");
+        (left === null ? "" : "<b>" + fmt(Math.max(0, left - 1)) + "</b> days left after tonight.");
       sealBtn.hidden = true; reopenBtn.hidden = false; ladder.classList.add("sealed");
     } else {
       line.innerHTML = t.done || t.skipped || t.logged
         ? "<b>" + t.done + "</b> hour" + (t.done === 1 ? "" : "s") + " completed, <b>" + t.logged +
           "</b> logged. Close the day when you are done with it."
-        : "Nothing logged yet. <b>" + hoursLeft + "</b> hour" + (hoursLeft === 1 ? "" : "s") +
-          " of this one are still ahead.";
+        : "Nothing logged yet. <b>" + Math.ceil((1440 - (now.getHours()*60 + now.getMinutes()))/60) +
+          "</b> hours of this one are still ahead.";
       sealBtn.hidden = false; reopenBtn.hidden = true; ladder.classList.remove("sealed");
     }
   }
 
+  /* ---- navigation: changes what you are looking at, never the life clock ---- */
+  function animate(dir){
+    ladder.classList.remove("nav-back","nav-fwd","nav-jump");
+    void ladder.offsetWidth;                                  // restart the animation
+    ladder.classList.add(dir < 0 ? "nav-back" : dir > 0 ? "nav-fwd" : "nav-jump");
+  }
+  function goTo(key, dir){
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) return;
+    var d = parseKey(key);
+    if (isNaN(d.getTime())) return;
+    if (dlg.open){ commit(); dlg.close("save"); }             // never lose an open edit
+    viewKey = key;
+    load();
+    buildHours();
+    render();
+    animate(dir);
+    syncHash();
+  }
+  function stepDay(n){
+    var d = parseKey(viewKey);
+    goTo(dkey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)), n);  // calendar-safe, DST included
+  }
+
+  prevBtn.addEventListener("click", function(){ stepDay(-1); });
+  nextBtn.addEventListener("click", function(){ stepDay(1); });
+  todayBtn.addEventListener("click", function(){
+    var t = todayKey();
+    goTo(t, viewKey < t ? 1 : -1);
+  });
+  dateInput.addEventListener("change", function(){ if (dateInput.value) goTo(dateInput.value, 0); });
+  dateInput.addEventListener("click", function(){
+    try { if (dateInput.showPicker) dateInput.showPicker(); } catch(e){}
+  });
+  dateInput.addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); try { if (dateInput.showPicker) dateInput.showPicker(); } catch(e2){} }
+  });
+  document.addEventListener("keydown", function(e){
+    if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (document.getElementById("view-today").hidden || dlg.open) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
+    if (e.key === "ArrowLeft"){ e.preventDefault(); stepDay(-1); }
+    else if (e.key === "ArrowRight"){ e.preventDefault(); stepDay(1); }
+  });
+
+  function syncHash(){
+    if (document.getElementById("view-today").hidden) return;
+    try { history.replaceState(null, "", viewKey === activeKey ? "#today" : "#today/" + viewKey); } catch(e){}
+  }
+
   function refresh(rebuild){
-    var now = new Date();
-    if (!day || day !== keyFor(now)){ day = keyFor(now); key = day; load(); rebuild = true; }
+    var real = todayKey();
+    if (activeKey !== real){                                  // the life clock moved on
+      var wasOnToday = (viewKey === activeKey);
+      activeKey = real;
+      if (viewKey === null || wasOnToday){ viewKey = real; load(); rebuild = true; }
+    }
+    if (viewKey === null){ viewKey = activeKey; load(); rebuild = true; }
     if (rebuild) buildHours();
     render();
   }
 
-  /* ---- the hour editor: same panel for past, current and future ---- */
+  /* ---- the hour editor: same panel for every hour of every day ---- */
   function openEditor(h){
-    if (state.sealed) return;
+    if (locked()) return;
     editing = h;
-    var d = hour(h), k = kind(h), now = new Date();
-    document.getElementById("hdlg-date").textContent = DAYS[now.getDay()] + " · " + longDate(now);
+    var d = hour(h), k = kind(h), viewed = parseKey(viewKey);
+    document.getElementById("hdlg-date").textContent = DAYS[viewed.getDay()] + " · " + longDate(viewed);
     document.getElementById("hdlg-title").textContent = span(h);
     var when = document.getElementById("hdlg-when");
     when.textContent = k;
@@ -1049,8 +1216,9 @@
     document.getElementById("hdlg-notes").value = d.notes;
     var radio = form.querySelector('input[name="hstatus"][value="' + d.status + '"]');
     if (radio) radio.checked = true;
-    document.getElementById("hdlg-help").textContent = k === "Future hour"
-      ? "Plan it now if you like. A future hour counts as completed only when you say so."
+    document.getElementById("hdlg-help").textContent =
+      offset() > 0 ? "Planning ahead. A future hour counts as completed only when you say so, on the day."
+      : offset() < 0 ? "An earlier day stays correctable — task, notes and status alike. How that day ended does not change."
       : "Every hour of today can be corrected — task, notes and status alike. Time passing never locks the record.";
     if (typeof dlg.showModal === "function"){
       dlg.showModal();
@@ -1081,7 +1249,7 @@
   document.getElementById("hdlg-cancel").addEventListener("click", function(){ dlg.close("cancel"); });
 
   hoursEl.addEventListener("click", function(e){
-    if (state.sealed) return;
+    if (locked()) return;
     var row = e.target.closest(".hour");
     if (!row) return;
     var h = +row.dataset.h;
@@ -1089,7 +1257,7 @@
     var slot = e.target.closest(".slot");
     if (!slot) return;
     var d = hour(h);
-    d.status = d.status === "completed" ? "not_started" : "completed";   // past hours included
+    d.status = d.status === "completed" ? "not_started" : "completed";   // any hour, any day
     put(h, d); buildHours(); render();
     var again = hoursEl.querySelector('.hour[data-h="' + h + '"] .slot');
     if (again) again.focus();
@@ -1101,13 +1269,19 @@
     var h = +input.closest(".hour").dataset.h;
     var d = hour(h);
     d.text = input.value;
-    put(h, d);
+    put(h, d);                                  // live autosave, so navigation can never lose it
     render();
   });
 
   document.addEventListener("lifedata", function(){ load(); buildHours(); render(); });
-  sealBtn.addEventListener("click", function(){ state.sealed = Date.now(); save(); buildHours(); render(); });
-  reopenBtn.addEventListener("click", function(){ state.sealed = null; save(); buildHours(); render(); });
+  sealBtn.addEventListener("click", function(){
+    if (!isToday()) return;                     // only the active day can be closed
+    state.sealed = Date.now(); state.closedBy = "hand"; save(); buildHours(); render();
+  });
+  reopenBtn.addEventListener("click", function(){
+    if (!isToday()) return;
+    state.sealed = null; state.closedBy = null; save(); buildHours(); render();
+  });
 
   // view switching
   var tabEls = [].slice.call(document.querySelectorAll('[role="tab"]'));
@@ -1120,7 +1294,10 @@
     });
     if (name === "today") refresh(true);
     document.dispatchEvent(new CustomEvent("viewchange", { detail: name }));
-    try { history.replaceState(null, "", name === "life" ? "#" : "#" + name); } catch(e){}
+    try {
+      history.replaceState(null, "", name === "life" ? "#"
+        : name === "today" && viewKey !== activeKey ? "#today/" + viewKey : "#" + name);
+    } catch(e){}
     window.scrollTo({ top: 0, behavior: "auto" });
   }
   tabEls.forEach(function(t){
@@ -1129,10 +1306,16 @@
   document.getElementById("dob").addEventListener("change", function(){ render(); });
   document.getElementById("age").addEventListener("input", function(){ render(); });
 
+  activeKey = todayKey();
+  viewKey = activeKey;
   refresh(true);
-  if (location.hash === "#today") show("today");
-  else if (location.hash === "#pad") show("pad");
-  setInterval(function(){ refresh(new Date().getMinutes() === 0); }, 15000);
+  var deep = location.hash.match(/^#today(?:\/(\d{4}-\d{2}-\d{2}))?$/);
+  if (deep){
+    show("today");
+    if (deep[1]) goTo(deep[1], 0);
+  } else if (location.hash === "#pad") show("pad");
+  setInterval(function(){ refresh(isToday() && new Date().getMinutes() === 0); }, 15000);
+  window.LifeDay = { go: goTo, view: function(){ return viewKey; }, active: function(){ return activeKey; } };
 })();
 </script>
 

@@ -9,3 +9,22 @@ release/
 finance-plan.json
 finance-plan*.json
 *.plan.json
+
+# Financial exports, documents and anything else personal.
+finance-plan-*.json
+*.finance.json
+financial-data/
+private-finance/
+exports/
+t4/
+tax-documents/
+
+# Credentials — none of these belong in a repository.
+.env
+.env.*
+!.env.example
+service-account*.json
+*-service-account.json
+*.pem
+*.key
+secrets.json

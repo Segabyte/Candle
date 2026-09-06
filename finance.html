@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
 <title>Finance App</title>
-<meta name="description" content="Personal finance for a salaried person: what you earn, what you spend, and what to do about it today.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
@@ -288,9 +289,120 @@ img{max-width:100%}
          color:var(--ink-faint)}
   footer p{max-width:60ch}
 
+  /* ---------- the gate: locked-first, nothing behind it until authorised ---------- */
+  .gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+        padding:24px;background:var(--ground)}
+  .gate-card{width:min(460px,100%);text-align:left}
+  .gate-mark{font-family:var(--serif);font-size:26px;display:flex;align-items:baseline;gap:10px}
+  .gate-title{font-family:var(--serif);font-size:clamp(30px,6vw,44px);line-height:1.05;margin-top:26px;
+              font-weight:400}
+  .gate-copy{margin-top:14px;font-size:16px;color:var(--ink-soft);max-width:36ch}
+  .gate-btn{margin-top:28px;display:inline-flex;align-items:center;gap:11px}
+  .gate-note{margin-top:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;
+             color:var(--ink-faint);max-width:44ch;line-height:1.7}
+  .gate-status{margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+               text-transform:uppercase;color:var(--ink-faint)}
+  .glogo{width:16px;height:16px;fill:currentColor;flex:none}
+  #btn-signout-locked{display:block;margin-top:14px}
+
+  /* account control */
+  .acct{position:relative}
+  .acct-btn{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+            letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);background:var(--surface);
+            border:1px solid var(--line);border-radius:3px;padding:8px 11px;cursor:pointer}
+  .acct-btn:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .acct-btn:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .acct-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:232px;background:var(--surface);
+             border:1px solid var(--line);border-radius:4px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+  .acct-menu p{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+               color:var(--ink-faint);padding:8px 9px 6px}
+  .acct-menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px;
+                    border-radius:3px;font-family:var(--sans);font-size:14px;color:var(--ink);cursor:pointer}
+  .acct-menu button:hover{background:var(--surface-2)}
+  .acct-menu button:focus-visible{outline:2px solid var(--ember);outline-offset:-2px}
+  .acct-menu hr{border:0;border-top:1px solid var(--line-soft);margin:6px 0}
+  .acct-menu select{width:100%;margin-top:4px;font-family:var(--mono);font-size:11px;color:var(--ink);
+                    background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:7px 8px;
+                    color-scheme:var(--scheme)}
+  .local-banner{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+                color:var(--brass);border:1px dashed var(--brass);border-radius:3px;padding:6px 9px}
+
 </style>
 </head>
 <body>
+
+<!-- ============================================================================
+     Public configuration only. The anon key is meant to be public: it grants
+     nothing by itself, because every table denies by default and row-level
+     security only ever returns rows belonging to the signed-in user.
+     Never put a service_role key, an OAuth client secret or a database
+     password in this file.
+     ============================================================================ -->
+<script>
+window.FINANCE_CONFIG = {
+  supabaseUrl:     "",   // e.g. https://abcdefgh.supabase.co
+  supabaseAnonKey: ""    // the "anon public" key from Supabase → Settings → API
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+
+<!-- The page opens locked. Nothing below .gate exists until a session is authorised. -->
+<div class="gate" id="gate-boot">
+  <div class="gate-card">
+    <p class="gate-mark">Finance App <span class="chip">Private</span></p>
+    <p class="gate-status">Unlocking…</p>
+  </div>
+</div>
+
+<div class="gate" id="gate-login" hidden>
+  <div class="gate-card">
+    <p class="gate-mark">Finance App <span class="chip">Private</span></p>
+    <h1 class="gate-title">Your personal financial space.</h1>
+    <p class="gate-copy">Income, spending, goals, and the small decisions that move
+      your future forward.</p>
+    <button class="btn gate-btn" id="btn-google" type="button">
+      <svg viewBox="0 0 18 18" aria-hidden="true" class="glogo"><path d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z"/><path d="M3.9 10.7a5.4 5.4 0 0 1 0-3.4V5H.9a9 9 0 0 0 0 8l3-2.3z"/><path d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 .9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg>
+      Continue with Google
+    </button>
+    <p class="gate-note" id="login-note">Your financial information is private and
+      available only after authentication.</p>
+  </div>
+</div>
+
+<div class="gate" id="gate-denied" hidden>
+  <div class="gate-card">
+    <p class="gate-mark">Finance App</p>
+    <h1 class="gate-title">This Finance space is private.</h1>
+    <p class="gate-copy">Nothing here is available to this account.</p>
+    <button class="btn-ghost gate-btn" id="btn-signout-denied" type="button">Sign out</button>
+  </div>
+</div>
+
+<div class="gate" id="gate-locked" hidden>
+  <div class="gate-card">
+    <p class="gate-mark">Finance App <span class="chip">Locked</span></p>
+    <h1 class="gate-title">Locked.</h1>
+    <p class="gate-copy">Your figures are out of sight. Nothing was lost.</p>
+    <button class="btn gate-btn" id="btn-unlock" type="button">Unlock</button>
+    <button class="btn-quiet" id="btn-signout-locked" type="button">Sign out instead</button>
+  </div>
+</div>
+
+<dialog class="dlg" id="migrate-dialog" aria-labelledby="mg-title">
+  <div class="dlg-in">
+    <h3 id="mg-title">Finance data on this device</h3>
+    <p class="sub">There is a plan saved in this browser from before you signed in. Nothing
+      has been touched.</p>
+    <p class="empty" id="mg-detail"></p>
+    <div class="dlg-actions" style="flex-wrap:wrap">
+      <button type="button" class="btn-quiet" id="mg-keep">Keep it local for now</button>
+      <button type="button" class="btn" id="mg-import">Import into private Finance</button>
+    </div>
+  </div>
+</dialog>
+
+
+<div id="app" hidden>
 <div class="wrap">
   <header class="masthead">
     <div class="mark">
@@ -305,8 +417,29 @@ img{max-width:100%}
       <button class="tab" id="tab-scratch" role="tab" aria-selected="false" aria-controls="view-scratch">Scratchpad</button>
     </div>
     <div class="controls">
+      <span class="local-banner" id="local-banner" hidden>This device only · not signed in</span>
       <button class="ctl" id="btn-settings" aria-label="Profile and currency settings"><span id="ctl-currency">CAD</span> · Settings</button>
-      <button class="ctl" id="btn-data">Data</button>
+      <div class="acct">
+        <button class="acct-btn" id="acct-btn" aria-haspopup="menu" aria-expanded="false">
+          <span id="acct-initials">··</span> ▾
+        </button>
+        <div class="acct-menu" id="acct-menu" role="menu" hidden>
+          <p id="acct-who">Signed in</p>
+          <button type="button" id="acct-privacy" role="menuitem">Privacy mode</button>
+          <button type="button" id="acct-export" role="menuitem">Export my Finance data</button>
+          <hr>
+          <p>Lock automatically</p>
+          <select id="acct-idle" aria-label="Lock Finance automatically after">
+            <option value="0">Never</option>
+            <option value="15">After 15 minutes</option>
+            <option value="30">After 30 minutes</option>
+            <option value="60">After 1 hour</option>
+          </select>
+          <hr>
+          <button type="button" id="acct-lock" role="menuitem">Lock Finance</button>
+          <button type="button" id="acct-signout" role="menuitem">Sign out</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -574,6 +707,8 @@ img{max-width:100%}
   </div>
 </dialog>
 
+</div>
+
 <script>
 /* ==========================================================================
    Finance App — data, storage and the one place money is worked out.
@@ -637,13 +772,19 @@ var blank = {
 };
 
 var state = null;
+var privacy = false;
 
+/* The store is injected by the auth layer once it knows who you are.
+   Until then there is no store at all, so nothing can be read or written:
+   an unauthenticated page holds no financial data anywhere, not even in memory. */
+var store = null;
+function useStore(s){ store = s || null; }
 function load(){
-  var raw = null, parsed = null;
-  try { raw = localStorage.getItem(KEY); } catch(e){}
-  try { parsed = raw ? JSON.parse(raw) : null; } catch(e){ parsed = null; }
-  state = normalise(parsed);
+  var raw = null;
+  try { raw = store && store.read ? store.read() : null; } catch(e){ raw = null; }
+  state = normalise(raw);
 }
+function lock(){ state = normalise(null); store = null; }     // drop everything held in memory
 function normalise(o){
   var s = (o && typeof o === "object") ? o : {};
   var out = {
@@ -670,10 +811,11 @@ function normalise(o){
   out.ledger.forEach(function(l){ l.id = l.id || uid(); l.amount = pos(l.amount); l.date = l.date || todayKey(); });
   return out;
 }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+function save(){ try { if (store && store.write) store.write(state); } catch(e){} }
 
 /* ------------------------------------------------------------ formatting */
 function money(v, opts){
+  if (privacy) return "•••••";                 /* screen privacy only — not a security control */
   var n = num(v), s = state.settings;
   var o = { style:"currency", currency: s.currency || "CAD", currencyDisplay:"narrowSymbol" };
   if (opts && opts.whole){ o.minimumFractionDigits = 0; o.maximumFractionDigits = 0; }
@@ -862,11 +1004,12 @@ window.Fin = {
   money:money, pct:pct, annualOf:annualOf, spread:spread,
   goalMath:goalMath, dayFlows:dayFlows, activeGoals:activeGoals, calc:calc,
   demoPlan:demoPlan, normalise:normalise,
-  load:load, save:save,
+  load:load, save:save, useStore:useStore, lock:lock,
+  setPrivacy:function(on){ privacy = !!on; }, isPrivate:function(){ return privacy; },
   get state(){ return state; },
   set state(v){ state = v; }
 };
-load();
+state = normalise(null);          /* an empty plan until an authorised store is attached */
 })();
 
 </script>
@@ -1640,11 +1783,12 @@ $("month-now").addEventListener("click", function(){
 
 /* ------------------------------------------------------------------ data */
 var ddlg = $("data-dialog");
-$("btn-data").addEventListener("click", function(){
+/* Opened from the account menu, which only exists once you are signed in. */
+function openDataDialog(){
   $("dd-json").value = JSON.stringify(F.state, null, 2);
   $("dd-msg").textContent = "Copy it out, or paste a saved plan in and import it.";
   if (typeof ddlg.showModal === "function") ddlg.showModal();
-});
+}
 $("dd-close").addEventListener("click", function(){ ddlg.close(); });
 $("dd-download").addEventListener("click", function(){
   try {
@@ -1682,18 +1826,269 @@ $("dd-reset").addEventListener("click", function(){
   var t = $("tab-" + v);
   if (t) t.addEventListener("click", function(){ V.switchView(v); });
 });
-var hash = (location.hash || "").replace("#","");
-V.switchView(hash || "long");
-if (!F.state.onboarded && !F.state.income.length && !F.state.goals.length){
-  paintSetup();
-  if (typeof sdlg.showModal === "function") sdlg.showModal();
+/* The app does not start itself. The auth layer calls start() only once an
+   authorised session exists and that session's plan has been fetched. */
+function start(opts){
+  var hash = (location.hash || "").replace("#","").replace("local","");
+  V.switchView(hash || "long");
+  if (opts && opts.skipSetup) return;
+  if (!F.state.onboarded && !F.state.income.length && !F.state.goals.length){
+    setup.step = 0; setup.data = {};
+    paintSetup();
+    if (typeof sdlg.showModal === "function") sdlg.showModal();
+  }
 }
 /* a day can pass while the page is open */
 setInterval(function(){
   if (window.__finToday !== F.todayKey()){ window.__finToday = F.todayKey(); V.render(); }
 }, 30000);
 window.__finToday = F.todayKey();
-window.FinApp = { openForm:openForm, setup:function(){ setup.step = 0; setup.data = {}; paintSetup(); sdlg.showModal(); } };
+window.FinApp = { openForm:openForm, start:start, dataDialog:openDataDialog,
+  setup:function(){ setup.step = 0; setup.data = {}; paintSetup(); sdlg.showModal(); } };
+})();
+
+</script>
+<script>
+/* ==========================================================================
+   Finance App — the gate.
+
+   The page opens locked and stays locked. The app is only started, and the
+   plan only fetched, once Supabase reports a session AND that session's user
+   has a row in app_access. The real protection is not here: it is the
+   row-level security policy in Postgres, which refuses to return anyone
+   else's rows no matter what this file is edited to do.
+   ========================================================================== */
+(function(){
+"use strict";
+
+/* Public configuration. The anon key is designed to be public; it grants
+   nothing on its own because every table denies by default. No secret here. */
+var CFG = window.FINANCE_CONFIG || {};
+var configured = !!(CFG.supabaseUrl && CFG.supabaseAnonKey);
+
+var F = window.Fin, V = window.FinViews, A = window.FinApp;
+function $(id){ return document.getElementById(id); }
+function show(el, on){ if (el) el.hidden = !on; }
+
+var sb = null, session = null, cache = null, saveTimer = null, idleTimer = null;
+var LOCAL_ONLY = (location.hash || "").indexOf("local") > -1;
+var PREF_PRIVACY = "financeapp.privacy", PREF_IDLE = "financeapp.idlemins", LEGACY = "financeapp.v1";
+
+function pref(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
+function setPref(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+
+/* ------------------------------------------------------------- gate faces */
+function face(which, note){
+  ["gate-boot","gate-login","gate-denied","gate-locked"].forEach(function(id){
+    show($(id), id === which);
+  });
+  show($("app"), which === null);
+  if (note && $("login-note")) $("login-note").textContent = note;
+}
+function showApp(){
+  face(null);
+  document.title = "Finance App";
+}
+
+/* --------------------------------------------------------------- the lock */
+function wipe(){                       // nothing sensitive survives in memory
+  if (saveTimer){ clearTimeout(saveTimer); saveTimer = null; }
+  cache = null;
+  F.lock();
+  V.render === undefined || (function(){ try { V.render(); } catch(e){} })();
+}
+function lockNow(){
+  wipe();
+  face("gate-locked");
+}
+function signOut(){
+  wipe();
+  if (sb) { try { sb.auth.signOut(); } catch(e){} }
+  session = null;
+  face("gate-login");
+}
+
+/* ------------------------------------------------------------- idle timer */
+function armIdle(){
+  var mins = parseInt(pref(PREF_IDLE, "0"), 10) || 0;
+  if (idleTimer){ clearTimeout(idleTimer); idleTimer = null; }
+  if (!mins) return;
+  idleTimer = setTimeout(lockNow, mins * 60000);
+}
+["click","keydown","pointermove","scroll"].forEach(function(ev){
+  document.addEventListener(ev, function(){ if ($("app") && !$("app").hidden) armIdle(); }, { passive:true });
+});
+
+/* ---------------------------------------------------------- cloud storage */
+function queueSave(plan){
+  if (!sb || !session) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    saveTimer = null;
+    sb.from("finance_plan")
+      .upsert({ user_id: session.user.id, plan: plan, updated_at: new Date().toISOString() },
+              { onConflict: "user_id" })
+      .then(function(res){
+        if (res && res.error) console.warn("Finance: the plan could not be saved just now.");
+      });
+  }, 700);
+}
+function cloudStore(){
+  return {
+    read: function(){ return cache; },
+    write: function(state){ cache = state; queueSave(state); }
+  };
+}
+function localStore(){
+  return {
+    read: function(){
+      try { var raw = localStorage.getItem(LEGACY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
+    },
+    write: function(state){
+      try { localStorage.setItem(LEGACY, JSON.stringify(state)); } catch(e){}
+    }
+  };
+}
+
+/* ------------------------------------------------------- authorisation */
+function authorise(){
+  face("gate-boot");
+  sb.from("app_access").select("role").eq("user_id", session.user.id).maybeSingle()
+    .then(function(res){
+      if (res.error || !res.data){ face("gate-denied"); return; }   // no row: no space here
+      return fetchPlan();
+    })
+    .catch(function(){ face("gate-denied"); });
+}
+function fetchPlan(){
+  return sb.from("finance_plan").select("plan").eq("user_id", session.user.id).maybeSingle()
+    .then(function(res){
+      if (res.error){ face("gate-login", "Unable to open this Finance space. Try signing in again."); return; }
+      cache = res.data ? res.data.plan : null;
+      F.useStore(cloudStore());
+      F.load();
+      enter();
+      maybeMigrate();
+    });
+}
+function enter(){
+  paintAccount();
+  F.setPrivacy(pref(PREF_PRIVACY, "off") === "on");
+  showApp();
+  A.start();
+  armIdle();
+}
+
+/* ------------------------------------------------ legacy local plan rescue */
+function maybeMigrate(){
+  var legacy = null;
+  try { var raw = localStorage.getItem(LEGACY); legacy = raw ? JSON.parse(raw) : null; } catch(e){ legacy = null; }
+  if (!legacy) return;
+  var hasCloud = cache && ((cache.income || []).length || (cache.goals || []).length);
+  if (hasCloud) return;                       // never overwrite what is already private
+  var counts = (legacy.income || []).length + " income · " + (legacy.expenses || []).length +
+               " expenses · " + (legacy.goals || []).length + " goals";
+  $("mg-detail").textContent = counts + ". Importing copies it into your private space; the copy on this device is left alone either way.";
+  var dlg = $("migrate-dialog");
+  if (typeof dlg.showModal === "function") dlg.showModal();
+  $("mg-keep").onclick = function(){ dlg.close(); };
+  $("mg-import").onclick = function(){
+    F.state = F.normalise(legacy);
+    cache = F.state;
+    sb.from("finance_plan")
+      .upsert({ user_id: session.user.id, plan: F.state, updated_at: new Date().toISOString() },
+              { onConflict: "user_id" })
+      .then(function(res){
+        dlg.close();
+        if (res && res.error){ alert("The import could not be saved. Nothing was changed."); return; }
+        V.render();                            // saved and verified before anything local is touched
+      });
+  };
+}
+
+/* ------------------------------------------------------------- account UI */
+function paintAccount(){
+  var email = session && session.user && session.user.email ? session.user.email : "";
+  var initials = email ? email.replace(/[^a-zA-Z]/g,"").slice(0,2).toUpperCase() : "··";
+  $("acct-initials").textContent = initials;
+  $("acct-who").textContent = "Signed in";
+  $("acct-idle").value = pref(PREF_IDLE, "0");
+  $("acct-privacy").textContent = F.isPrivate() ? "Privacy mode · on" : "Privacy mode";
+}
+function toggleMenu(on){
+  var m = $("acct-menu");
+  show(m, on === undefined ? m.hidden : on);
+  $("acct-btn").setAttribute("aria-expanded", String(!m.hidden));
+}
+$("acct-btn").addEventListener("click", function(){ toggleMenu(); });
+document.addEventListener("click", function(e){
+  if (!e.target.closest(".acct") && !$("acct-menu").hidden) toggleMenu(false);
+});
+$("acct-privacy").addEventListener("click", function(){
+  var on = !F.isPrivate();
+  F.setPrivacy(on); setPref(PREF_PRIVACY, on ? "on" : "off");
+  paintAccount(); V.render(); toggleMenu(false);
+});
+$("acct-export").addEventListener("click", function(){ toggleMenu(false); A.dataDialog(); });
+$("acct-idle").addEventListener("change", function(){ setPref(PREF_IDLE, this.value); armIdle(); });
+$("acct-lock").addEventListener("click", function(){ toggleMenu(false); lockNow(); });
+$("acct-signout").addEventListener("click", function(){ toggleMenu(false); signOut(); });
+$("btn-signout-denied").addEventListener("click", signOut);
+$("btn-signout-locked").addEventListener("click", signOut);
+$("btn-unlock").addEventListener("click", function(){ boot(); });
+$("btn-google").addEventListener("click", function(){
+  if (!sb) return;
+  sb.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: location.origin + location.pathname }
+  });
+});
+
+/* ------------------------------------------------------------------- boot */
+function startLocalOnly(){
+  $("local-banner").hidden = false;
+  $("acct-btn").hidden = true;
+  F.useStore(localStore());
+  F.load();
+  F.setPrivacy(pref(PREF_PRIVACY, "off") === "on");
+  showApp();
+  A.start();
+}
+function boot(){
+  face("gate-boot");
+  if (LOCAL_ONLY){ startLocalOnly(); return; }          // on-device escape hatch, no cloud, no sharing
+  if (!configured){
+    face("gate-login", "Private mode is not configured yet, so this space cannot be opened.");
+    $("btn-google").disabled = true;
+    return;
+  }
+  if (!window.supabase || !window.supabase.createClient){
+    face("gate-login", "The sign-in service could not be reached. Nothing was loaded.");
+    return;                                              // fail closed, never open
+  }
+  if (!sb){
+    sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, {
+      auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+    });
+    sb.auth.onAuthStateChange(function(event, s){
+      if (event === "SIGNED_OUT"){ wipe(); face("gate-login"); return; }
+      if (s && (!session || s.user.id !== session.user.id)){ session = s; authorise(); }
+    });
+  }
+  sb.auth.getSession().then(function(res){
+    session = res && res.data ? res.data.session : null;
+    if (!session){ face("gate-login"); return; }
+    authorise();
+  }).catch(function(){ face("gate-login"); });
+}
+
+/* a restored back/forward page must re-prove the session before showing anything */
+window.addEventListener("pageshow", function(e){ if (e.persisted){ wipe(); boot(); } });
+
+window.FinAuth = { boot:boot, lock:lockNow, signOut:signOut,
+  _test:{ set session(v){ session = v; }, get session(){ return session; },
+          set client(v){ sb = v; }, enterLocal:startLocalOnly, authorise:authorise } };
+boot();
 })();
 
 </script>

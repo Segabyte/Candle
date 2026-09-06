@@ -1653,7 +1653,9 @@ $("dd-download").addEventListener("click", function(){
     a.href = url; a.download = "finance-plan-" + F.todayKey() + ".json";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-    $("dd-msg").textContent = "Saved to your downloads. If the browser blocked it, copy the text instead.";
+    /* embedded viewers block page-initiated saves silently, so never claim it worked */
+    $("dd-msg").textContent = "If a file did not appear in your downloads, this page is embedded " +
+      "somewhere that blocks saving — copy the text above instead.";
   } catch(e){ $("dd-msg").textContent = "This browser would not save the file — copy the text above instead."; }
 });
 $("dd-import").addEventListener("click", function(){

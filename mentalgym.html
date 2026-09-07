@@ -1,0 +1,3495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Mental Gym — daily training for attention, mental arithmetic and working memory, built around the soroban and anzan.">
+<title>Mental Gym</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+  /* ---------------------------------------------------- the shared system */
+  /* The same tokens the Life App and the Finance App are built from, so this
+     page reads as another room in the same house. */
+  :root{
+    --ground:#E9E9E2; --surface:#F5F5F0; --surface-2:#EFEFE8;
+    --ink:#141A19; --ink-soft:#4A5350; --ink-faint:#7C837E;
+    --line:#D2D3C9; --line-soft:#DEDFD6;
+    --ash:#B0B4AB; --ash-deep:#8D9289;
+    --ember:#B3441C; --ember-soft:#D9713F;
+    --brass:#8E6B1E; --ember-ghost:#E7D2C7; --ash-ghost:#DCDDD4; --btn-ink:#F8F4F0;
+    --scheme:light; --red:#B93B2B; --good:#2E6B4A;
+    --bead:#7A4A2C; --bead-on:#B3441C; --bead-edge:#5B3520; --rod:#B9B4A4; --frame:#8A7A5E;
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --pad:clamp(20px,4vw,44px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0F1312; --surface:#171C1B; --surface-2:#1D2322;
+      --ink:#E8EAE3; --ink-soft:#A7ADA6; --ink-faint:#7C837D;
+      --line:#2A312F; --line-soft:#232928;
+      --ash:#454D4A; --ash-deep:#5C635F;
+      --ember:#E07347; --ember-soft:#B85630;
+      --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
+      --scheme:dark; --red:#D0563F; --good:#5FA97F;
+      --bead:#9A6038; --bead-on:#E07347; --bead-edge:#3A2416; --rod:#3A403D; --frame:#5A4E3A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0F1312; --surface:#171C1B; --surface-2:#1D2322;
+    --ink:#E8EAE3; --ink-soft:#A7ADA6; --ink-faint:#7C837D;
+    --line:#2A312F; --line-soft:#232928;
+    --ash:#454D4A; --ash-deep:#5C635F;
+    --ember:#E07347; --ember-soft:#B85630;
+    --brass:#C79A3E; --ember-ghost:#3A2B23; --ash-ghost:#242A29; --btn-ink:#121717;
+    --scheme:dark; --red:#D0563F; --good:#5FA97F;
+    --bead:#9A6038; --bead-on:#E07347; --bead-edge:#3A2416; --rod:#3A403D; --frame:#5A4E3A;
+  }
+
+  *{box-sizing:border-box}
+  /* the hidden attribute is a low-specificity UA rule, so any class that sets
+     display would quietly beat it — .focus and .az-ask both do */
+  [hidden]{display:none!important}
+  html{color-scheme:var(--scheme)}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+       font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+       -webkit-tap-highlight-color:transparent}
+  body.in-focus{overflow:hidden}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 var(--pad) 64px}
+  h1,h2,h3{margin:0;text-wrap:balance}
+  p{margin:0}
+  button{font:inherit}
+  .num{font-variant-numeric:tabular-nums}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  .empty{font-size:13.5px;color:var(--ink-faint);padding:6px 0}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .skip{position:absolute;left:-9999px;top:0;background:var(--surface);color:var(--ink);
+        padding:12px 18px;z-index:60;border:1px solid var(--ember)}
+  .skip:focus{left:12px;top:12px}
+
+  /* ------------------------------------------------------------ masthead */
+  .masthead{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;padding:22px 0 18px;
+            border-bottom:1px solid var(--line)}
+  .mark{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+  .mark .name{font-family:var(--serif);font-size:26px;letter-spacing:.01em}
+  .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+        color:var(--ink-faint);border:1px solid var(--line);border-radius:2px;padding:3px 7px;
+        background:none;cursor:default}
+  .tabs{display:flex;flex-wrap:wrap;gap:2px;background:var(--surface-2);border:1px solid var(--line);
+        border-radius:4px;padding:2px}
+  .tab{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+       color:var(--ink-faint);background:none;border:0;padding:7px 13px;border-radius:3px;cursor:pointer}
+  .tab[aria-selected="true"]{background:var(--surface);color:var(--ink)}
+  .tab:focus-visible,.chip:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
+        letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--surface);
+        border:1px solid var(--line);border-radius:3px;padding:7px 10px}
+  .pill b{color:var(--ember);font-size:9px}
+  .pill.cold b{color:var(--ash)}
+  .pill.lvl{gap:9px}
+  .pill .xp{display:block;width:52px;height:3px;background:var(--ash-ghost);border-radius:2px;overflow:hidden}
+  .pill .xp i{display:block;height:100%;background:var(--brass)}
+  .pill .xp-n{color:var(--ink-faint)}
+  /* on a phone the header has to give way to the page it introduces */
+  @media (max-width:560px){
+    .masthead{padding:16px 0 14px;gap:10px 12px}
+    .mark .name{font-size:22px}
+    .pill{padding:6px 8px;font-size:9px}
+    .pill .xp,.pill .xp-n{display:none}
+    .controls{width:100%}
+  }
+  .ctl{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--ink-faint);background:var(--surface);border:1px solid var(--line);border-radius:3px;
+       padding:8px 11px;cursor:pointer}
+  .ctl:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .ctl:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .acct{position:relative}
+  .menu{position:absolute;right:0;top:calc(100% + 7px);z-index:30;min-width:230px;background:var(--surface);
+        border:1px solid var(--line);border-radius:4px;padding:12px;box-shadow:0 18px 44px rgba(0,0,0,.22)}
+  .menu p{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+          color:var(--ink-faint);margin-bottom:6px}
+  .menu hr{border:0;border-top:1px solid var(--line-soft);margin:12px 0}
+  .menu select,.menu button[role="menuitem"]{width:100%;font-family:var(--sans);font-size:13.5px;
+        color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:3px;
+        padding:8px 9px;text-align:left;cursor:pointer}
+  .menu button[role="menuitem"]:hover{border-color:var(--ash-deep)}
+  .sw{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-soft);padding:5px 0;cursor:pointer}
+  .sw input{accent-color:var(--ember);width:16px;height:16px}
+
+  /* ---------------------------------------------------------------- hero */
+  .hero{padding:clamp(30px,5vw,58px) 0 clamp(22px,4vw,38px);
+        display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;align-items:end}
+  .figure{font-family:var(--serif);font-size:clamp(56px,11vw,116px);line-height:.9;letter-spacing:-.02em;
+          color:var(--ember);font-variant-numeric:tabular-nums}
+  .figure u{text-decoration:none;font-style:italic;font-size:.26em;color:var(--ink);margin-left:.14em}
+  .hero-lede{margin-top:16px;font-size:17px;color:var(--ink-soft);max-width:40ch}
+  .hero-lede b{color:var(--ink);font-weight:600}
+  .aside{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+         color:var(--ink-faint);text-align:right}
+  @media (max-width:680px){.hero{grid-template-columns:1fr}.aside{text-align:left}}
+
+  .week{display:flex;gap:5px;margin-top:9px}
+  .week span{display:flex;flex-direction:column;align-items:center;gap:3px;width:26px;padding:5px 0;
+             border:1px solid var(--line);border-radius:3px;background:var(--surface);position:relative}
+  .week b{font-size:9px;color:var(--ink-faint);font-weight:400}
+  .week i{font-style:normal;font-size:11px;color:var(--ash)}
+  .week .on{border-color:var(--ember);background:var(--ember-ghost)}
+  .week .on i{color:var(--ember)}
+  .week .now{outline:1px solid var(--brass);outline-offset:1px}
+
+  /* --------------------------------------------------------- stat strips */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+         border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat{padding:18px 18px 16px;border-right:1px solid var(--line-soft)}
+  .stat:last-child{border-right:0}
+  .stat .v{font-family:var(--serif);font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .k{margin-top:6px;font-size:13px;color:var(--ink-soft)}
+  .stat .n{margin-top:3px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+  @media (max-width:560px){.stat{border-right:0;border-bottom:1px solid var(--line-soft)}}
+
+  section{padding-top:clamp(30px,5vw,56px)}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+            margin-bottom:20px}
+  .sec-head h2{font-family:var(--serif);font-size:clamp(26px,3.6vw,34px);line-height:1.06}
+  .sec-head .note{font-size:13.5px;color:var(--ink-soft);max-width:48ch}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+        padding:clamp(16px,2.6vw,26px)}
+  .card + .card{margin-top:16px}
+  .card h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+           color:var(--ink-faint);font-weight:400;padding-bottom:12px;margin-bottom:14px;
+           border-bottom:1px solid var(--line-soft);display:flex;justify-content:space-between;
+           gap:12px;flex-wrap:wrap;align-items:baseline}
+
+  /* -------------------------------------------------------------- buttons */
+  .btn{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+       background:var(--ember);color:var(--btn-ink);border:0;border-radius:3px;padding:12px 18px;
+       cursor:pointer;white-space:nowrap}
+  .btn:hover{background:var(--ember-soft)}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .btn-ghost{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+             background:none;color:var(--ink-soft);border:1px solid var(--line);border-radius:3px;
+             padding:11px 14px;cursor:pointer;white-space:nowrap}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--ash-deep)}
+  .btn-ghost:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .btn-quiet{font-family:var(--mono);font-size:11px;letter-spacing:.08em;background:none;border:0;
+             color:var(--ink-faint);cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+             padding:6px 0;white-space:nowrap}
+  .btn-quiet:hover{color:var(--ink)}
+  .btn-quiet:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .row-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .durations{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .dur-lead{margin-top:20px;font-size:13px;color:var(--ink-faint)}
+  button.chip{cursor:pointer}
+  button.chip:hover{color:var(--ink);border-color:var(--ash-deep)}
+  button.chip.on{background:var(--ember-ghost);border-color:var(--ember);color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .ranges{display:flex;gap:6px}
+
+  /* ------------------------------------------------------------- journey */
+  .journey{display:grid;gap:2px}
+  .jr{display:grid;grid-template-columns:auto minmax(0,150px) minmax(0,1fr) auto;gap:8px 14px;
+      align-items:center;padding:13px 0;border-bottom:1px solid var(--line-soft)}
+  .jr:last-child{border-bottom:0}
+  .jr-dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+          font-family:var(--mono);font-size:11px;border:1px solid var(--line);color:var(--ink-faint)}
+  .jr-n{font-size:15px;font-weight:500}
+  .jr-b{font-size:13.5px;color:var(--ink-soft)}
+  .jr-done .jr-dot{background:var(--ash-ghost);border-color:var(--ash);color:var(--ink-soft)}
+  .jr-done .jr-n{color:var(--ink-soft)}
+  .jr-now{background:var(--ember-ghost);margin:0 calc(-1 * clamp(16px,2.6vw,26px));
+          padding-left:clamp(16px,2.6vw,26px);padding-right:clamp(16px,2.6vw,26px)}
+  .jr-now .jr-dot{background:var(--ember);border-color:var(--ember);color:var(--btn-ink)}
+  .jr-ahead{opacity:.55}
+  @media (max-width:620px){
+    .jr{grid-template-columns:auto minmax(0,1fr);}
+    .jr-b{grid-column:2}
+  }
+
+  /* ------------------------------------------------------------- workout */
+  .wo{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;
+      padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:14.5px}
+  .wo:last-of-type{border-bottom:0}
+  .wo-mark{color:var(--ash);width:16px;text-align:center}
+  .wo.done .wo-mark{color:var(--ember)}
+  .wo.done .wo-n{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--ash)}
+  .wo-m{font-size:10.5px;color:var(--ink-faint);letter-spacing:.06em}
+
+  /* ------------------------------------------------------------ families */
+  .fams{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .fam{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:18px}
+  .fam-n{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+         color:var(--ink-faint)}
+  .fam-v{font-family:var(--serif);font-size:42px;line-height:1;margin:6px 0 10px}
+  .meter{height:3px;background:var(--ash-ghost);border-radius:2px;overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--ember)}
+  .fam-k{margin-top:9px;font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+
+  /* -------------------------------------------------------- exercise grid */
+  .exs{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:14px}
+  .ex{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:18px;
+      display:flex;flex-direction:column;gap:5px}
+  .ex-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .ex-icon{font-size:22px;color:var(--ember);line-height:1}
+  .ex-fam{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint)}
+  .ex-n{font-family:var(--serif);font-size:23px;font-weight:400;line-height:1.1}
+  .ex-s{font-size:13.5px;color:var(--ink-soft)}
+  .ex-lvl,.ex-last{font-size:10px;color:var(--ink-faint);letter-spacing:.04em}
+  .ex-acts{display:flex;gap:8px;margin-top:auto;padding-top:14px}
+
+  /* --------------------------------------------------------------- chart */
+  .chart-wrap{overflow-x:auto}
+  .ch{width:100%;height:auto;min-width:320px;display:block}
+  .ch-grid{stroke:var(--line-soft);stroke-width:1}
+  .ch-lab{fill:var(--ink-faint);font-family:var(--mono);font-size:9px}
+  .ch-line{fill:none;stroke:var(--ember);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+  .ch-dot{fill:var(--ember)}
+  .ch-bar{fill:var(--ash-deep)}
+  .ch-empty{fill:var(--ink-faint);font-family:var(--mono);font-size:12px}
+  .rec{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px 16px;align-items:baseline;
+       padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:14.5px}
+  .rec:last-child{border-bottom:0}
+  .rec-v{font-family:var(--serif);font-size:20px}
+  .rec-d{font-size:10px;color:var(--ink-faint)}
+
+  footer{margin-top:clamp(44px,7vw,72px);padding-top:20px;border-top:1px solid var(--line);
+         display:flex;flex-wrap:wrap;gap:12px 26px;justify-content:space-between;font-size:12.5px;
+         color:var(--ink-faint)}
+  footer p{max-width:56ch}
+
+  /* ===================================================== FOCUS MODE ===== */
+  .focus{position:fixed;inset:0;z-index:50;background:var(--ground);display:flex;flex-direction:column}
+  .focus-bar{display:flex;align-items:center;gap:16px;padding:14px var(--pad);
+             border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .focus-name{font-family:var(--serif);font-size:20px;line-height:1.1}
+  .focus-sub{font-size:12.5px;color:var(--ink-faint);max-width:52ch}
+  .focus-meta{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+  .focus-queue{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+  .focus-queue:empty{display:none}
+  .focus-step{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+  .focus-stage{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;
+               padding:clamp(16px,3vw,34px) var(--pad)}
+  .focus-stage > *{width:100%;max-width:760px;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .f-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+             color:var(--brass);text-align:center}
+  .f-note{font-size:12.5px;color:var(--ink-faint);text-align:center;max-width:46ch}
+  .f-acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .f-err{color:var(--red);font-size:14px}
+
+  .f-done{text-align:center}
+  .f-done-k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+            color:var(--ink-faint)}
+  .f-done-fig{font-family:var(--serif);font-size:clamp(44px,9vw,80px);line-height:1;color:var(--ember);
+              font-variant-numeric:tabular-nums}
+  .f-done-stats{display:flex;flex-wrap:wrap;gap:22px 34px;justify-content:center;padding:18px 0;
+                border-top:1px solid var(--line);border-bottom:1px solid var(--line);width:100%}
+  .f-done-stats div{display:flex;flex-direction:column;gap:3px}
+  .f-done-stats .v{font-family:var(--serif);font-size:24px;font-variant-numeric:tabular-nums}
+  .f-done-stats .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+                   color:var(--ink-faint)}
+  .f-move{font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding:8px 12px;border-radius:3px;
+          background:var(--ash-ghost);color:var(--ink-soft)}
+  .f-move.up{background:var(--ember-ghost);color:var(--ember)}
+  .f-record{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--brass)}
+  .f-done-acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+
+  /* ======================================================= THE SOROBAN === */
+  .sb{--sb-fade:1;display:inline-block;opacity:var(--sb-fade);
+      transition:opacity 620ms ease}
+  .sb-gone{opacity:0}
+  .sb-frame{display:flex;gap:4px;padding:14px 16px 10px;background:var(--surface-2);
+            border:2px solid var(--frame);border-radius:6px;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+  .sb-col{position:relative;display:flex;flex-direction:column;align-items:center;
+          width:calc(var(--sb-bead) + 10px);touch-action:none}
+  .sb-heaven{position:relative;height:calc(var(--sb-unit) * 2);width:100%}
+  .sb-earth{position:relative;height:calc(var(--sb-unit) * 5);width:100%}
+  /* the rod */
+  .sb-heaven::before,.sb-earth::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;
+      transform:translateX(-50%);background:var(--rod);border-radius:1px}
+  .sb-bar{height:5px;width:calc(100% + 4px);background:var(--frame);border-radius:1px;margin:3px 0;
+          position:relative}
+  .sb-bar.sb-dot::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;
+          transform:translate(-50%,-50%);border-radius:50%;background:var(--surface-2)}
+  .sb-bead{position:absolute;left:50%;margin-left:calc(var(--sb-bead) / -2);top:2px;
+           width:var(--sb-bead);height:calc(var(--sb-unit) - 4px);padding:0;border:0;cursor:pointer;
+           background:radial-gradient(ellipse at 34% 32%, color-mix(in srgb, var(--bead) 70%, white) 0%, var(--bead) 58%, var(--bead-edge) 100%);
+           border-radius:46% 46% 46% 46% / 50% 50% 50% 50%;
+           box-shadow:0 1px 2px rgba(0,0,0,.3);
+           transition:transform 150ms cubic-bezier(.3,1.4,.5,1), background 160ms ease}
+  .sb-bead.on{background:radial-gradient(ellipse at 34% 32%, color-mix(in srgb, var(--bead-on) 72%, white) 0%, var(--bead-on) 58%, var(--bead-edge) 100%)}
+  .sb-bead.ghost{opacity:.34;outline:1px dashed var(--brass);outline-offset:1px}
+  .sb-bead:focus-visible{outline:2px solid var(--ink);outline-offset:2px;z-index:3}
+  .sb-ro .sb-bead{cursor:default}
+  .sb-digit{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:8px;
+            font-variant-numeric:tabular-nums}
+  .sb-nodigits .sb-digit{visibility:hidden}
+  .sb-live .sb-digit{color:var(--ember)}
+  .sb-hi{background:var(--ember-ghost);border-radius:4px}
+  .sb-flash{animation:sbflash 420ms ease}
+  @keyframes sbflash{0%,100%{background:transparent}40%{background:var(--ember-ghost)}}
+
+  .sb-train,.sb-lesson{text-align:center}
+  .sb-mount{display:flex;justify-content:center;padding:8px 0;overflow-x:auto;max-width:100%}
+  .sb-prompt{font-family:var(--serif);font-size:clamp(38px,8vw,68px);line-height:1;color:var(--ember);
+             font-variant-numeric:tabular-nums}
+  .sb-l-title{font-family:var(--serif);font-size:clamp(24px,4.5vw,32px);font-weight:400}
+  .sb-l-text{font-size:15px;color:var(--ink-soft);max-width:48ch;margin:0 auto}
+  .sb-feedback{font-size:14px;color:var(--ink-soft);min-height:1.4em;text-align:center}
+  .sb-feedback.ok{color:var(--good)}
+  .sb-feedback.no{color:var(--red)}
+
+  /* ========================================================== ANZAN ===== */
+  .az{width:100%;text-align:center}
+  .az-stage{min-height:clamp(180px,34vh,300px);display:flex;flex-direction:column;
+            align-items:center;justify-content:center;gap:16px;width:100%}
+  .az-term{font-family:var(--serif);font-size:clamp(58px,15vw,130px);line-height:1;
+           color:var(--ink);font-variant-numeric:tabular-nums;min-height:1em}
+  .az-bare .az-term{font-size:clamp(72px,22vw,190px);color:var(--ember)}
+  .az-term.in{animation:azin 140ms ease-out}
+  @keyframes azin{from{opacity:.25;transform:scale(.94)}to{opacity:1;transform:none}}
+  .az-sb{display:flex;justify-content:center;overflow-x:auto;max-width:100%}
+  .az-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:340px}
+  .az-dots i{width:6px;height:6px;border-radius:50%;background:var(--ash-ghost);display:block}
+  .az-dots i.on{background:var(--ember)}
+  .az-ask{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+  .az-ask-l{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+            color:var(--ink-faint);width:100%}
+  .az-input{font-family:var(--serif);font-size:38px;width:min(220px,60vw);text-align:center;
+            background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;
+            padding:6px 12px}
+  .az-input:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .az-feedback{font-size:15px;min-height:1.5em;color:var(--ink-soft)}
+  .az-feedback.ok{color:var(--good)}
+  .az-feedback.no{color:var(--red)}
+
+  /* ======================================================== SCHULTE ===== */
+  .sc{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .sc-next{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;justify-content:center}
+  .sc-k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--ink-faint)}
+  .sc-v{font-family:var(--serif);font-size:40px;line-height:1;color:var(--ember)}
+  .sc-grid{display:grid;grid-template-columns:repeat(var(--sc-n),minmax(0,1fr));gap:5px;
+           width:min(94vw,min(520px,64vh));aspect-ratio:1}
+  .sc-cell{min-width:0;min-height:0;background:var(--surface);border:1px solid var(--line);
+           border-radius:3px;color:var(--ink);font-size:clamp(13px,3.4vw,22px);cursor:pointer;
+           display:grid;place-items:center;padding:0}
+  .sc-cell:hover:not(:disabled){border-color:var(--ash-deep)}
+  .sc-cell:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .sc-cell.got{background:var(--ash-ghost);color:var(--ink-faint);border-color:var(--line-soft)}
+  .sc-cell.bad{animation:scbad 380ms ease}
+  @keyframes scbad{0%,100%{background:var(--surface)}30%{background:var(--ember-ghost);border-color:var(--red)}}
+
+  /* ========================================================= STROOP ===== */
+  .st{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .st-word{font-family:var(--sans);font-weight:600;font-size:clamp(44px,11vw,92px);line-height:1.1;
+           letter-spacing:.02em;min-height:1.2em;text-align:center}
+  .st-bar{width:min(340px,80vw);height:3px;background:var(--ash-ghost);border-radius:2px;overflow:hidden}
+  .st-bar i{display:block;height:100%;width:100%;background:var(--brass)}
+  .st-keys{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .st-key{position:relative;font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+          text-transform:uppercase;background:var(--surface);color:var(--ink);border:1px solid var(--line);
+          border-radius:3px;padding:13px 17px 13px 30px;cursor:pointer}
+  .st-key:hover{border-color:var(--ash-deep)}
+  .st-key:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .st-num{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:9px;
+          color:var(--ink-faint)}
+  .st-fb{font-size:14px;min-height:1.5em;color:var(--ink-soft)}
+  .st-fb.ok{color:var(--good)} .st-fb.no{color:var(--red)}
+
+  /* ======================================================= REACTION ===== */
+  .rx{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .rx-pad{width:min(94vw,520px);min-height:clamp(200px,38vh,320px);border-radius:6px;cursor:pointer;
+          font-family:var(--mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+          border:1px solid var(--line);background:var(--surface);color:var(--ink-soft)}
+  .rx-pad:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .rx-wait{background:var(--ash-ghost);color:var(--ink-faint)}
+  .rx-go{background:var(--ember);color:var(--btn-ink);border-color:var(--ember);font-size:30px}
+  .rx-false{background:var(--ember-ghost);color:var(--red);border-color:var(--red)}
+  .rx-result{background:var(--surface);color:var(--ink)}
+  .rx-list{font-family:var(--mono);font-size:12px;color:var(--ink-faint);text-align:center}
+
+  /* ========================================================= MEMORY ===== */
+  .mm{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .mm-grid{display:grid;grid-template-columns:repeat(var(--mm-n),minmax(0,1fr));gap:8px;
+           width:min(90vw,min(420px,54vh));aspect-ratio:1}
+  .mm-tile{min-width:0;min-height:0;background:var(--surface);border:1px solid var(--line);
+           border-radius:4px;cursor:pointer;transition:background 120ms ease,border-color 120ms ease}
+  .mm-tile:disabled{cursor:default}
+  .mm-tile.lit{background:var(--ember);border-color:var(--ember)}
+  .mm-tile:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+  .mm-fb{font-size:14px;min-height:1.5em;color:var(--ink-soft)}
+  .mm-fb.ok{color:var(--good)} .mm-fb.no{color:var(--red)}
+
+  /* ========================================================== N-BACK ==== */
+  .nb{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .nb-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+           width:min(84vw,min(340px,46vh));aspect-ratio:1}
+  .nb-cell{background:var(--surface);border:1px solid var(--line);border-radius:4px;
+           transition:background 120ms ease}
+  .nb-cell.on{background:var(--ember);border-color:var(--ember)}
+  .nb-fb{font-size:14px;min-height:1.5em;color:var(--ink-soft)}
+  .nb-fb.ok{color:var(--good)} .nb-fb.no{color:var(--red)}
+
+  /* ==================================================== DISTRACTION ===== */
+  .dx{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .dx-head{display:flex;align-items:baseline;gap:12px}
+  .dx-k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--ink-faint)}
+  .dx-v{font-family:var(--serif);font-size:38px;line-height:1;color:var(--ember)}
+  .dx-field{position:relative;width:min(94vw,620px);height:clamp(240px,44vh,380px);
+            background:var(--surface);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  .dx-item{position:absolute;font-size:clamp(15px,3.6vw,22px);background:none;border:0;padding:5px 7px;
+           color:var(--ink-soft);cursor:pointer;transform:rotate(var(--dx-r,0deg));
+           animation:dxin 260ms ease both;animation-delay:var(--dx-d,0ms)}
+  .dx-item:hover{color:var(--ink)}
+  .dx-item:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  @keyframes dxin{from{opacity:0}to{opacity:1}}
+  .dx-fb{font-size:14px;min-height:1.5em;color:var(--ink-soft)}
+  .dx-fb.ok{color:var(--good)} .dx-fb.no{color:var(--red)}
+
+  /* ==================================================== QUIET FOCUS ===== */
+  .qf{width:100%;display:flex;flex-direction:column;align-items:center;gap:24px}
+  .qf-dot{width:16px;height:16px;border-radius:50%;background:var(--ember);
+          box-shadow:0 0 0 22px var(--ember-ghost);margin:clamp(28px,8vh,70px) 0}
+  .qf-dot.qf-over{background:var(--ash);box-shadow:0 0 0 22px var(--ash-ghost)}
+  .qf-clock{font-family:var(--serif);font-size:clamp(38px,8vw,64px);line-height:1;
+            font-variant-numeric:tabular-nums}
+  .qf-rate{text-align:center;width:100%}
+  .qf-rate-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+             color:var(--ink-faint);margin-bottom:12px}
+  .qf-scale{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .qf-key{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:104px;
+          font-family:var(--serif);font-size:24px;background:var(--surface);color:var(--ink);
+          border:1px solid var(--line);border-radius:4px;padding:12px 10px;cursor:pointer}
+  .qf-key:hover{border-color:var(--ash-deep)}
+  .qf-key:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .qf-key-l{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;
+            color:var(--ink-faint)}
+
+  /* ===================================================== ARITHMETIC ===== */
+  .ar{width:100%;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .ar-q{font-family:var(--serif);font-size:clamp(46px,11vw,92px);line-height:1;
+        font-variant-numeric:tabular-nums;min-height:1em}
+  .ar-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .ar-fb{font-size:14px;min-height:1.5em;color:var(--ink-soft)}
+  .ar-fb.ok{color:var(--good)} .ar-fb.no{color:var(--red)}
+
+  /* ========================================================= DIALOGS ==== */
+  .dlg{width:min(560px,calc(100vw - 26px));max-height:calc(100vh - 32px);overflow:auto;margin:auto;
+       border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);padding:0;
+       box-shadow:0 30px 70px rgba(0,0,0,.34)}
+  .dlg::backdrop{background:rgba(12,16,15,.58)}
+  .dlg-in{padding:clamp(20px,4vw,30px)}
+  .dlg h3{font-family:var(--serif);font-size:clamp(26px,5vw,36px);font-weight:400;line-height:1.05;
+          margin-bottom:6px}
+  .dlg .sub{font-size:13.5px;color:var(--ink-soft)}
+  .dlg-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:16px;
+               border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
+  .fld{display:flex;flex-direction:column;gap:5px;margin-top:14px;min-width:0}
+  .fld label{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+             color:var(--ink-faint)}
+  .fld select,.fld textarea{width:100%;font-family:var(--sans);font-size:14.5px;color:var(--ink);
+       background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:10px}
+  .fld textarea{min-height:170px;font-family:var(--mono);font-size:12px}
+  .fld select:focus-visible,.fld textarea:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+  .ob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:16px}
+  .ob-grid span{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--ink-soft);
+                border-left:2px solid var(--ember);padding-left:11px}
+  .ob-grid b{font-family:var(--serif);font-size:19px;font-weight:400;color:var(--ink)}
+  .ob-first{margin-top:20px;font-size:13.5px;color:var(--ink-soft);background:var(--surface-2);
+            border:1px solid var(--line-soft);border-radius:4px;padding:13px 15px}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+                         transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#view-today">Skip to the dashboard</a>
+
+<div class="wrap" id="app" hidden>
+  <header class="masthead">
+    <div class="mark">
+      <span class="name">Mental Gym</span>
+      <span class="chip">Train your mind</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Mental Gym sections">
+      <button class="tab" id="tab-today" role="tab" aria-selected="true" aria-controls="view-today">Today</button>
+      <button class="tab" id="tab-train" role="tab" aria-selected="false" aria-controls="view-train">Train</button>
+      <button class="tab" id="tab-progress" role="tab" aria-selected="false" aria-controls="view-progress">Progress</button>
+    </div>
+    <div class="controls">
+      <span class="pill" id="hd-streak-wrap"><b aria-hidden="true">▲</b> <span id="hd-streak">—</span></span>
+      <span class="pill lvl">
+        <span id="hd-level">—</span>
+        <span class="xp"><i id="hd-xp-bar"></i></span>
+        <span class="xp-n" id="hd-xp">—</span>
+      </span>
+      <div class="acct">
+        <button class="ctl" id="menu-btn" aria-haspopup="menu" aria-expanded="false">Settings ▾</button>
+        <div class="menu" id="menu" role="menu" hidden>
+          <p>Daily training</p>
+          <select id="m-minutes" aria-label="Minutes of training a day">
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+            <option value="20">20 minutes</option>
+            <option value="30">30 minutes</option>
+          </select>
+          <hr>
+          <label class="sw"><input type="checkbox" id="m-sound"> Sound</label>
+          <label class="sw"><input type="checkbox" id="m-motion"> Reduce motion</label>
+          <hr>
+          <p>Appearance</p>
+          <select id="m-theme" aria-label="Colour theme">
+            <option value="system">Match my device</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <hr>
+          <button type="button" id="m-export" role="menuitem">Export or erase my data</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================== TODAY ============================== -->
+  <div id="view-today" role="tabpanel" aria-labelledby="tab-today">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Today's focus score</p>
+        <h1 class="figure"><span id="t-score">0</span><u>out of 100</u></h1>
+        <p class="hero-lede" id="t-lede">—</p>
+      </div>
+      <div class="aside">
+        <span>this week</span>
+        <div class="week" id="t-week"></div>
+      </div>
+    </div>
+
+    <div class="stats" id="t-stats"></div>
+
+    <section>
+      <div class="sec-head">
+        <h2>Where you are</h2>
+        <p class="note">The point of this page: from beads under your hand to beads in your head.
+          Each stage opens when the one before it is steady.</p>
+      </div>
+      <div class="card">
+        <div class="journey" id="t-journey"></div>
+        <p class="empty" id="t-journey-note"></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Today's workout</h2>
+        <p class="note">Built around the stage you are on, so you are not choosing exercises
+          every morning. Press space to begin.</p>
+      </div>
+      <div class="card">
+        <h3><span>The routine</span><span id="t-workout-meta">—</span></h3>
+        <div id="t-workout"></div>
+        <p class="empty" id="t-workout-done" hidden>Finished for today. Anything else you do is a bonus.</p>
+        <div class="row-actions" style="margin-top:18px">
+          <button class="btn" id="t-workout-go">Start today's workout</button>
+        </div>
+        <p class="dur-lead">Or train for a set time:</p>
+        <div class="durations" id="t-durations">
+          <button class="chip" data-min="5">5 min</button>
+          <button class="chip" data-min="10">10 min</button>
+          <button class="chip" data-min="15">15 min</button>
+          <button class="chip" data-min="20">20 min</button>
+          <button class="chip" data-min="30">30 min</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Four things to train</h2>
+        <p class="note">Scores from 0 to 100 built only out of your own last fortnight in this app.
+          They are training scores, not a measurement of you.</p>
+      </div>
+      <div class="fams" id="t-families"></div>
+    </section>
+  </div>
+
+  <!-- ============================== TRAIN ============================== -->
+  <div id="view-train" role="tabpanel" aria-labelledby="tab-train" hidden>
+    <div class="sec-head" style="padding-top:clamp(26px,4vw,44px)">
+      <h2>Train</h2>
+      <p class="note">Every exercise, at the level you have reached. Each one moves one rung at a
+        time, so you can always see what changed.</p>
+    </div>
+    <div class="exs" id="tr-grid"></div>
+  </div>
+
+  <!-- ============================= PROGRESS ============================ -->
+  <div id="view-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
+    <div class="sec-head" style="padding-top:clamp(26px,4vw,44px)">
+      <h2>Progress</h2>
+      <p class="note">Your own record, over time. Nobody else is in these numbers.</p>
+    </div>
+
+    <div class="card">
+      <h3><span>Chart</span>
+        <span class="ranges">
+          <button class="chip" id="pr-r7">7 days</button>
+          <button class="chip on" id="pr-r30">30 days</button>
+          <button class="chip" id="pr-r90">90 days</button>
+          <button class="chip" id="pr-r0">All time</button>
+        </span>
+      </h3>
+      <div class="chips" id="pr-metrics"></div>
+      <div class="chart-wrap" id="pr-chart"></div>
+      <p class="empty" id="pr-summary">—</p>
+    </div>
+
+    <div class="card">
+      <h3><span>Personal bests</span><span class="mono" id="pr-records-note"></span></h3>
+      <div id="pr-records"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p><b>Mental Gym is practice, not assessment.</b> It trains the exercises it contains and keeps
+      your scores on them. It does not diagnose anything, measure intelligence, or make any claim
+      about your health.</p>
+    <p>Everything you do here is stored in this browser on this device. Nothing is sent anywhere.
+      Use Settings to export a copy or start again.</p>
+  </footer>
+</div>
+
+<!-- ============================== FOCUS MODE ============================= -->
+<div class="focus" id="focus" hidden role="dialog" aria-modal="true" aria-labelledby="focus-name">
+  <div class="focus-bar">
+    <div>
+      <p class="focus-name" id="focus-name">—</p>
+      <p class="focus-sub" id="focus-sub"></p>
+    </div>
+    <p class="focus-meta">
+      <span class="focus-queue mono" id="focus-queue"></span>
+      <span class="focus-step mono" id="focus-step" aria-live="polite"></span>
+    </p>
+    <button class="btn-ghost" id="focus-exit">Exit  <span class="mono">esc</span></button>
+  </div>
+  <div class="focus-stage" id="focus-stage"></div>
+</div>
+
+<!-- ============================== DIALOGS =============================== -->
+<dialog class="dlg" id="onboard" aria-labelledby="ob-title">
+  <form class="dlg-in" id="ob-form" method="dialog">
+    <p class="eyebrow">Welcome</p>
+    <h3 id="ob-title">Mental Gym</h3>
+    <p class="sub">Train a little every day. Four things get better with practice:</p>
+    <div class="ob-grid">
+      <span><b>Focus</b>holding attention on one thing</span>
+      <span><b>Calculation</b>the abacus, then the mental abacus</span>
+      <span><b>Memory</b>holding more in your head at once</span>
+      <span><b>Speed</b>how quickly you notice and respond</span>
+    </div>
+    <p class="sub" style="margin-top:20px">How long would you like to train each day?</p>
+    <div class="durations" id="ob-minutes">
+      <button type="button" class="chip" data-m="5" aria-pressed="false">5 min</button>
+      <button type="button" class="chip" data-m="10" aria-pressed="false">10 min</button>
+      <button type="button" class="chip on" data-m="15" aria-pressed="true">15 min</button>
+      <button type="button" class="chip" data-m="20" aria-pressed="false">20 min</button>
+      <button type="button" class="chip" data-m="30" aria-pressed="false">30 min</button>
+    </div>
+    <label class="sw" style="margin-top:18px"><input type="checkbox" id="ob-sound" checked> Quiet sound feedback</label>
+    <p class="ob-first">We will start you on <b>Soroban fundamentals</b> — eight short lessons on what
+      the beads mean. It takes about four minutes.</p>
+    <div class="dlg-actions">
+      <button type="button" class="btn-quiet" id="ob-skip">Skip, just show me the page</button>
+      <button type="submit" class="btn">Begin</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="cfg" aria-labelledby="cfg-title">
+  <form class="dlg-in" id="cfg-form" method="dialog">
+    <h3 id="cfg-title">—</h3>
+    <p class="sub" id="cfg-sub"></p>
+    <div id="cfg-fields"></div>
+    <div class="dlg-actions">
+      <button type="button" class="btn-ghost" id="cfg-cancel">Cancel</button>
+      <button type="submit" class="btn">Start</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="data" aria-labelledby="dd-title">
+  <div class="dlg-in">
+    <h3 id="dd-title">Your training data</h3>
+    <p class="sub">It lives in this browser only. Keep a copy somewhere you trust.</p>
+    <div class="fld" style="margin-top:14px">
+      <label for="dd-json">Training data as JSON</label>
+      <textarea id="dd-json" spellcheck="false"></textarea>
+    </div>
+    <p class="empty" id="dd-msg"></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn-quiet" id="dd-reset">Erase all training data</button>
+      <button type="button" class="btn-ghost" id="dd-import">Import what is in the box</button>
+      <button type="button" class="btn" id="dd-close">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the core.
+
+   Everything that is not an exercise lives here: where training is stored,
+   how an exercise is run, how difficulty moves, and how the numbers on the
+   dashboard are worked out.
+
+   The storage is deliberately pluggable. Today it is this browser's
+   localStorage; the same shape can be handed to an authenticated backend
+   later without any exercise knowing the difference.
+   ========================================================================== */
+(function(){
+"use strict";
+
+var KEY = "mentalgym.v1";
+var MAX_RESULTS = 3000;                 /* keep the file small; charts need weeks, not years */
+
+/* ------------------------------------------------------------- utilities */
+function p2(v){ return String(v).padStart(2,"0"); }
+function dkey(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
+function todayKey(){ return dkey(new Date()); }
+function parseKey(k){
+  var p = String(k||"").split("-");
+  return new Date(+p[0], (+p[1]||1)-1, +p[2]||1);
+}
+function addDays(k, n){
+  var d = parseKey(k);
+  return dkey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n));
+}
+function daysBetween(a, b){
+  var x = parseKey(a), y = parseKey(b);
+  return Math.round((new Date(y.getFullYear(),y.getMonth(),y.getDate()) -
+                     new Date(x.getFullYear(),x.getMonth(),x.getDate())) / 86400000);
+}
+function num(v){ var n = typeof v === "number" ? v : parseFloat(v); return isFinite(n) ? n : 0; }
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, num(v))); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function shuffle(a){
+  for (var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function randInt(lo, hi){ return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function ms(v){ var n = num(v); return n >= 10000 ? (n/1000).toFixed(1) + "s" : Math.round(n) + "ms"; }
+function secs(v){
+  var n = Math.max(0, Math.round(num(v)));
+  return Math.floor(n/60) + ":" + p2(n % 60);
+}
+function pct(v){ return Math.round(clamp(v,0,1) * 100) + "%"; }
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"]/g, function(c){
+  return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+
+/* --------------------------------------------------------------- storage */
+var localStore = {
+  read: function(){
+    try { var raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; }
+  },
+  write: function(s){
+    try { localStorage.setItem(KEY, JSON.stringify(s)); return true; } catch(e){ return false; }
+  }
+};
+var store = localStore;
+var state = null;
+
+var blank = {
+  v: 1,
+  prefs: { dailyMinutes:15, sound:true, reduceMotion:false, theme:"system", hints:true },
+  results: [],            /* one row per completed exercise */
+  levels: {},             /* exerciseId -> level index into its ladder */
+  records: {},            /* recordId -> { value, at, meta } */
+  days: {},               /* dayKey -> { minutes, exercises, workout:{ done:[], plan:[], minutes } } */
+  xp: 0,
+  onboarded: false
+};
+
+function normalise(o){
+  var s = (o && typeof o === "object") ? o : {};
+  var out = {
+    v: 1,
+    prefs: Object.assign({}, blank.prefs, s.prefs || {}),
+    results: Array.isArray(s.results) ? s.results.slice(-MAX_RESULTS) : [],
+    levels: (s.levels && typeof s.levels === "object") ? s.levels : {},
+    records: (s.records && typeof s.records === "object") ? s.records : {},
+    days: (s.days && typeof s.days === "object") ? s.days : {},
+    xp: Math.max(0, num(s.xp)),
+    onboarded: !!s.onboarded
+  };
+  out.results.forEach(function(r){
+    r.id = r.id || uid();
+    r.day = r.day || (r.at ? dkey(new Date(r.at)) : todayKey());
+    r.duration = Math.max(0, num(r.duration));
+  });
+  return out;
+}
+function useStore(s){ store = s || localStore; }
+function load(){ state = normalise(store.read ? store.read() : null); }
+function save(){
+  try { if (store.write) store.write(state); } catch(e){}
+  emit("gymdata");
+}
+
+/* --------------------------------------------------------------- events */
+var bus = document.createElement("div");
+function on(name, fn){ bus.addEventListener(name, fn); }
+function emit(name, detail){ bus.dispatchEvent(new CustomEvent(name, { detail:detail })); }
+
+/* ------------------------------------------------------ the exercise map */
+/* Every exercise registers one spec. Nothing else in the app needs to know
+   what an exercise does — only how to start it and what it reports back. */
+var specs = {};
+var ORDER = [];
+function register(spec){
+  specs[spec.id] = spec;
+  if (ORDER.indexOf(spec.id) === -1) ORDER.push(spec.id);
+}
+function spec(id){ return specs[id] || null; }
+function all(){ return ORDER.map(function(id){ return specs[id]; }).filter(Boolean); }
+
+/* -------------------------------------------------------- the difficulty */
+/* Each exercise carries a ladder: an ordered list of settings where each rung
+   differs from the one below it in exactly one way. Progress is therefore
+   always explainable — "the terms went from 5 to 10" — and never a jump. */
+function levelOf(id){
+  var sp = specs[id];
+  if (!sp || !sp.ladder) return 0;
+  return clamp(state.levels[id] === undefined ? (sp.startLevel || 0) : state.levels[id], 0, sp.ladder.length - 1);
+}
+function rung(id, lvl){
+  var sp = specs[id];
+  if (!sp || !sp.ladder) return {};
+  return sp.ladder[clamp(lvl === undefined ? levelOf(id) : lvl, 0, sp.ladder.length - 1)] || {};
+}
+/* what changed between two rungs, in words */
+function rungDelta(id, from, to){
+  var a = rung(id, from), b = rung(id, to), out = [];
+  Object.keys(b).forEach(function(k){
+    if (k === "label") return;
+    if (a[k] !== b[k]) out.push(labelFor(k) + " " + valueFor(k, a[k]) + " → " + valueFor(k, b[k]));
+  });
+  return out.join(", ");
+}
+var DIM_LABEL = { terms:"terms", digits:"digits", speed:"display time", size:"grid", span:"length",
+                  n:"n-back", distractors:"distractors", window:"response window", ops:"operations",
+                  range:"number range", rounds:"rounds", colours:"colours" };
+function labelFor(k){ return DIM_LABEL[k] || k; }
+function valueFor(k, v){
+  if (v === undefined) return "—";
+  if (k === "speed" || k === "window") return (num(v)/1000).toFixed(num(v) % 1000 ? 1 : 0) + "s";
+  if (k === "size") return v + "×" + v;
+  if (Array.isArray(v)) return v.join("/");
+  return String(v);
+}
+
+/* Move one rung when the last few attempts say so. Up on sustained accuracy,
+   down only on a clear drop, never more than one rung either way. */
+function adjust(id, accuracy){
+  var sp = specs[id];
+  if (!sp || !sp.ladder || sp.ladder.length < 2) return null;
+  var recent = resultsFor(id).slice(-3);
+  if (recent.length < 3) return null;
+  var lvl = levelOf(id), avg = recent.reduce(function(s,r){ return s + num(r.accuracy); }, 0) / recent.length;
+  var moved = null;
+  if (avg >= (sp.upAt || 0.9) && lvl < sp.ladder.length - 1){
+    state.levels[id] = lvl + 1;
+    moved = { dir:1, from:lvl, to:lvl + 1, why:rungDelta(id, lvl, lvl + 1) };
+  } else if (avg < (sp.downAt || 0.5) && lvl > 0){
+    state.levels[id] = lvl - 1;
+    moved = { dir:-1, from:lvl, to:lvl - 1, why:rungDelta(id, lvl, lvl - 1) };
+  }
+  return moved;
+}
+
+/* ------------------------------------------------------------ recording */
+function resultsFor(id){
+  return state.results.filter(function(r){ return r.exercise === id; });
+}
+function since(days){
+  if (!days) return state.results.slice();
+  var from = addDays(todayKey(), -(days - 1));
+  return state.results.filter(function(r){ return r.day >= from; });
+}
+function dayRow(key){
+  var d = state.days[key];
+  if (!d){ d = state.days[key] = { minutes:0, exercises:0, workout:null }; }
+  if (typeof d.minutes !== "number") d.minutes = 0;
+  if (typeof d.exercises !== "number") d.exercises = 0;
+  return d;
+}
+
+/* XP is earned for finishing, with a little more for accuracy and for the
+   rung you are standing on. It is a measure of practice done, nothing more. */
+function xpFor(res){
+  var base = 10 + Math.round(num(res.duration) / 15000) * 2;
+  var acc = Math.round(clamp(res.accuracy, 0, 1) * 15);
+  return base + acc + (num(res.level) * 2);
+}
+
+var LEVELS = [
+  { at:0,    name:"Beginner" },
+  { at:400,  name:"Learner" },
+  { at:1200, name:"Focused" },
+  { at:2800, name:"Sharp" },
+  { at:5600, name:"Mental athlete" },
+  { at:10000, name:"Master" }
+];
+function level(){
+  var xp = state.xp, i = 0;
+  for (var n = 0; n < LEVELS.length; n++) if (xp >= LEVELS[n].at) i = n;
+  var cur = LEVELS[i], next = LEVELS[i+1] || null;
+  return {
+    index: i + 1, name: cur.name, xp: xp,
+    into: xp - cur.at,
+    span: next ? next.at - cur.at : 0,
+    toNext: next ? next.at - xp : 0,
+    next: next ? next.name : null,
+    progress: next ? (xp - cur.at) / (next.at - cur.at) : 1
+  };
+}
+
+/* A record is only ever your own previous best. */
+var RECORDS = {
+  "schulte-5":   { name:"Fastest Schulte 5×5", unit:"time", lower:true },
+  "schulte-any": { name:"Fastest Schulte (any size)", unit:"time", lower:true },
+  "anzan-acc":   { name:"Best Anzan accuracy", unit:"pct", lower:false },
+  "anzan-speed": { name:"Fastest Anzan display", unit:"speed", lower:true },
+  "flash-terms": { name:"Longest Flash Anzan run", unit:"count", lower:false },
+  "reaction":    { name:"Fastest reaction", unit:"time", lower:true },
+  "memory-span": { name:"Longest memory sequence", unit:"count", lower:false },
+  "nback":       { name:"Highest n-back reached", unit:"count", lower:false },
+  "arith-acc":   { name:"Best arithmetic accuracy", unit:"pct", lower:false },
+  "stroop-acc":  { name:"Best Stroop accuracy", unit:"pct", lower:false },
+  "streak":      { name:"Longest training streak", unit:"days", lower:false }
+};
+function setRecord(id, value, meta){
+  var def = RECORDS[id];
+  if (!def || !isFinite(value)) return false;
+  var cur = state.records[id];
+  var better = !cur || (def.lower ? value < cur.value : value > cur.value);
+  if (better) state.records[id] = { value:value, at:Date.now(), meta:meta || null };
+  return better;
+}
+function recordText(id){
+  var def = RECORDS[id], r = state.records[id];
+  if (!def || !r) return null;
+  var v = r.value;
+  return def.unit === "time" ? ms(v)
+       : def.unit === "pct" ? Math.round(v * 100) + "%"
+       : def.unit === "speed" ? (v/1000).toFixed(1) + "s"
+       : def.unit === "days" ? v + (v === 1 ? " day" : " days")
+       : String(v);
+}
+
+/* ------------------------------------------------------------- the streak */
+function streak(){
+  var keys = Object.keys(state.days).filter(function(k){ return state.days[k].exercises > 0; }).sort();
+  if (!keys.length) return { current:0, longest:0, days:0, minutes:0, week:week([]) };
+  var longest = 1, run = 1;
+  for (var i = 1; i < keys.length; i++){
+    run = daysBetween(keys[i-1], keys[i]) === 1 ? run + 1 : 1;
+    if (run > longest) longest = run;
+  }
+  var t = todayKey(), last = keys[keys.length - 1], cur = 0;
+  if (last === t || last === addDays(t, -1)){
+    cur = 1;
+    for (var j = keys.length - 1; j > 0; j--){
+      if (daysBetween(keys[j-1], keys[j]) === 1) cur++; else break;
+    }
+  }
+  var minutes = keys.reduce(function(s,k){ return s + num(state.days[k].minutes); }, 0);
+  setRecord("streak", longest);
+  return { current:cur, longest:longest, days:keys.length, minutes:Math.round(minutes), week:week(keys) };
+}
+/* the last seven days, Monday first, for the little strip under the streak */
+function week(keys){
+  var set = {}; keys.forEach(function(k){ set[k] = true; });
+  var now = new Date(), back = (now.getDay() + 6) % 7, out = [];
+  for (var i = 0; i < 7; i++){
+    var k = addDays(todayKey(), i - back);
+    out.push({ key:k, letter:"MTWTFSS".charAt(i), done:!!set[k], future:k > todayKey(), today:k === todayKey() });
+  }
+  return out;
+}
+
+/* --------------------------------------------------- the four categories */
+/* Each is a 0–100 reading of your own recent sessions in that family: how
+   accurate, how quickly, how much practice. It is a training score inside
+   this app — not a measurement of you. */
+var FAMILY = { focus:"Focus", calc:"Calculation", memory:"Memory", speed:"Speed" };
+function familyScore(fam){
+  var rows = since(14).filter(function(r){
+    var sp = specs[r.exercise];
+    return sp && sp.family === fam;
+  });
+  if (!rows.length) return { score:0, rows:0 };
+  var recent = rows.slice(-12);
+  var acc = recent.reduce(function(s,r){ return s + clamp(r.accuracy,0,1); }, 0) / recent.length;
+  var lvl = recent.reduce(function(s,r){ return s + num(r.level); }, 0) / recent.length;
+  var maxLvl = recent.reduce(function(m,r){
+    var sp = specs[r.exercise];
+    return Math.max(m, sp && sp.ladder ? sp.ladder.length - 1 : 1);
+  }, 1);
+  var reps = clamp(recent.length / 12, 0, 1);
+  /* accuracy carries it, the rung you did it on lifts it, practice steadies it */
+  return { score: Math.round((acc * 62 + (lvl / maxLvl) * 26 + reps * 12)), rows:rows.length };
+}
+function focusScoreToday(){
+  var t = todayKey(), rows = state.results.filter(function(r){ return r.day === t; });
+  if (!rows.length) return 0;
+  var acc = rows.reduce(function(s,r){ return s + clamp(r.accuracy,0,1); }, 0) / rows.length;
+  var mins = num(dayRow(t).minutes), goal = num(state.prefs.dailyMinutes) || 15;
+  return Math.round(clamp(acc, 0, 1) * 60 + clamp(mins / goal, 0, 1) * 40);
+}
+
+/* ---------------------------------------------------------------- sound */
+/* Short, soft, and easy to turn off. Nothing arcade about it. */
+var ac = null;
+function actx(){
+  if (!state.prefs.sound) return null;
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === "suspended") ac.resume();
+    return ac;
+  } catch(e){ return null; }
+}
+function tone(freq, dur, type, gain){
+  var c = actx();
+  if (!c) return;
+  var o = c.createOscillator(), g = c.createGain();
+  o.type = type || "sine"; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, c.currentTime);
+  g.gain.exponentialRampToValueAtTime(gain || 0.05, c.currentTime + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+  o.connect(g); g.connect(c.destination);
+  o.start(); o.stop(c.currentTime + dur + 0.02);
+}
+/* a bead is a short filtered click, not a beep */
+function click(){
+  var c = actx();
+  if (!c) return;
+  var len = Math.floor(c.sampleRate * 0.035), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+  for (var i = 0; i < len; i++) d[i] = (Math.random()*2 - 1) * Math.pow(1 - i/len, 6);
+  var src = c.createBufferSource(); src.buffer = buf;
+  var f = c.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 1900; f.Q.value = 1.4;
+  var g = c.createGain(); g.gain.value = 0.16;
+  src.connect(f); f.connect(g); g.connect(c.destination);
+  src.start();
+}
+var SOUND = {
+  bead: click,
+  right: function(){ tone(660, .10, "sine", .045); setTimeout(function(){ tone(990, .12, "sine", .035); }, 70); },
+  wrong: function(){ tone(190, .16, "triangle", .04); },
+  tick:  function(){ tone(880, .05, "sine", .022); },
+  done:  function(){ tone(523, .12, "sine", .04); setTimeout(function(){ tone(784, .16, "sine", .035); }, 110);
+                     setTimeout(function(){ tone(1047, .22, "sine", .03); }, 240); },
+  start: function(){ tone(440, .08, "sine", .03); }
+};
+function sound(name){ var f = SOUND[name]; if (f) try { f(); } catch(e){} }
+
+function motionOff(){
+  return state.prefs.reduceMotion ||
+    (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+
+window.Gym = {
+  KEY:KEY, FAMILY:FAMILY, RECORDS:RECORDS, LEVELS:LEVELS,
+  p2:p2, dkey:dkey, todayKey:todayKey, parseKey:parseKey, addDays:addDays, daysBetween:daysBetween,
+  num:num, clamp:clamp, uid:uid, shuffle:shuffle, randInt:randInt, pick:pick,
+  ms:ms, secs:secs, pct:pct, esc:esc,
+  load:load, save:save, useStore:useStore, normalise:normalise,
+  on:on, emit:emit,
+  register:register, spec:spec, all:all,
+  levelOf:levelOf, rung:rung, rungDelta:rungDelta, adjust:adjust,
+  resultsFor:resultsFor, since:since, dayRow:dayRow,
+  xpFor:xpFor, level:level,
+  setRecord:setRecord, recordText:recordText,
+  streak:streak, familyScore:familyScore, focusScoreToday:focusScoreToday,
+  sound:sound, motionOff:motionOff,
+  get state(){ return state; },
+  set state(v){ state = v; }
+};
+state = normalise(null);
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the runner and Focus Mode.
+
+   One place that knows how to start any exercise, hide everything else while
+   it runs, and write down what happened afterwards. Exercises themselves only
+   have to draw into the host they are given and call finish() when done.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym;
+function $(id){ return document.getElementById(id); }
+function show(el, on){ if (el) el.hidden = !on; }
+
+var host = null, current = null, live = null, startedAt = 0, timer = null, opts = {};
+var settled = false;      /* one run, one result — see finish() */
+var queue = null;                       /* set while a workout is driving the runner */
+
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+/* ------------------------------------------------------------ focus mode */
+function enter(sp){
+  host = $("focus-stage");
+  host.innerHTML = "";
+  $("focus-name").textContent = sp.name;
+  $("focus-sub").textContent = sp.sub || "";
+  /* the routine's position and the exercise's own progress are different
+     things, so they get different slots — an exercise calling progress()
+     must not be able to wipe out where you are in the workout */
+  $("focus-queue").textContent = queue
+    ? "Workout " + (queue.done.length + 1) + " of " + queue.allIds.length : "";
+  $("focus-step").textContent = "";
+  show($("focus"), true);
+  document.body.classList.add("in-focus");
+  $("focus-exit").focus();
+}
+function leave(){
+  show($("focus"), false);
+  document.body.classList.remove("in-focus");
+  if (host) host.innerHTML = "";
+  current = null; live = null;
+  if (timer){ clearInterval(timer); timer = null; }
+  var back = $("tab-train");
+  if (back) back.focus();
+}
+
+/* --------------------------------------------------------------- running */
+function start(id, o){
+  var sp = G.spec(id);
+  if (!sp) return;
+  stop();
+  current = sp;
+  opts = Object.assign({}, G.rung(id), o || {});
+  opts.level = opts.level === undefined ? G.levelOf(id) : opts.level;
+  settled = false;
+  startedAt = Date.now();
+  enter(sp);
+  G.sound("start");
+  var api = {
+    host: null,
+    opts: opts,
+    el: el,
+    finish: function(res){ finish(res); },
+    abort: function(){ leave(); },
+    progress: function(text){ $("focus-step").textContent = text || ""; },
+    sound: G.sound,
+    motionOff: G.motionOff
+  };
+  api.host = host;
+  try { live = sp.mount(api) || {}; }
+  catch(e){
+    host.innerHTML = '<p class="f-err">That exercise could not start. ' + G.esc(e.message) + '</p>';
+    live = null;
+  }
+}
+function stop(){
+  if (live && typeof live.stop === "function"){ try { live.stop(); } catch(e){} }
+  live = null;
+  if (timer){ clearInterval(timer); timer = null; }
+}
+
+/* ---------------------------------------------------------- writing down */
+function finish(res){
+  var sp = current;
+  /* An exercise that manages to call finish() twice — a stray timer, a second
+     Enter on the last question — would otherwise record the same session
+     again, and worse, record it against whatever exercise had started in the
+     meantime. One run settles exactly once. */
+  if (!sp || settled) return;
+  settled = true;
+  stop();
+  res = res || {};
+  var duration = Math.max(0, Date.now() - startedAt);
+  var row = {
+    id: G.uid(),
+    exercise: sp.id,
+    family: sp.family,
+    at: Date.now(),
+    day: G.todayKey(),
+    duration: duration,
+    level: G.num(res.level === undefined ? G.levelOf(sp.id) : res.level),
+    score: G.num(res.score),
+    accuracy: G.clamp(res.accuracy, 0, 1),
+    reactionTime: res.reactionTime === undefined ? null : G.num(res.reactionTime),
+    custom: !!opts.custom,
+    metadata: res.metadata || null
+  };
+  var s = G.state;
+  s.results.push(row);
+  if (s.results.length > 3000) s.results = s.results.slice(-3000);
+
+  var day = G.dayRow(row.day);
+  day.minutes += duration / 60000;
+  day.exercises += 1;
+
+  var xp = G.xpFor(row);
+  s.xp += xp;
+
+  var beaten = [];
+  if (typeof sp.records === "function"){
+    (sp.records(row) || []).forEach(function(r){
+      if (G.setRecord(r.id, r.value, r.meta)) beaten.push(G.RECORDS[r.id] ? G.RECORDS[r.id].name : r.id);
+    });
+  }
+  /* a run you configured yourself says nothing about the rung you are on */
+  var moved = row.custom ? null : G.adjust(sp.id, row.accuracy);
+  G.streak();                                   /* refreshes the longest-streak record */
+  G.save();
+  G.sound("done");
+  card(sp, row, xp, moved, beaten);
+}
+
+/* the one screen between finishing and deciding what next */
+function card(sp, row, xp, moved, beaten){
+  host.innerHTML = "";
+  var wrap = el("div", "f-done");
+  wrap.setAttribute("role", "status");
+
+  var head = el("p", "f-done-k", sp.summaryLabel || "Session complete");
+  var fig = el("p", "f-done-fig");
+  fig.textContent = sp.summary ? sp.summary(row) : Math.round(row.accuracy * 100) + "%";
+  wrap.appendChild(head); wrap.appendChild(fig);
+
+  var stats = el("div", "f-done-stats");
+  var rows = [["accuracy", Math.round(row.accuracy * 100) + "%"], ["time", G.secs(row.duration / 1000)],
+              ["xp earned", "+" + xp]];
+  if (sp.extraStats) rows = rows.concat(sp.extraStats(row));
+  rows.forEach(function(p){
+    var d = el("div");
+    d.appendChild(el("span", "v num", p[1]));
+    d.appendChild(el("span", "k", p[0]));
+    stats.appendChild(d);
+  });
+  wrap.appendChild(stats);
+
+  if (moved){
+    var m = el("p", "f-move " + (moved.dir > 0 ? "up" : "down"));
+    m.textContent = (moved.dir > 0 ? "Level up — " : "Eased back — ") +
+                    (moved.why || ("level " + (moved.to + 1)));
+    wrap.appendChild(m);
+  }
+  beaten.forEach(function(name){
+    wrap.appendChild(el("p", "f-record", "New personal best · " + name));
+  });
+
+  var acts = el("div", "f-done-acts");
+  var again = el("button", "btn", queue ? "Repeat" : "Again");
+  again.type = "button";
+  again.addEventListener("click", function(){ start(sp.id); });
+  var next = el("button", queue ? "btn" : "btn-ghost", queue ? nextLabel() : "Finish");
+  next.type = "button";
+  next.addEventListener("click", function(){ queue ? advance() : leave(); });
+  acts.appendChild(queue ? next : again);
+  acts.appendChild(queue ? again : next);
+  wrap.appendChild(acts);
+  host.appendChild(wrap);
+  next.focus();
+}
+function nextLabel(){
+  return queue && queue.index + 1 < queue.plan.length ? "Next exercise" : "Finish workout";
+}
+
+/* ---------------------------------------------------- a workout in flight */
+/* cfg: { steps:[remaining], allIds:[the whole plan], done:[already finished], minutes } */
+function runQueue(cfg){
+  queue = { plan:cfg.steps.slice(), allIds:cfg.allIds.slice(), done:(cfg.done || []).slice(),
+            index:0, minutes:cfg.minutes, started:Date.now() };
+  startCurrent();
+}
+function startCurrent(){
+  var step = queue.plan[queue.index];
+  start(step.id, step.opts || {});
+}
+function advance(){
+  if (!queue) return leave();
+  queue.done.push(queue.plan[queue.index].id);
+  saveWorkout();
+  queue.index++;
+  if (queue.index >= queue.plan.length){
+    var q = queue; queue = null;
+    leave();
+    G.emit("workoutdone", q);
+    return;
+  }
+  startCurrent();
+}
+function saveWorkout(){
+  var d = G.dayRow(G.todayKey());
+  d.workout = { plan: queue.allIds.slice(), done: queue.done.slice(),
+                minutes: queue.minutes, at: Date.now() };
+  G.save();
+}
+function abandon(){
+  if (queue){ saveWorkout(); queue = null; }
+  leave();
+}
+
+/* --------------------------------------------------------------- exiting */
+$("focus-exit").addEventListener("click", abandon);
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape" && !$("focus").hidden){ e.preventDefault(); abandon(); }
+});
+
+window.GymRun = { start:start, runQueue:runQueue, leave:leave, abandon:abandon,
+                  get inWorkout(){ return !!queue; },
+                  get queue(){ return queue; } };
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the Soroban.
+
+   A real 1:4 soroban: one heaven bead worth five above the bar, four earth
+   beads worth one below it. A bead counts when it is pushed toward the bar.
+
+   This is a component, not a screen. The trainer uses it, the tutorial uses
+   it, and Assisted Anzan uses it with the beads driven from code and the
+   whole frame fading out — which is the whole point of the progression from
+   a physical abacus to a mental one. Hence ghost(), fade() and setValue()
+   being part of the surface from the start.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym;
+
+var UNIT = 26;            /* one bead slot, in px, before the frame is scaled */
+var BEAD_H = 22;
+
+function create(mount, o){
+  o = o || {};
+  var digits = G.clamp(o.digits || 5, 1, 13);
+  var readonly = !!o.readonly;
+  var cols = [];            /* per rod: { heaven:0|1, earth:0..4 } */
+  var els = [];
+  var onChange = o.onChange || function(){};
+  var root = document.createElement("div");
+  root.className = "sb" + (readonly ? " sb-ro" : "");
+  root.style.setProperty("--sb-unit", UNIT + "px");
+  root.style.setProperty("--sb-bead", BEAD_H + "px");
+  if (!readonly){
+    root.setAttribute("role", "group");
+    root.setAttribute("aria-label", "Soroban, " + digits + " rods");
+  } else {
+    root.setAttribute("aria-hidden", "true");
+  }
+
+  var frame = document.createElement("div");
+  frame.className = "sb-frame";
+  root.appendChild(frame);
+
+  for (var i = 0; i < digits; i++) cols.push({ heaven:0, earth:0 });
+
+  cols.forEach(function(_, i){
+    var place = digits - 1 - i;                 /* leftmost rod is the highest place */
+    var col = document.createElement("div");
+    col.className = "sb-col";
+    col.dataset.i = String(i);
+
+    var heaven = document.createElement("div");
+    heaven.className = "sb-heaven";
+    var hb = bead("heaven", i, 0, place);
+    heaven.appendChild(hb);
+
+    var bar = document.createElement("div");
+    bar.className = "sb-bar";
+    /* the unit mark every third rod, as on a real soroban */
+    if (place % 3 === 0) bar.classList.add("sb-dot");
+
+    var earth = document.createElement("div");
+    earth.className = "sb-earth";
+    var ebs = [];
+    for (var k = 0; k < 4; k++){
+      var eb = bead("earth", i, k, place);
+      earth.appendChild(eb);
+      ebs.push(eb);
+    }
+
+    var digit = document.createElement("span");
+    digit.className = "sb-digit num";
+    digit.textContent = "0";
+
+    col.appendChild(heaven); col.appendChild(bar); col.appendChild(earth); col.appendChild(digit);
+    frame.appendChild(col);
+    els.push({ col:col, heaven:hb, earth:ebs, digit:digit, bar:bar });
+    if (!readonly) drag(col, i, earth, heaven);
+  });
+
+  function bead(kind, i, k, place){
+    var b = document.createElement(readonly ? "span" : "button");
+    b.className = "sb-bead sb-" + kind;
+    b.dataset.i = String(i); b.dataset.k = String(k); b.dataset.kind = kind;
+    if (!readonly){
+      b.type = "button";
+      b.setAttribute("aria-label",
+        (kind === "heaven" ? "Five bead" : "One bead " + (k+1)) + ", rod " + (place + 1));
+      b.addEventListener("click", function(e){
+        e.preventDefault();
+        hit(i, kind, k);
+      });
+    }
+    return b;
+  }
+
+  /* Clicking a bead does what a finger does: it carries the beads between it
+     and the bar along with it. */
+  function hit(i, kind, k){
+    var c = cols[i];
+    if (kind === "heaven") c.heaven = c.heaven ? 0 : 1;
+    else c.earth = (k < c.earth) ? k : k + 1;
+    paint(i, true);
+    G.sound("bead");
+    fire();
+  }
+
+  /* Dragging a rod up or down sets it from the pointer's position, which is
+     how the real thing feels under a thumb. */
+  function drag(col, i, earth, heaven){
+    var active = false, kind = null;
+    function place(y){
+      var c = cols[i];
+      if (kind === "earth"){
+        var r = earth.getBoundingClientRect();
+        var slot = G.clamp(Math.round((y - r.top) / (r.height / 5)), 0, 4);
+        if (slot !== c.earth){ c.earth = slot; paint(i, true); G.sound("bead"); fire(); }
+      } else {
+        var hr = heaven.getBoundingClientRect();
+        var down = (y - hr.top) > hr.height / 2 ? 1 : 0;
+        if (down !== c.heaven){ c.heaven = down; paint(i, true); G.sound("bead"); fire(); }
+      }
+    }
+    col.addEventListener("pointerdown", function(e){
+      if (readonly) return;
+      var t = e.target.closest(".sb-bead");
+      kind = t ? t.dataset.kind : (e.target.closest(".sb-heaven") ? "heaven" : "earth");
+      active = true;
+      col.setPointerCapture(e.pointerId);
+    });
+    col.addEventListener("pointermove", function(e){
+      if (!active) return;
+      e.preventDefault();
+      place(e.clientY);
+    });
+    ["pointerup","pointercancel"].forEach(function(ev){
+      col.addEventListener(ev, function(e){
+        if (!active) return;
+        active = false;
+        try { col.releasePointerCapture(e.pointerId); } catch(err){}
+      });
+    });
+  }
+
+  /* --------------------------------------------------------------- paint */
+  function paint(i, animate){
+    var c = cols[i], e = els[i];
+    e.heaven.style.transform = "translateY(" + (c.heaven ? UNIT : 0) + "px)";
+    e.heaven.classList.toggle("on", !!c.heaven);
+    e.earth.forEach(function(b, k){
+      var slot = k < c.earth ? k : k + 1;
+      b.style.transform = "translateY(" + (slot * UNIT) + "px)";
+      b.classList.toggle("on", k < c.earth);
+    });
+    var v = c.heaven * 5 + c.earth;
+    e.digit.textContent = String(v);
+    e.col.classList.toggle("sb-live", v > 0);
+    if (animate && !G.motionOff()){
+      e.col.classList.remove("sb-moved");
+      void e.col.offsetWidth;                     /* restart the flick */
+      e.col.classList.add("sb-moved");
+    }
+  }
+  function paintAll(animate){ cols.forEach(function(_, i){ paint(i, animate); }); }
+
+  function value(){
+    return cols.reduce(function(sum, c, i){
+      return sum + (c.heaven * 5 + c.earth) * Math.pow(10, digits - 1 - i);
+    }, 0);
+  }
+  function fire(){ onChange(value()); }
+
+  /* --------------------------------------------------------------- setters */
+  function setValue(n, animate){
+    n = Math.max(0, Math.floor(G.num(n)));
+    var max = Math.pow(10, digits) - 1;
+    var over = n > max;
+    if (over) n = max;
+    var s = String(n).padStart(digits, "0");
+    cols.forEach(function(c, i){
+      var d = +s.charAt(i);
+      c.heaven = d >= 5 ? 1 : 0;
+      c.earth = d % 5;
+    });
+    paintAll(animate !== false);
+    fire();
+    return !over;
+  }
+  function reset(){ setValue(0); }
+
+  /* Ghost beads: where the beads *would* go. The learner sees the shape of
+     the answer without the abacus moving for them. */
+  function ghost(n){
+    clearGhost();
+    if (n === null || n === undefined) return;
+    var s = String(Math.max(0, Math.floor(G.num(n)))).padStart(digits, "0").slice(-digits);
+    cols.forEach(function(_, i){
+      var d = +s.charAt(i), e = els[i];
+      if (d >= 5) e.heaven.classList.add("ghost");
+      e.earth.forEach(function(b, k){ if (k < d % 5) b.classList.add("ghost"); });
+    });
+  }
+  function clearGhost(){
+    els.forEach(function(e){
+      e.heaven.classList.remove("ghost");
+      e.earth.forEach(function(b){ b.classList.remove("ghost"); });
+    });
+  }
+
+  /* The abacus fading out from under the learner — the bridge into Anzan. */
+  function fade(amount){
+    var a = G.clamp(amount, 0, 1);
+    root.style.setProperty("--sb-fade", String(1 - a));
+    root.classList.toggle("sb-gone", a >= 1);
+  }
+  function flash(i){
+    var e = els[i];
+    if (!e) return;
+    e.col.classList.add("sb-flash");
+    setTimeout(function(){ e.col.classList.remove("sb-flash"); }, 420);
+  }
+  function highlight(list){
+    els.forEach(function(e, i){ e.col.classList.toggle("sb-hi", !!(list && list.indexOf(i) > -1)); });
+  }
+  function showDigits(on){ root.classList.toggle("sb-nodigits", !on); }
+
+  mount.appendChild(root);
+  paintAll(false);
+  showDigits(o.showDigits !== false);
+
+  return {
+    root: root, digits: digits,
+    value: value, setValue: setValue, reset: reset,
+    ghost: ghost, clearGhost: clearGhost, fade: fade,
+    flash: flash, highlight: highlight, showDigits: showDigits,
+    destroy: function(){ if (root.parentNode) root.parentNode.removeChild(root); }
+  };
+}
+
+window.Soroban = { create:create };
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — Soroban trainer and the beginner lessons.
+   Stage one of the journey: the beads under your hand.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym, SB = window.Soroban;
+
+function el(t, c, x){ var e = document.createElement(t); if (c) e.className = c;
+                      if (x !== undefined) e.textContent = x; return e; }
+
+/* ---------------------------------------------------------- the trainer */
+/* Each rung moves exactly one thing: the rods, or the kind of question. */
+var LADDER = [
+  { digits:1, ops:"set" },
+  { digits:2, ops:"set" },
+  { digits:3, ops:"set" },
+  { digits:3, ops:"add" },
+  { digits:4, ops:"add" },
+  { digits:4, ops:"addsub" },
+  { digits:5, ops:"addsub" },
+  { digits:5, ops:"mul" },
+  { digits:5, ops:"muldiv" }
+];
+var ROUNDS = 8;
+
+function task(rungOpts){
+  var d = rungOpts.digits, ops = rungOpts.ops;
+  var top = Math.pow(10, d) - 1;
+  if (ops === "set"){
+    var n = G.randInt(d === 1 ? 1 : Math.pow(10, d-1), top);
+    return { prompt:String(n), answer:n, start:0, kind:"Set this number" };
+  }
+  if (ops === "add" || (ops === "addsub" && Math.random() < 0.5)){
+    var a = G.randInt(1, Math.floor(top * 0.6)), b = G.randInt(1, top - a);
+    return { prompt:a + " + " + b, answer:a + b, start:a, kind:"Add it on the beads" };
+  }
+  if (ops === "addsub"){
+    var x = G.randInt(Math.floor(top * 0.3), top), y = G.randInt(1, x);
+    return { prompt:x + " − " + y, answer:x - y, start:x, kind:"Take it off the beads" };
+  }
+  if (ops === "mul" || (ops === "muldiv" && Math.random() < 0.5)){
+    var m = G.randInt(2, d >= 4 ? 99 : 19), k = G.randInt(2, 9);
+    return { prompt:m + " × " + k, answer:m * k, start:0, kind:"Work it out, then set the answer" };
+  }
+  var q = G.randInt(2, 9), r = G.randInt(2, d >= 4 ? 99 : 19);
+  return { prompt:(q * r) + " ÷ " + q, answer:r, start:0, kind:"Work it out, then set the answer" };
+}
+
+G.register({
+  id: "soroban", name: "Soroban", family: "calc",
+  short: "Physical abacus training",
+  sub: "Move the beads. One heaven bead is five, each earth bead is one.",
+  icon: "算",
+  ladder: LADDER,
+  startLevel: 0,
+  summaryLabel: "Rounds right",
+  summary: function(r){ return (r.metadata.right || 0) + " of " + ROUNDS; },
+  mount: function(api){
+    var o = api.opts, right = 0, round = 0, done = false, cur = null, locked = false;
+    var wrap = el("div", "sb-train");
+    var kind = el("p", "f-eyebrow");
+    var prompt = el("p", "sb-prompt");
+    var mountEl = el("div", "sb-mount");
+    var feedback = el("p", "sb-feedback");
+    feedback.setAttribute("role", "status");
+    var acts = el("div", "f-acts");
+    var check = el("button", "btn", "Check");
+    check.type = "button";
+    var hint = el("button", "btn-ghost", "Hint");
+    hint.type = "button";
+    var clear = el("button", "btn-ghost", "Clear");
+    clear.type = "button";
+    acts.appendChild(check); acts.appendChild(hint); acts.appendChild(clear);
+    wrap.appendChild(kind); wrap.appendChild(prompt); wrap.appendChild(mountEl);
+    wrap.appendChild(feedback); wrap.appendChild(acts);
+    api.host.appendChild(wrap);
+
+    var sb = SB.create(mountEl, { digits:o.digits, onChange:function(){ feedback.textContent = ""; } });
+
+    function next(){
+      if (round >= ROUNDS) return end();
+      cur = task(o);
+      locked = false;
+      kind.textContent = cur.kind;
+      prompt.textContent = cur.prompt;
+      sb.clearGhost();
+      sb.setValue(cur.start, false);
+      feedback.textContent = "";
+      feedback.className = "sb-feedback";
+      check.textContent = "Check";
+      api.progress("Round " + (round + 1) + " of " + ROUNDS);
+    }
+    function judge(){
+      if (locked){ round++; next(); return; }
+      var v = sb.value(), ok = v === cur.answer;
+      locked = true;
+      if (ok) right++;
+      feedback.textContent = ok ? "Right." : "Not yet — the beads read " + v + ", the answer is " + cur.answer + ".";
+      feedback.className = "sb-feedback " + (ok ? "ok" : "no");
+      api.sound(ok ? "right" : "wrong");
+      if (!ok) sb.ghost(cur.answer);
+      check.textContent = round + 1 >= ROUNDS ? "See results" : "Next";
+      check.focus();
+    }
+    function end(){
+      done = true;
+      api.finish({ accuracy: right / ROUNDS, score: right,
+                   metadata: { right:right, rounds:ROUNDS, digits:o.digits, ops:o.ops } });
+    }
+    check.addEventListener("click", judge);
+    hint.addEventListener("click", function(){
+      sb.ghost(cur.answer);
+      feedback.textContent = "The pale beads show where the answer sits.";
+      feedback.className = "sb-feedback";
+    });
+    clear.addEventListener("click", function(){ sb.setValue(cur.start); });
+    function keys(e){
+      if (done) return;
+      if (e.key === "Enter"){ e.preventDefault(); judge(); }
+      else if (e.key.toLowerCase() === "r"){ e.preventDefault(); sb.setValue(cur.start); }
+    }
+    document.addEventListener("keydown", keys);
+    next();
+    return { stop: function(){ document.removeEventListener("keydown", keys); } };
+  },
+  records: function(row){ return []; }
+});
+
+/* --------------------------------------------------------- the lessons */
+/* A short guided run through what the beads mean. It is not scored against
+   you — finishing it is the point. */
+var LESSONS = [
+  { title:"One bead is one",
+    text:"Below the bar are four earth beads. Push one up to the bar and the rod reads one. Push up three and it reads three.",
+    digits:1, demo:3, ask:3, hint:"Push three earth beads up to the bar." },
+  { title:"The heaven bead is five",
+    text:"Above the bar sits a single heaven bead. Push it down to the bar and the rod reads five — one bead doing the work of five.",
+    digits:1, demo:5, ask:5, hint:"Push the top bead down." },
+  { title:"Five and some",
+    text:"Seven is the heaven bead down, and two earth beads up. Five and two. There is never more than one way to show a digit.",
+    digits:1, demo:7, ask:7, hint:"Heaven bead down, two earth beads up." },
+  { title:"Place value",
+    text:"Each rod to the left is worth ten times the one to its right. The same beads on a different rod mean a different amount.",
+    digits:3, demo:407, ask:407, hint:"Four on the left rod, nothing in the middle, seven on the right." },
+  { title:"Adding without carrying",
+    text:"Twenty-three plus four is simply four more earth beads on the right rod. When there is room, addition is just movement.",
+    digits:2, start:23, demo:27, ask:27, hint:"Add four beads on the right rod." },
+  { title:"Carrying — the ten friend",
+    text:"Eight plus five will not fit on one rod. So you add ten and take five away: push one bead up on the tens rod, and clear five from the units. That is the whole trick of soroban addition.",
+    digits:2, start:8, demo:13, ask:13, hint:"One on the tens rod, three on the units." },
+  { title:"Subtracting without borrowing",
+    text:"Thirty-eight take six. Six is the heaven bead and one earth bead — take them off and the rod reads two.",
+    digits:2, start:38, demo:32, ask:32, hint:"Clear six from the units rod." },
+  { title:"Borrowing",
+    text:"Twelve take five: there is no five on the units rod. So take one from the tens and give back five: the tens rod drops by one, the units rod gains five.",
+    digits:2, start:12, demo:7, ask:7, hint:"Clear the tens rod, then set seven." }
+];
+
+G.register({
+  id: "soroban-lessons", name: "Soroban fundamentals", family: "calc",
+  short: "What the beads mean",
+  sub: "Eight short lessons. Read, watch, then do it yourself.",
+  icon: "☷",
+  ladder: null,
+  untimed: true,
+  summaryLabel: "Lessons finished",
+  summary: function(r){ return (r.metadata.done || 0) + " of " + LESSONS.length; },
+  mount: function(api){
+    var i = 0, right = 0, sb = null, stage = "read";
+    var wrap = el("div", "sb-lesson");
+    var count = el("p", "f-eyebrow");
+    var title = el("h3", "sb-l-title");
+    var text = el("p", "sb-l-text");
+    var mountEl = el("div", "sb-mount");
+    var feedback = el("p", "sb-feedback");
+    feedback.setAttribute("role", "status");
+    var acts = el("div", "f-acts");
+    var go = el("button", "btn", "Show me");
+    go.type = "button";
+    var hint = el("button", "btn-ghost", "Hint");
+    hint.type = "button";
+    acts.appendChild(go); acts.appendChild(hint);
+    [count, title, text, mountEl, feedback, acts].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    function build(){
+      var L = LESSONS[i];
+      if (sb) sb.destroy();
+      mountEl.innerHTML = "";
+      sb = SB.create(mountEl, { digits:L.digits, onChange:function(){ feedback.textContent = ""; } });
+      sb.setValue(L.start || 0, false);
+      count.textContent = "Lesson " + (i + 1) + " of " + LESSONS.length;
+      title.textContent = L.title;
+      text.textContent = L.text;
+      feedback.textContent = "";
+      feedback.className = "sb-feedback";
+      go.textContent = "Show me";
+      stage = "read";
+      hint.hidden = true;
+      api.progress("Lesson " + (i + 1) + " of " + LESSONS.length);
+    }
+    function demo(){
+      var L = LESSONS[i];
+      sb.setValue(L.demo, true);
+      api.sound("bead");
+      feedback.textContent = "That is " + L.demo + ".";
+      feedback.className = "sb-feedback";
+      go.textContent = "Now your turn";
+      stage = "shown";
+    }
+    function ask(){
+      var L = LESSONS[i];
+      sb.setValue(L.start || 0, true);
+      sb.clearGhost();
+      feedback.textContent = "Set " + L.ask + " on the beads, then press Check.";
+      feedback.className = "sb-feedback";
+      go.textContent = "Check";
+      hint.hidden = false;
+      stage = "doing";
+    }
+    function judge(){
+      var L = LESSONS[i], ok = sb.value() === L.ask;
+      if (ok) right++;
+      feedback.textContent = ok ? "That is it." : "Not quite — the beads read " + sb.value() + ". Try the hint.";
+      feedback.className = "sb-feedback " + (ok ? "ok" : "no");
+      api.sound(ok ? "right" : "wrong");
+      if (ok){
+        stage = "done";
+        go.textContent = i + 1 >= LESSONS.length ? "Finish" : "Next lesson";
+      }
+    }
+    go.addEventListener("click", function(){
+      if (stage === "read") demo();
+      else if (stage === "shown") ask();
+      else if (stage === "doing") judge();
+      else {
+        i++;
+        if (i >= LESSONS.length){
+          api.finish({ accuracy: right / LESSONS.length, score: right,
+                       metadata: { done:LESSONS.length, right:right } });
+        } else build();
+      }
+    });
+    hint.addEventListener("click", function(){
+      var L = LESSONS[i];
+      sb.ghost(L.ask);
+      feedback.textContent = L.hint;
+      feedback.className = "sb-feedback";
+    });
+    build();
+    return { stop:function(){ if (sb) sb.destroy(); } };
+  }
+});
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — Anzan, the mental abacus.
+
+   The journey runs Soroban → Assisted Anzan → Anzan → Flash Anzan. Assisted
+   Anzan is the hinge: the terms appear and the soroban moves itself, then
+   fades a little further with every round until there is nothing left to
+   look at but the picture you have been building in your head.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym, SB = window.Soroban;
+
+function el(t, c, x){ var e = document.createElement(t); if (c) e.className = c;
+                      if (x !== undefined) e.textContent = x; return e; }
+
+/* A run of terms whose running total never goes below zero — a soroban has
+   no way to show a negative number, so neither do we. */
+function sequence(terms, digits, mode){
+  var lo = digits === 1 ? 1 : Math.pow(10, digits - 1);
+  var hi = Math.pow(10, digits) - 1;
+  var list = [], total = 0;
+  for (var i = 0; i < terms; i++){
+    var minus = mode === "addsub" && i > 0 && total > lo && Math.random() < 0.4;
+    var n = G.randInt(lo, minus ? Math.min(hi, total) : hi);
+    if (minus) n = -n;
+    total += n;
+    list.push(n);
+  }
+  return { terms:list, answer:total };
+}
+function termText(n, i){ return (i === 0 ? String(n) : (n < 0 ? "− " : "+ ") + Math.abs(n)); }
+
+/* ------------------------------------------------------- the shared run */
+/* One presentation engine drives all three modes; what differs is whether a
+   soroban is on screen and how fast the terms come. */
+function build(api, cfg){
+  var o = api.opts, rounds = cfg.rounds, round = 0, right = 0, times = [];
+  var seq = null, timer = null, askedAt = 0, sb = null, running = 0;
+
+  var wrap = el("div", "az" + (cfg.bare ? " az-bare" : ""));
+  var stageEl = el("div", "az-stage");
+  var termEl = el("div", "az-term num");
+  termEl.setAttribute("aria-live", "off");
+  var dotsEl = el("div", "az-dots");
+  var sbMount = el("div", "az-sb");
+  var ask = el("form", "az-ask");
+  ask.hidden = true;
+  var label = el("label", "az-ask-l", "What is the answer?");
+  label.htmlFor = "az-input";
+  var input = document.createElement("input");
+  input.id = "az-input"; input.type = "text"; input.inputMode = "numeric";
+  input.autocomplete = "off"; input.className = "az-input num";
+  input.setAttribute("aria-label", "Your answer");
+  var submit = el("button", "btn", "Submit");
+  submit.type = "submit";
+  ask.appendChild(label); ask.appendChild(input); ask.appendChild(submit);
+  var feedback = el("p", "az-feedback");
+  feedback.setAttribute("role", "status");
+  var lead = el("p", "f-note", cfg.lead || "");
+
+  stageEl.appendChild(termEl);
+  if (cfg.soroban) stageEl.appendChild(sbMount);
+  stageEl.appendChild(dotsEl);
+  wrap.appendChild(stageEl); wrap.appendChild(ask); wrap.appendChild(feedback);
+  if (cfg.lead) wrap.appendChild(lead);
+  api.host.appendChild(wrap);
+
+  if (cfg.soroban){
+    sb = SB.create(sbMount, { digits: Math.max(3, (o.digits || 1) + 2), readonly:true, showDigits:true });
+  }
+
+  function dots(n, at){
+    dotsEl.innerHTML = "";
+    for (var i = 0; i < n; i++){
+      var d = el("i", i < at ? "on" : "");
+      dotsEl.appendChild(d);
+    }
+  }
+  function fadeFor(round){
+    /* the abacus withdraws a little further every round */
+    return cfg.soroban ? G.clamp(round / Math.max(1, rounds - 1), 0, 1) * 0.92 : 0;
+  }
+
+  function play(){
+    seq = sequence(o.terms, o.digits, o.mode || "add");
+    running = 0;
+    ask.hidden = true;
+    feedback.textContent = "";
+    feedback.className = "az-feedback";
+    api.progress("Round " + (round + 1) + " of " + rounds);
+    if (sb){ sb.setValue(0, false); sb.fade(fadeFor(round)); }
+    dots(seq.terms.length, 0);
+    var i = 0, gap = Math.max(60, Math.round(o.speed * 0.16));
+    function step(){
+      if (i >= seq.terms.length){ termEl.textContent = ""; return question(); }
+      var n = seq.terms[i];
+      running += n;
+      termEl.textContent = termText(n, i);
+      termEl.classList.remove("in");
+      if (!api.motionOff()){ void termEl.offsetWidth; termEl.classList.add("in"); }
+      if (sb) sb.setValue(running, true);
+      api.sound("tick");
+      dots(seq.terms.length, i + 1);
+      i++;
+      timer = setTimeout(function(){
+        termEl.textContent = "";
+        timer = setTimeout(step, gap);
+      }, Math.max(120, o.speed - gap));
+    }
+    timer = setTimeout(step, 550);
+  }
+  function question(){
+    ask.hidden = false;
+    input.value = "";
+    askedAt = Date.now();
+    if (sb) sb.fade(1);
+    input.focus();
+  }
+  function judge(e){
+    e.preventDefault();
+    if (ask.hidden) return;
+    var raw = input.value.trim();
+    if (raw === "" || !/^-?\d+$/.test(raw)){
+      feedback.textContent = "Type the answer as a whole number.";
+      feedback.className = "az-feedback no";
+      input.focus();
+      return;
+    }
+    var given = parseInt(raw, 10), ok = given === seq.answer;
+    times.push(Date.now() - askedAt);
+    if (ok) right++;
+    ask.hidden = true;
+    feedback.textContent = ok ? "Right — " + seq.answer + "."
+                              : "It was " + seq.answer + ". You said " + given + ".";
+    feedback.className = "az-feedback " + (ok ? "ok" : "no");
+    api.sound(ok ? "right" : "wrong");
+    if (sb && !ok){ sb.fade(0); sb.setValue(seq.answer, true); }
+    round++;
+    setTimeout(function(){
+      if (round >= rounds) done();
+      else play();
+    }, ok ? 900 : 2100);
+  }
+  function done(){
+    var avg = times.length ? times.reduce(function(a,b){ return a+b; },0) / times.length : 0;
+    api.finish({
+      accuracy: right / rounds,
+      score: right,
+      reactionTime: Math.round(avg),
+      metadata: { right:right, rounds:rounds, digits:o.digits, terms:o.terms,
+                  speed:o.speed, mode:o.mode || "add", avgAnswerMs:Math.round(avg) }
+    });
+  }
+  ask.addEventListener("submit", judge);
+  play();
+  return { stop:function(){ if (timer) clearTimeout(timer); if (sb) sb.destroy(); } };
+}
+
+/* ------------------------------------------------------------- the modes */
+var ANZAN_LADDER = [
+  { terms:3,  digits:1, speed:2000, mode:"add" },
+  { terms:5,  digits:1, speed:2000, mode:"add" },
+  { terms:5,  digits:1, speed:1500, mode:"add" },
+  { terms:5,  digits:1, speed:1500, mode:"addsub" },
+  { terms:10, digits:1, speed:1500, mode:"addsub" },
+  { terms:10, digits:2, speed:1500, mode:"addsub" },
+  { terms:10, digits:2, speed:1000, mode:"addsub" },
+  { terms:15, digits:2, speed:1000, mode:"addsub" },
+  { terms:15, digits:3, speed:1000, mode:"addsub" },
+  { terms:15, digits:3, speed:800,  mode:"addsub" },
+  { terms:20, digits:3, speed:800,  mode:"addsub" }
+];
+var FLASH_LADDER = [
+  { terms:3,  digits:1, speed:1000, mode:"add" },
+  { terms:5,  digits:1, speed:1000, mode:"add" },
+  { terms:5,  digits:1, speed:800,  mode:"add" },
+  { terms:5,  digits:1, speed:600,  mode:"add" },
+  { terms:7,  digits:1, speed:600,  mode:"add" },
+  { terms:7,  digits:1, speed:500,  mode:"add" },
+  { terms:10, digits:1, speed:500,  mode:"add" },
+  { terms:10, digits:1, speed:400,  mode:"add" },
+  { terms:10, digits:2, speed:400,  mode:"add" },
+  { terms:12, digits:2, speed:400,  mode:"add" },
+  { terms:12, digits:2, speed:300,  mode:"add" }
+];
+var TERM_OPTS  = [[3,"3"],[5,"5"],[10,"10"],[15,"15"],[20,"20"],[30,"30"]];
+var DIGIT_OPTS = [[1,"1 digit"],[2,"2 digits"],[3,"3 digits"],[4,"4 digits"],[5,"5 digits"]];
+var SPEED_OPTS = [[2000,"2.0 s"],[1500,"1.5 s"],[1000,"1.0 s"],[800,"0.8 s"],[500,"0.5 s"],[300,"0.3 s"],[200,"0.2 s"]];
+var MODE_OPTS  = [["add","Addition only"],["addsub","Addition and subtraction"]];
+var OPTIONS = [
+  { k:"digits", label:"Digits", opts:DIGIT_OPTS },
+  { k:"terms",  label:"Terms",  opts:TERM_OPTS },
+  { k:"speed",  label:"Display speed", opts:SPEED_OPTS },
+  { k:"mode",   label:"Operations", opts:MODE_OPTS }
+];
+
+function summaryOf(rounds){
+  return function(r){ return (r.metadata.right || 0) + " of " + rounds; };
+}
+function extra(r){
+  return [["terms", r.metadata.terms], ["display", (r.metadata.speed/1000).toFixed(1) + "s"],
+          ["answered in", G.ms(r.metadata.avgAnswerMs)]];
+}
+
+G.register({
+  id:"anzan-assisted", name:"Assisted Anzan", family:"calc",
+  short:"The beads move for you, then fade",
+  sub:"Watch the soroban follow the numbers. It fades a little each round.",
+  icon:"◐",
+  ladder:ANZAN_LADDER, startLevel:0, options:OPTIONS,
+  summaryLabel:"Rounds right", summary:summaryOf(5), extraStats:extra,
+  mount:function(api){
+    return build(api, { rounds:5, soroban:true,
+      lead:"Let the beads carry the number. By the last round you are doing it alone." });
+  },
+  records:function(row){
+    return [{ id:"anzan-acc", value:row.accuracy, meta:{ mode:"assisted" } }];
+  }
+});
+
+G.register({
+  id:"anzan", name:"Anzan", family:"calc",
+  short:"Mental abacus",
+  sub:"See the beads in your head. Nothing on the screen but the numbers.",
+  icon:"⚡",
+  ladder:ANZAN_LADDER, startLevel:0, options:OPTIONS,
+  summaryLabel:"Rounds right", summary:summaryOf(5), extraStats:extra,
+  mount:function(api){ return build(api, { rounds:5, soroban:false }); },
+  records:function(row){
+    var out = [{ id:"anzan-acc", value:row.accuracy, meta:{ mode:"anzan" } }];
+    if (row.accuracy >= 0.8) out.push({ id:"anzan-speed", value:row.metadata.speed, meta:null });
+    return out;
+  }
+});
+
+G.register({
+  id:"flash", name:"Flash Anzan", family:"calc",
+  short:"Numbers at speed",
+  sub:"One number at a time, fast. Add them as they go.",
+  icon:"✦",
+  ladder:FLASH_LADDER, startLevel:0, options:OPTIONS,
+  summaryLabel:"Rounds right", summary:summaryOf(5), extraStats:extra,
+  mount:function(api){ return build(api, { rounds:5, soroban:false, bare:true }); },
+  records:function(row){
+    var out = [];
+    if (row.accuracy >= 0.8) out.push({ id:"flash-terms", value:row.metadata.terms, meta:{ speed:row.metadata.speed } });
+    return out;
+  }
+});
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the attention, memory and speed exercises.
+   Each one registers a spec and knows nothing about the rest of the app.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym;
+function el(t, c, x){ var e = document.createElement(t); if (c) e.className = c;
+                      if (x !== undefined) e.textContent = x; return e; }
+function btn(cls, text){ var b = el("button", cls, text); b.type = "button"; return b; }
+
+/* ============================================================== SCHULTE */
+var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+var SYMBOLS = "◆●■▲★✦◼◗✚❖▼◐✧◈✜◉⬟✱◇▣▽✿⬢⧫✤".split("");
+
+G.register({
+  id:"schulte", name:"Schulte table", family:"focus",
+  short:"Visual attention",
+  sub:"Find them in order, as fast as you can. Keep your eyes near the middle.",
+  icon:"⊞",
+  ladder:[
+    { size:3, set:"numbers" }, { size:4, set:"numbers" }, { size:5, set:"numbers" },
+    { size:5, set:"letters" }, { size:6, set:"letters" }, { size:6, set:"mixed" },
+    { size:7, set:"mixed" }
+  ],
+  startLevel:2,
+  options:[
+    { k:"size", label:"Grid", opts:[[3,"3 × 3"],[4,"4 × 4"],[5,"5 × 5"],[6,"6 × 6"],[7,"7 × 7"]] },
+    { k:"set", label:"Contents", opts:[["numbers","Numbers"],["letters","Letters"],["mixed","Mixed symbols"]] }
+  ],
+  summaryLabel:"Completed in", summary:function(r){ return G.secs(r.metadata.timeMs/1000); },
+  extraStats:function(r){ return [["errors", r.metadata.errors], ["grid", r.metadata.size + "×" + r.metadata.size]]; },
+  mount:function(api){
+    var o = api.opts, size = G.clamp(o.size || 5, 3, 7), n = size * size;
+    var items = [], i;
+    if (o.set === "letters") for (i = 0; i < n; i++) items.push(LETTERS[i % 26]);
+    else if (o.set === "mixed") for (i = 0; i < n; i++) items.push(SYMBOLS[i % SYMBOLS.length]);
+    else for (i = 1; i <= n; i++) items.push(String(i));
+
+    var order = items.slice();
+    var placed = G.shuffle(items.slice());
+    var at = 0, errors = 0, t0 = 0, done = false;
+
+    var wrap = el("div", "sc");
+    var head = el("p", "sc-next");
+    var grid = el("div", "sc-grid");
+    grid.style.setProperty("--sc-n", size);
+    grid.setAttribute("role", "grid");
+    grid.setAttribute("aria-label", size + " by " + size + " table");
+    var note = el("p", "f-note", "Tap them in order. A wrong tap counts as an error but does not stop you.");
+    wrap.appendChild(head); wrap.appendChild(grid); wrap.appendChild(note);
+    api.host.appendChild(wrap);
+
+    placed.forEach(function(v){
+      var b = btn("sc-cell num", v);
+      b.setAttribute("aria-label", v);
+      b.addEventListener("click", function(){ tap(v, b); });
+      grid.appendChild(b);
+    });
+    function paintNext(){
+      head.innerHTML = "";
+      head.appendChild(el("span", "sc-k", "Find"));
+      head.appendChild(el("b", "sc-v", order[at] || "—"));
+      head.appendChild(el("span", "sc-k", at + " of " + n + " found"));
+      api.progress(at + " / " + n);
+    }
+    function tap(v, b){
+      if (done) return;
+      if (!t0) t0 = Date.now();
+      if (v === order[at]){
+        b.classList.add("got"); b.disabled = true;
+        b.setAttribute("aria-label", v + ", found");
+        at++;
+        api.sound("tick");
+        if (at >= n) return finish();
+        paintNext();
+      } else {
+        errors++;
+        b.classList.remove("bad"); void b.offsetWidth; b.classList.add("bad");
+        api.sound("wrong");
+        paintNext();
+      }
+    }
+    function finish(){
+      done = true;
+      var timeMs = Date.now() - t0;
+      /* accuracy is how clean the run was, not whether it was finished */
+      var acc = G.clamp(n / (n + errors), 0, 1);
+      api.finish({ accuracy:acc, score:Math.round(timeMs/100), reactionTime:Math.round(timeMs/n),
+                   metadata:{ timeMs:timeMs, errors:errors, size:size, set:o.set || "numbers" } });
+    }
+    paintNext();
+    return { stop:function(){} };
+  },
+  records:function(row){
+    var out = [{ id:"schulte-any", value:row.metadata.timeMs, meta:{ size:row.metadata.size } }];
+    if (row.metadata.size === 5 && row.metadata.set === "numbers"){
+      out.push({ id:"schulte-5", value:row.metadata.timeMs, meta:null });
+    }
+    return out;
+  }
+});
+
+/* =============================================================== STROOP */
+var INKS = [
+  { k:"red",    name:"Red",    css:"#C0392B" },
+  { k:"blue",   name:"Blue",   css:"#2C6BAF" },
+  { k:"green",  name:"Green",  css:"#2E7D4F" },
+  { k:"yellow", name:"Yellow", css:"#B8860B" },
+  { k:"purple", name:"Purple", css:"#7A4A9E" },
+  { k:"orange", name:"Orange", css:"#C4661F" }
+];
+G.register({
+  id:"stroop", name:"Stroop", family:"focus",
+  short:"Selective attention",
+  sub:"Name the colour of the ink, not the word.",
+  icon:"◑",
+  ladder:[
+    { colours:3, window:4000, rounds:15 }, { colours:3, window:3000, rounds:15 },
+    { colours:4, window:3000, rounds:15 }, { colours:4, window:2200, rounds:15 },
+    { colours:5, window:2200, rounds:20 }, { colours:5, window:1700, rounds:20 },
+    { colours:6, window:1700, rounds:20 }, { colours:6, window:1300, rounds:20 }
+  ],
+  startLevel:1,
+  summaryLabel:"Right", summary:function(r){ return r.metadata.right + " of " + r.metadata.rounds; },
+  extraStats:function(r){ return [["average", G.ms(r.metadata.avgMs)], ["missed", r.metadata.missed]]; },
+  mount:function(api){
+    var o = api.opts, pool = INKS.slice(0, G.clamp(o.colours || 4, 2, 6));
+    var rounds = o.rounds || 15, at = 0, right = 0, missed = 0, times = [];
+    var word = null, ink = null, shownAt = 0, timer = null, done = false;
+
+    var wrap = el("div", "st");
+    var stim = el("div", "st-word");
+    stim.setAttribute("role", "status");
+    var bar = el("div", "st-bar"); var barIn = el("i"); bar.appendChild(barIn);
+    var keys = el("div", "st-keys");
+    var fb = el("p", "st-fb"); fb.setAttribute("role", "status");
+    var note = el("p", "f-note", "Pick the colour you can see. The word is trying to mislead you.");
+    [stim, bar, keys, fb, note].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    pool.forEach(function(c, i){
+      var b = btn("st-key", c.name);
+      b.dataset.k = c.k;
+      b.setAttribute("aria-label", c.name + ", key " + (i+1));
+      b.appendChild(el("span", "st-num", String(i+1)));
+      b.addEventListener("click", function(){ answer(c.k); });
+      keys.appendChild(b);
+    });
+
+    function next(){
+      if (at >= rounds) return finish();
+      word = G.pick(pool);
+      ink = G.pick(pool);
+      /* keep it a real conflict most of the time */
+      if (ink.k === word.k && Math.random() < 0.75) ink = G.pick(pool.filter(function(c){ return c.k !== word.k; })) || ink;
+      stim.textContent = word.name.toUpperCase();
+      stim.style.color = ink.css;
+      stim.setAttribute("aria-label", "Word " + word.name + ", shown in a colour");
+      fb.textContent = "";
+      fb.className = "st-fb";
+      shownAt = Date.now();
+      api.progress((at + 1) + " / " + rounds);
+      barIn.style.transition = "none"; barIn.style.width = "100%";
+      void barIn.offsetWidth;
+      barIn.style.transition = "width " + o.window + "ms linear";
+      barIn.style.width = "0%";
+      timer = setTimeout(function(){ answer(null); }, o.window);
+    }
+    function answer(k){
+      if (done || !ink) return;
+      clearTimeout(timer);
+      var was = ink;
+      var ok = k === was.k;
+      ink = null;                    /* this word is answered; ignore further keys */
+      if (k === null){ missed++; fb.textContent = "Too slow — it was " + was.name + "."; fb.className = "st-fb no"; }
+      else {
+        times.push(Date.now() - shownAt);
+        if (ok){ right++; fb.textContent = "Right — " + was.name + "."; fb.className = "st-fb ok"; }
+        else { fb.textContent = "No — the ink was " + was.name + "."; fb.className = "st-fb no"; }
+      }
+      api.sound(ok ? "right" : "wrong");
+      at++;
+      stim.textContent = "";
+      timer = setTimeout(next, 620);
+    }
+    function keydown(e){
+      var n = parseInt(e.key, 10);
+      if (n >= 1 && n <= pool.length){ e.preventDefault(); answer(pool[n-1].k); }
+    }
+    function finish(){
+      done = true;
+      var avg = times.length ? times.reduce(function(a,b){ return a+b; },0)/times.length : 0;
+      api.finish({ accuracy:right/rounds, score:right, reactionTime:Math.round(avg),
+                   metadata:{ right:right, rounds:rounds, missed:missed, avgMs:Math.round(avg),
+                              colours:pool.length } });
+    }
+    document.addEventListener("keydown", keydown);
+    setTimeout(next, 500);
+    return { stop:function(){ clearTimeout(timer); document.removeEventListener("keydown", keydown); } };
+  },
+  records:function(row){ return [{ id:"stroop-acc", value:row.accuracy, meta:null }]; }
+});
+
+/* ============================================================= REACTION */
+G.register({
+  id:"reaction", name:"Reaction", family:"speed",
+  short:"Processing speed",
+  sub:"Wait for the signal, then press. Pressing early is a false start.",
+  icon:"◎",
+  ladder:[{ rounds:5 }, { rounds:7 }, { rounds:10 }],
+  startLevel:0,
+  summaryLabel:"Average", summary:function(r){ return G.ms(r.metadata.avgMs); },
+  extraStats:function(r){ return [["best", G.ms(r.metadata.bestMs)], ["false starts", r.metadata.falseStarts],
+                                  ["consistency", r.metadata.spreadMs === null ? "—" : "±" + G.ms(r.metadata.spreadMs)]]; },
+  mount:function(api){
+    var rounds = api.opts.rounds || 5, at = 0, times = [], falseStarts = 0;
+    var phase = "idle", timer = null, armedAt = 0, done = false;
+    var wrap = el("div", "rx");
+    var pad = btn("rx-pad", "Press to begin");
+    pad.setAttribute("aria-live", "polite");
+    var list = el("p", "rx-list");
+    var note = el("p", "f-note", "Space or a tap. Five signals, at random intervals.");
+    wrap.appendChild(pad); wrap.appendChild(list); wrap.appendChild(note);
+    api.host.appendChild(wrap);
+
+    function setPhase(p, text){
+      phase = p;
+      pad.className = "rx-pad rx-" + p;
+      pad.textContent = text;
+    }
+    function arm(){
+      setPhase("wait", "Wait…");
+      api.progress((at + 1) + " / " + rounds);
+      timer = setTimeout(function(){
+        armedAt = Date.now();
+        setPhase("go", "NOW");
+        api.sound("tick");
+      }, G.randInt(1200, 4200));
+    }
+    function hit(){
+      if (done) return;
+      /* "false" is included deliberately: the pad invites another press after a
+         false start, so that press has to actually re-arm it */
+      if (phase === "idle" || phase === "result" || phase === "false") return arm();
+      if (phase === "wait"){
+        clearTimeout(timer);
+        falseStarts++;
+        api.sound("wrong");
+        setPhase("false", "Too early — press to try again");
+        return;
+      }
+      if (phase === "go"){
+        var t = Date.now() - armedAt;
+        times.push(t);
+        at++;
+        api.sound("right");
+        list.textContent = times.map(function(x){ return G.ms(x); }).join("  ·  ");
+        if (at >= rounds) return finish();
+        setPhase("result", G.ms(t) + " — press for the next");
+      }
+    }
+    function finish(){
+      done = true;
+      var avg = times.reduce(function(a,b){ return a+b; },0)/times.length;
+      var best = Math.min.apply(null, times);
+      var spread = times.length > 1
+        ? Math.round(Math.sqrt(times.reduce(function(s,x){ return s + Math.pow(x-avg,2); },0)/times.length))
+        : null;
+      /* a clean run of quick presses scores high; false starts cost */
+      var acc = G.clamp(1 - falseStarts / (rounds + falseStarts), 0, 1);
+      api.finish({ accuracy:acc, score:Math.round(1000 - avg), reactionTime:Math.round(avg),
+                   metadata:{ avgMs:Math.round(avg), bestMs:best, falseStarts:falseStarts,
+                              spreadMs:spread, rounds:rounds, times:times } });
+    }
+    function key(e){ if (e.code === "Space" || e.key === " "){ e.preventDefault(); hit(); } }
+    pad.addEventListener("pointerdown", function(e){ e.preventDefault(); hit(); });
+    document.addEventListener("keydown", key);
+    return { stop:function(){ clearTimeout(timer); document.removeEventListener("keydown", key); } };
+  },
+  records:function(row){ return [{ id:"reaction", value:row.metadata.bestMs, meta:null }]; }
+});
+
+/* ====================================================== SEQUENCE MEMORY */
+G.register({
+  id:"memory", name:"Sequence memory", family:"memory",
+  short:"Working memory span",
+  sub:"Watch the tiles light up, then repeat them in the same order.",
+  icon:"⬚",
+  ladder:[{ span:3, size:3 }, { span:4, size:3 }, { span:4, size:4 }, { span:5, size:4 },
+          { span:6, size:4 }, { span:6, size:5 }, { span:7, size:5 }],
+  startLevel:0,
+  summaryLabel:"Longest sequence", summary:function(r){ return r.metadata.best + " tiles"; },
+  extraStats:function(r){ return [["rounds cleared", r.metadata.cleared]]; },
+  mount:function(api){
+    var o = api.opts, size = o.size || 3, cells = size * size;
+    var span = o.span || 3, best = 0, cleared = 0, lives = 3, attempts = 0;
+    var seq = [], at = 0, phase = "show", timer = null, done = false;
+
+    var wrap = el("div", "mm");
+    var head = el("p", "f-eyebrow", "Watch");
+    var grid = el("div", "mm-grid");
+    grid.style.setProperty("--mm-n", size);
+    var fb = el("p", "mm-fb"); fb.setAttribute("role", "status");
+    var note = el("p", "f-note", "Three lives. The sequence grows by one each time you clear it.");
+    [head, grid, fb, note].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    var tiles = [];
+    for (var i = 0; i < cells; i++){
+      var b = btn("mm-tile", "");
+      b.dataset.i = String(i);
+      b.setAttribute("aria-label", "Tile " + (i + 1));
+      b.disabled = true;
+      (function(idx, node){ node.addEventListener("click", function(){ tap(idx); }); })(i, b);
+      grid.appendChild(b);
+      tiles.push(b);
+    }
+    function lightUp(i, ms){
+      var t = tiles[i];
+      t.classList.add("lit");
+      setTimeout(function(){ t.classList.remove("lit"); }, ms);
+    }
+    function play(){
+      phase = "show";
+      head.textContent = "Watch — " + seq.length + " tiles";
+      fb.textContent = "";
+      fb.className = "mm-fb";
+      tiles.forEach(function(t){ t.disabled = true; });
+      api.progress("Span " + seq.length + " · lives " + lives);
+      var step = api.motionOff() ? 780 : 620;
+      seq.forEach(function(idx, k){
+        timer = setTimeout(function(){ lightUp(idx, step * 0.6); api.sound("tick"); }, 420 + k * step);
+      });
+      timer = setTimeout(function(){
+        phase = "input"; at = 0;
+        head.textContent = "Your turn";
+        tiles.forEach(function(t){ t.disabled = false; });
+      }, 420 + seq.length * step + 200);
+    }
+    function grow(){
+      seq = [];
+      for (var k = 0; k < span; k++) seq.push(G.randInt(0, cells - 1));
+      play();
+    }
+    function tap(i){
+      if (phase !== "input" || done) return;
+      lightUp(i, 200);
+      if (i === seq[at]){
+        at++;
+        api.sound("tick");
+        if (at >= seq.length){
+          cleared++;
+          best = Math.max(best, seq.length);
+          attempts++;
+          api.sound("right");
+          fb.textContent = "Cleared " + seq.length + ".";
+          fb.className = "mm-fb ok";
+          phase = "wait";
+          span++;
+          timer = setTimeout(grow, 900);
+        }
+      } else {
+        lives--; attempts++;
+        api.sound("wrong");
+        fb.textContent = lives > 0 ? "Wrong tile. " + lives + (lives === 1 ? " life left." : " lives left.")
+                                   : "Wrong tile.";
+        fb.className = "mm-fb no";
+        phase = "wait";
+        if (lives <= 0) return timer = setTimeout(finish, 900);
+        timer = setTimeout(play, 1100);
+      }
+    }
+    function finish(){
+      done = true;
+      api.finish({ accuracy: attempts ? cleared / attempts : 0, score:best,
+                   metadata:{ best:best, cleared:cleared, size:size, startSpan:o.span } });
+    }
+    grow();
+    return { stop:function(){ clearTimeout(timer); } };
+  },
+  records:function(row){ return [{ id:"memory-span", value:row.metadata.best, meta:null }]; }
+});
+
+/* ================================================================ N-BACK */
+G.register({
+  id:"nback", name:"N-back", family:"memory",
+  short:"Hold and compare",
+  sub:"Say when a position repeats the one from N steps back.",
+  icon:"◱",
+  ladder:[{ n:1, rounds:20, speed:2500 }, { n:1, rounds:25, speed:2200 },
+          { n:2, rounds:25, speed:2200 }, { n:2, rounds:30, speed:2000 },
+          { n:3, rounds:30, speed:2000 }],
+  startLevel:0,
+  options:[{ k:"n", label:"N", opts:[[1,"1-back"],[2,"2-back"],[3,"3-back"]] }],
+  summaryLabel:"Accuracy", summary:function(r){ return Math.round(r.accuracy*100) + "%"; },
+  extraStats:function(r){ return [["n", r.metadata.n], ["hits", r.metadata.hits + "/" + r.metadata.targets],
+                                  ["false alarms", r.metadata.falseAlarms]]; },
+  mount:function(api){
+    var o = api.opts, n = o.n || 1, rounds = o.rounds || 20, speed = o.speed || 2500;
+    var seen = [], at = 0, hits = 0, targets = 0, falseAlarms = 0, correctRejects = 0;
+    var claimed = false, timer = null, done = false;
+
+    var wrap = el("div", "nb");
+    var head = el("p", "f-eyebrow", n + "-back · press Match when the square repeats the one " + n + " step" + (n>1?"s":"") + " earlier");
+    var grid = el("div", "nb-grid");
+    var match = btn("btn", "Match  (Space)");
+    var fb = el("p", "nb-fb"); fb.setAttribute("role", "status");
+    var note = el("p", "f-note", "This is a working-memory drill. It trains the task itself, nothing more.");
+    [head, grid, match, fb, note].forEach(function(x){ wrap.appendChild(x); });
+    api.host.appendChild(wrap);
+
+    var cells = [];
+    for (var i = 0; i < 9; i++){ var c = el("div", "nb-cell"); grid.appendChild(c); cells.push(c); }
+    grid.setAttribute("role","img");
+    grid.setAttribute("aria-label","Three by three grid, one square lights at a time");
+
+    function step(){
+      if (at >= rounds) return finish();
+      var isTarget = at >= n && Math.random() < 0.3;
+      var pos = isTarget ? seen[at - n] : G.randInt(0, 8);
+      if (!isTarget && at >= n && pos === seen[at - n]) pos = (pos + 1 + G.randInt(0,7)) % 9;
+      seen.push(pos);
+      if (at >= n && pos === seen[at - n]) targets++;
+      claimed = false;
+      cells.forEach(function(c){ c.classList.remove("on"); });
+      cells[pos].classList.add("on");
+      api.progress((at + 1) + " / " + rounds);
+      timer = setTimeout(function(){
+        score();
+        at++;
+        cells.forEach(function(c){ c.classList.remove("on"); });
+        timer = setTimeout(step, Math.max(160, speed * 0.22));
+      }, speed);
+    }
+    function score(){
+      var real = at >= n && seen[at] === seen[at - n];
+      if (claimed && real){ hits++; }
+      else if (claimed && !real){ falseAlarms++; }
+      else if (!claimed && !real){ correctRejects++; }
+    }
+    function claim(){
+      if (done || claimed) return;
+      claimed = true;
+      var real = at >= n && seen[at] === seen[at - n];
+      fb.textContent = real ? "Match." : "Not a match.";
+      fb.className = "nb-fb " + (real ? "ok" : "no");
+      api.sound(real ? "right" : "wrong");
+    }
+    function finish(){
+      done = true;
+      var judged = targets + (rounds - n - targets);
+      var correct = hits + correctRejects;
+      api.finish({ accuracy: judged > 0 ? G.clamp(correct / Math.max(1, rounds - n), 0, 1) : 0,
+                   score:hits,
+                   metadata:{ n:n, rounds:rounds, hits:hits, targets:targets,
+                              falseAlarms:falseAlarms, speed:speed } });
+    }
+    function key(e){ if (e.code === "Space"){ e.preventDefault(); claim(); } }
+    match.addEventListener("click", claim);
+    document.addEventListener("keydown", key);
+    timer = setTimeout(step, 700);
+    return { stop:function(){ clearTimeout(timer); document.removeEventListener("keydown", key); } };
+  },
+  records:function(row){ return row.accuracy >= 0.75 ? [{ id:"nback", value:row.metadata.n, meta:null }] : []; }
+});
+
+/* ========================================================== DISTRACTION */
+G.register({
+  id:"distraction", name:"Distraction resistance", family:"focus",
+  short:"Find the target in the noise",
+  sub:"One target. Everything else is there to pull your eye away.",
+  icon:"⊙",
+  ladder:[{ distractors:14, window:5000, rounds:10 }, { distractors:22, window:5000, rounds:10 },
+          { distractors:22, window:3800, rounds:12 }, { distractors:34, window:3800, rounds:12 },
+          { distractors:34, window:2800, rounds:12 }, { distractors:48, window:2800, rounds:14 }],
+  startLevel:0,
+  summaryLabel:"Found", summary:function(r){ return r.metadata.right + " of " + r.metadata.rounds; },
+  extraStats:function(r){ return [["average", G.ms(r.metadata.avgMs)], ["missed", r.metadata.missed]]; },
+  mount:function(api){
+    var o = api.opts, rounds = o.rounds || 10, at = 0, right = 0, missed = 0, times = [];
+    var target = null, shownAt = 0, timer = null, done = false;
+    var wrap = el("div", "dx");
+    var head = el("p", "dx-head");
+    var field = el("div", "dx-field");
+    field.setAttribute("role","group");
+    var fb = el("p", "dx-fb"); fb.setAttribute("role","status");
+    [head, field, fb].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    function next(){
+      if (at >= rounds) return finish();
+      field.innerHTML = "";
+      target = String(G.randInt(0, 9));
+      var confusable = { "0":"8", "1":"7", "3":"8", "6":"9", "9":"6", "5":"6", "8":"3", "7":"1", "2":"7", "4":"9" };
+      head.innerHTML = "";
+      head.appendChild(el("span", "dx-k", "Find the"));
+      head.appendChild(el("b", "dx-v", target));
+      var spots = [];
+      var count = o.distractors + 1;
+      for (var i = 0; i < count; i++){
+        var b = btn("dx-item num", "");
+        var isTarget = i === 0;
+        var ch = isTarget ? target
+               : (Math.random() < 0.45 ? confusable[target] : String(G.randInt(0,9)));
+        if (!isTarget && ch === target) ch = String((+target + 1) % 10);
+        b.textContent = ch;
+        b.setAttribute("aria-label", ch);
+        b.style.left = G.randInt(2, 92) + "%";
+        b.style.top = G.randInt(4, 88) + "%";
+        b.style.setProperty("--dx-r", (G.randInt(-16, 16)) + "deg");
+        if (!api.motionOff()) b.style.setProperty("--dx-d", G.randInt(0, 900) + "ms");
+        (function(node, hit){ node.addEventListener("click", function(){ answer(hit); }); })(b, isTarget);
+        field.appendChild(b);
+        spots.push(b);
+      }
+      G.shuffle(spots).forEach(function(n, i){ n.style.zIndex = String(i); });
+      shownAt = Date.now();
+      fb.textContent = "";
+      fb.className = "dx-fb";
+      api.progress((at + 1) + " / " + rounds);
+      timer = setTimeout(function(){ answer(null); }, o.window);
+    }
+    function answer(hit){
+      if (done) return;
+      clearTimeout(timer);
+      if (hit === null){ missed++; fb.textContent = "Time — it was there."; fb.className = "dx-fb no"; }
+      else if (hit){ right++; times.push(Date.now() - shownAt); fb.textContent = "Found it."; fb.className = "dx-fb ok"; }
+      else { fb.textContent = "That was not the " + target + "."; fb.className = "dx-fb no"; }
+      api.sound(hit ? "right" : "wrong");
+      at++;
+      field.innerHTML = "";
+      timer = setTimeout(next, 560);
+    }
+    function finish(){
+      done = true;
+      var avg = times.length ? times.reduce(function(a,b){ return a+b; },0)/times.length : 0;
+      api.finish({ accuracy:right/rounds, score:right, reactionTime:Math.round(avg),
+                   metadata:{ right:right, rounds:rounds, missed:missed, avgMs:Math.round(avg),
+                              distractors:o.distractors } });
+    }
+    timer = setTimeout(next, 400);
+    return { stop:function(){ clearTimeout(timer); } };
+  }
+});
+
+/* ========================================================= QUIET FOCUS */
+G.register({
+  id:"quiet", name:"Quiet focus", family:"focus",
+  short:"Hold your attention on one point",
+  sub:"A dot, and a clock. Keep your attention on it.",
+  icon:"·",
+  ladder:null,
+  untimed:true,
+  options:[{ k:"minutes", label:"Length", opts:[[1,"1 minute"],[2,"2 minutes"],[5,"5 minutes"],[10,"10 minutes"]] }],
+  summaryLabel:"Held for", summary:function(r){ return G.secs(r.metadata.seconds); },
+  extraStats:function(r){ return [["you rated it", r.metadata.rating + " of 5"]]; },
+  mount:function(api){
+    var mins = api.opts.minutes || 1, total = mins * 60, left = total, tick = null, done = false;
+    var wrap = el("div", "qf");
+    var dot = el("div", "qf-dot");
+    dot.setAttribute("role","img");
+    dot.setAttribute("aria-label","A single point to rest your attention on");
+    var clock = el("p", "qf-clock num", G.secs(left));
+    clock.setAttribute("aria-live","off");
+    var note = el("p", "f-note", "When it ends you will be asked how focused you felt. Only you can answer that — the computer cannot see it.");
+    var rate = el("div", "qf-rate"); rate.hidden = true;
+    var rateHead = el("p", "qf-rate-h", "How focused were you?");
+    rate.appendChild(rateHead);
+    var scale = el("div", "qf-scale");
+    [[1,"Very distracted"],[2,"Distracted"],[3,"In and out"],[4,"Mostly held"],[5,"Fully focused"]].forEach(function(p){
+      var b = btn("qf-key", String(p[0]));
+      b.setAttribute("aria-label", p[0] + " — " + p[1]);
+      b.appendChild(el("span", "qf-key-l", p[1]));
+      b.addEventListener("click", function(){ finish(p[0]); });
+      scale.appendChild(b);
+    });
+    rate.appendChild(scale);
+    [dot, clock, note, rate].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    tick = setInterval(function(){
+      left--;
+      clock.textContent = G.secs(left);
+      api.progress(G.secs(left) + " left");
+      if (left <= 0){
+        clearInterval(tick); tick = null;
+        api.sound("done");
+        dot.classList.add("qf-over");
+        clock.textContent = "Done";
+        rate.hidden = false;
+        rate.querySelector("button").focus();
+      }
+    }, 1000);
+    function finish(rating){
+      if (done) return;
+      done = true;
+      var held = total - Math.max(0, left);
+      api.finish({ accuracy: rating / 5, score: rating * 20,
+                   metadata:{ seconds:held, minutes:mins, rating:rating } });
+    }
+    api.progress(G.secs(left) + " left");
+    return { stop:function(){ if (tick) clearInterval(tick); } };
+  }
+});
+
+/* ==================================================== MENTAL ARITHMETIC */
+G.register({
+  id:"arith", name:"Mental arithmetic", family:"calc",
+  short:"Rapid sums",
+  sub:"Straight questions, answered quickly.",
+  icon:"±",
+  ladder:[
+    { range:10, ops:["+"], rounds:12 },
+    { range:20, ops:["+"], rounds:12 },
+    { range:20, ops:["+","−"], rounds:12 },
+    { range:50, ops:["+","−"], rounds:15 },
+    { range:50, ops:["+","−","×"], rounds:15 },
+    { range:100, ops:["+","−","×"], rounds:15 },
+    { range:100, ops:["+","−","×","÷"], rounds:20 }
+  ],
+  startLevel:2,
+  options:[
+    { k:"range", label:"Difficulty", opts:[[10,"Beginner"],[20,"Intermediate"],[50,"Advanced"],[100,"Expert"]] },
+    { k:"ops", label:"Operations", opts:[[["+"],"Addition"],[["−"],"Subtraction"],[["×"],"Multiplication"],
+                                          [["÷"],"Division"],[["+","−","×","÷"],"Mixed"]] }
+  ],
+  summaryLabel:"Right", summary:function(r){ return r.metadata.right + " of " + r.metadata.rounds; },
+  extraStats:function(r){ return [["average", G.ms(r.metadata.avgMs)]]; },
+  mount:function(api){
+    var o = api.opts, rounds = o.rounds || 12, ops = o.ops && o.ops.length ? o.ops : ["+"];
+    var at = 0, right = 0, times = [], q = null, shownAt = 0, done = false, timer = null;
+    var wrap = el("div", "ar");
+    var qEl = el("p", "ar-q num");
+    qEl.setAttribute("role","status");
+    var form = el("form", "ar-form");
+    var input = document.createElement("input");
+    input.type = "text"; input.inputMode = "numeric"; input.autocomplete = "off";
+    input.className = "az-input num"; input.setAttribute("aria-label","Your answer");
+    var go = el("button", "btn", "Answer"); go.type = "submit";
+    form.appendChild(input); form.appendChild(go);
+    var fb = el("p", "ar-fb"); fb.setAttribute("role","status");
+    [qEl, form, fb].forEach(function(n){ wrap.appendChild(n); });
+    api.host.appendChild(wrap);
+
+    function make(){
+      var op = G.pick(ops), r = o.range, a, b;
+      if (op === "+"){ a = G.randInt(2, r); b = G.randInt(2, r); return { t:a + " + " + b, v:a + b }; }
+      if (op === "−"){ a = G.randInt(2, r); b = G.randInt(1, a); return { t:a + " − " + b, v:a - b }; }
+      if (op === "×"){
+        var m = r <= 20 ? 9 : (r <= 50 ? 12 : 19);
+        a = G.randInt(2, m); b = G.randInt(2, m);
+        return { t:a + " × " + b, v:a * b };
+      }
+      b = G.randInt(2, r <= 20 ? 9 : 12);
+      var k = G.randInt(2, r <= 20 ? 9 : 12);
+      return { t:(b * k) + " ÷ " + b, v:k };
+    }
+    function next(){
+      if (at >= rounds) return finish();
+      q = make();
+      qEl.textContent = q.t;
+      input.value = "";
+      fb.textContent = "";
+      fb.className = "ar-fb";
+      shownAt = Date.now();
+      api.progress((at + 1) + " / " + rounds);
+      input.focus();
+    }
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      /* q is cleared the moment a question is answered, so a second Enter
+         during the pause before the next one cannot score twice */
+      if (done || !q || at >= rounds) return;
+      var raw = input.value.trim();
+      if (!/^-?\d+$/.test(raw)){ fb.textContent = "Whole numbers only."; fb.className = "ar-fb no"; return; }
+      var ok = parseInt(raw, 10) === q.v;
+      times.push(Date.now() - shownAt);
+      if (ok) right++;
+      fb.textContent = ok ? "Right." : "It was " + q.v + ".";
+      fb.className = "ar-fb " + (ok ? "ok" : "no");
+      api.sound(ok ? "right" : "wrong");
+      at++;
+      q = null;
+      timer = setTimeout(next, ok ? 380 : 1100);
+    });
+    function finish(){
+      done = true;
+      var avg = times.length ? times.reduce(function(a,b){ return a+b; },0)/times.length : 0;
+      api.finish({ accuracy:right/rounds, score:right, reactionTime:Math.round(avg),
+                   metadata:{ right:right, rounds:rounds, avgMs:Math.round(avg),
+                              range:o.range, ops:ops.join("") } });
+    }
+    next();
+    return { stop:function(){ clearTimeout(timer); } };
+  },
+  records:function(row){ return [{ id:"arith-acc", value:row.accuracy, meta:null }]; }
+});
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the journey and the daily workout.
+
+   The journey is the spine of this page: a physical abacus under your hand,
+   then one that moves itself and fades, then nothing but the picture in your
+   head, then that picture at speed. The workout builder always puts you at
+   the rung of it you have actually reached.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym;
+
+/* roughly how long one session of each takes, in minutes */
+var MINUTES = { "soroban-lessons":4, soroban:3, "anzan-assisted":3, anzan:3, flash:2,
+                schulte:2, stroop:2, reaction:2, memory:2, nback:3, distraction:2,
+                arith:2, quiet:1 };
+function minutesOf(id){ return MINUTES[id] || 2; }
+
+/* ------------------------------------------------------------ the journey */
+var STAGES = [
+  { id:"soroban-lessons", name:"Fundamentals",  blurb:"What the beads mean." },
+  { id:"soroban",         name:"Soroban",       blurb:"The beads under your hand." },
+  { id:"anzan-assisted",  name:"Assisted Anzan",blurb:"The beads move, then fade." },
+  { id:"anzan",           name:"Anzan",         blurb:"The beads only in your head." },
+  { id:"flash",           name:"Flash Anzan",   blurb:"That picture, at speed." }
+];
+/* the average accuracy of the last few sessions of one exercise */
+function recent(id, n){
+  var rows = G.resultsFor(id).slice(-(n || 3));
+  if (rows.length < (n || 3)) return null;
+  return rows.reduce(function(s,r){ return s + G.num(r.accuracy); }, 0) / rows.length;
+}
+function stage(){
+  var lessons = G.resultsFor("soroban-lessons").length;
+  if (!lessons) return 0;
+  var sb = recent("soroban", 2);
+  if (sb === null || sb < 0.7) return 1;
+  var asst = recent("anzan-assisted", 3);
+  if (asst === null || asst < 0.8) return 2;
+  var az = recent("anzan", 3);
+  if (az === null || az < 0.8 || G.levelOf("anzan") < 4) return 3;
+  return 4;
+}
+function journey(){
+  var at = stage();
+  return STAGES.map(function(s, i){
+    return Object.assign({}, s, { index:i, state: i < at ? "done" : i === at ? "now" : "ahead" });
+  });
+}
+function nextUp(){ return STAGES[stage()]; }
+
+/* ------------------------------------------------------- the workout plan */
+/* An arc, not a shuffle: something to wake up on, the calculation work while
+   you are freshest, attention and memory after it, then something quiet. */
+var WARMUPS = ["reaction", "schulte"];
+var ATTENTION = ["schulte", "stroop", "distraction"];
+var MEMORY = ["memory", "nback"];
+
+function plan(minutes){
+  var want = G.clamp(minutes || 15, 5, 60);
+  var main = nextUp().id;
+  var out = [], used = {};
+  function add(id, opts){
+    if (used[id]) return false;
+    used[id] = true;
+    out.push({ id:id, opts:opts || {} });
+    return true;
+  }
+  function total(){ return out.reduce(function(s, x){
+    return s + (x.id === "quiet" ? (x.opts.minutes || 1) : minutesOf(x.id)); }, 0); }
+
+  add(WARMUPS[0]);                                  /* wake up */
+  add(main);                                        /* the day's real work */
+  /* alternate attention and memory until the time is used up, keeping one
+     minute back for the quiet finish */
+  var pools = [ATTENTION, MEMORY, ["arith"], ATTENTION, MEMORY];
+  for (var p = 0; p < pools.length && total() < want - 1; p++){
+    var pool = pools[p];
+    for (var i = 0; i < pool.length; i++){
+      if (total() + minutesOf(pool[i]) > want - 1) continue;
+      if (add(pool[i])) break;
+    }
+  }
+  /* if there is still room, deepen the journey rather than pad it out */
+  var deeper = STAGES[Math.min(STAGES.length - 1, stage() + 1)].id;
+  if (total() + minutesOf(deeper) <= want - 1) add(deeper);
+  var spare = Math.max(1, Math.min(5, want - total()));
+  add("quiet", { minutes: spare });
+  return out;
+}
+
+function todayPlan(){
+  var d = G.state.days[G.todayKey()];
+  var want = G.state.prefs.dailyMinutes || 15;
+  if (d && d.workout && d.workout.minutes === want && Array.isArray(d.workout.plan) && d.workout.plan.length){
+    return { steps: d.workout.plan.map(function(id){ return { id:id, opts:{} }; }),
+             done: d.workout.done || [], minutes: d.workout.minutes, saved:true };
+  }
+  var steps = plan(want);
+  return { steps:steps, done: (d && d.workout && d.workout.done) || [], minutes:want, saved:false };
+}
+function start(minutes){
+  var want = minutes || G.state.prefs.dailyMinutes || 15;
+  var t = todayPlan();
+  var steps = (t.minutes === want && t.saved) ? t.steps : plan(want);
+  var doneIds = t.minutes === want ? t.done : [];
+  var left = steps.filter(function(s){ return doneIds.indexOf(s.id) === -1; });
+  if (!left.length){ left = steps; doneIds = []; }
+  var d = G.dayRow(G.todayKey());
+  d.workout = { plan: steps.map(function(s){ return s.id; }), done: doneIds.slice(),
+                minutes: want, at: Date.now() };
+  G.save();
+  window.GymRun.runQueue({ steps:left, allIds:steps.map(function(s){ return s.id; }),
+                           done:doneIds, minutes:want });
+}
+
+window.GymWorkout = { plan:plan, todayPlan:todayPlan, start:start, minutesOf:minutesOf,
+                      journey:journey, stage:stage, nextUp:nextUp, STAGES:STAGES };
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — the pages outside Focus Mode.
+   Everything here reads state and draws; nothing here decides anything.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym, W = window.GymWorkout, R = window.GymRun;
+function $(id){ return document.getElementById(id); }
+function show(el, on){ if (el) el.hidden = !on; }
+var esc = G.esc;
+
+var VIEWS = ["today","train","progress"];
+var current = "today";
+var range = 30;
+
+function switchView(v){
+  if (VIEWS.indexOf(v) === -1) v = "today";
+  current = v;
+  VIEWS.forEach(function(name){
+    show($("view-" + name), name === v);
+    var t = $("tab-" + name);
+    if (t) t.setAttribute("aria-selected", String(name === v));
+  });
+  if (history.replaceState) history.replaceState(null, "", "#" + v);
+  render();
+}
+
+function render(){
+  if (!G.state.onboarded) return;
+  paintHeader();
+  if (current === "today") paintToday();
+  else if (current === "train") paintTrain();
+  else paintProgress();
+}
+
+/* ---------------------------------------------------------- the header */
+function paintHeader(){
+  var lv = G.level(), st = G.streak();
+  $("hd-level").textContent = "Level " + lv.index + " · " + lv.name;
+  $("hd-xp").textContent = lv.next ? lv.toNext + " XP to " + lv.next : lv.xp + " XP";
+  $("hd-xp-bar").style.width = Math.round(lv.progress * 100) + "%";
+  $("hd-streak").textContent = st.current ? st.current + (st.current === 1 ? " day" : " days") : "no streak yet";
+  $("hd-streak-wrap").classList.toggle("cold", st.current === 0);
+}
+
+/* ----------------------------------------------------------- today view */
+function paintToday(){
+  var t = G.todayKey(), day = G.state.days[t] || { minutes:0, exercises:0 };
+  var st = G.streak(), plan = W.todayPlan();
+
+  $("t-score").textContent = G.focusScoreToday();
+  $("t-lede").innerHTML = day.exercises
+    ? "You have trained <b>" + Math.round(day.minutes) + " minute" + (Math.round(day.minutes) === 1 ? "" : "s") +
+      "</b> today across " + day.exercises + " exercise" + (day.exercises === 1 ? "" : "s") + "."
+    : "Nothing yet today. The workout below takes " + plan.minutes + " minutes.";
+
+  $("t-stats").innerHTML = [
+    { v:st.current, k:"day streak", n: st.longest ? "longest " + st.longest : "start one today" },
+    { v:Math.round(day.minutes) + "m", k:"trained today", n:"goal " + plan.minutes + "m" },
+    { v:plan.done.length + " / " + plan.steps.length, k:"workout done", n: plan.done.length >= plan.steps.length ? "complete" : "in progress" },
+    { v:G.state.results.length, k:"sessions all time", n: st.days + (st.days === 1 ? " day trained" : " days trained") }
+  ].map(function(s){
+    return '<div class="stat"><div class="v num">' + esc(s.v) + '</div><div class="k">' + esc(s.k) +
+           '</div><div class="n">' + esc(s.n) + '</div></div>';
+  }).join("");
+
+  /* the four categories */
+  $("t-families").innerHTML = Object.keys(G.FAMILY).map(function(f){
+    var s = G.familyScore(f);
+    return '<div class="fam"><div class="fam-n">' + esc(G.FAMILY[f]) + '</div>' +
+      '<div class="fam-v num">' + s.score + '</div>' +
+      '<div class="meter"><i style="width:' + s.score + '%"></i></div>' +
+      '<div class="fam-k">' + (s.rows ? s.rows + " session" + (s.rows === 1 ? "" : "s") + " · 14 days" : "no sessions yet") + '</div></div>';
+  }).join("");
+
+  /* the streak strip */
+  $("t-week").innerHTML = st.week.map(function(d){
+    var cls = d.done ? "on" : d.future ? "future" : "off";
+    return '<span class="' + cls + (d.today ? " now" : "") + '"><b>' + d.letter + '</b>' +
+      '<i aria-hidden="true">' + (d.done ? "✓" : d.future ? "·" : "—") + '</i>' +
+      '<span class="sr">' + esc(d.key) + (d.done ? ", trained" : ", not trained") + '</span></span>';
+  }).join("");
+
+  paintJourney();
+  paintWorkout(plan);
+}
+
+/* the spine of the page */
+function paintJourney(){
+  var js = W.journey();
+  $("t-journey").innerHTML = js.map(function(s, i){
+    var sp = G.spec(s.id);
+    return '<div class="jr jr-' + s.state + '">' +
+      '<span class="jr-dot" aria-hidden="true">' + (s.state === "done" ? "✓" : (i + 1)) + '</span>' +
+      '<span class="jr-n">' + esc(s.name) + '</span>' +
+      '<span class="jr-b">' + esc(s.blurb) + '</span>' +
+      (s.state === "now" ? '<button class="btn-quiet" data-run="' + s.id + '">start this</button>' : "") +
+      '</div>';
+  }).join("");
+  var up = W.nextUp();
+  $("t-journey-note").textContent = "You are on " + up.name + ". It opens the next stage once you are steady on this one.";
+}
+
+function paintWorkout(plan){
+  var doneSet = {};
+  plan.done.forEach(function(id){ doneSet[id] = true; });
+  var complete = plan.steps.every(function(s){ return doneSet[s.id]; });
+  $("t-workout").innerHTML = plan.steps.map(function(s){
+    var sp = G.spec(s.id);
+    var mins = s.id === "quiet" ? (s.opts.minutes || 1) : W.minutesOf(s.id);
+    return '<div class="wo' + (doneSet[s.id] ? " done" : "") + '">' +
+      '<span class="wo-mark" aria-hidden="true">' + (doneSet[s.id] ? "✓" : "○") + '</span>' +
+      '<span class="wo-n">' + esc(sp ? sp.name : s.id) + '</span>' +
+      '<span class="wo-m mono">' + mins + " min" + '</span>' +
+      '<span class="sr">' + (doneSet[s.id] ? "completed" : "not yet done") + '</span></div>';
+  }).join("");
+  var mins = plan.steps.reduce(function(n, s){
+    return n + (s.id === "quiet" ? (s.opts.minutes || 1) : W.minutesOf(s.id)); }, 0);
+  $("t-workout-meta").textContent = plan.steps.length + " exercises · " + mins + " minutes";
+  $("t-workout-go").textContent = complete ? "Train again" : (plan.done.length ? "Resume workout" : "Start today's workout");
+  $("t-workout-done").hidden = !complete;
+}
+
+/* ----------------------------------------------------------- train view */
+function paintTrain(){
+  $("tr-grid").innerHTML = G.all().map(function(sp){
+    var lvl = sp.ladder ? (G.levelOf(sp.id) + 1) : null;
+    var rows = G.resultsFor(sp.id);
+    var last = rows.length ? rows[rows.length - 1] : null;
+    var rung = sp.ladder ? G.rung(sp.id) : null;
+    return '<div class="ex">' +
+      '<div class="ex-top"><span class="ex-icon" aria-hidden="true">' + esc(sp.icon || "•") + '</span>' +
+      '<span class="ex-fam mono">' + esc(G.FAMILY[sp.family] || "") + '</span></div>' +
+      '<h3 class="ex-n">' + esc(sp.name) + '</h3>' +
+      '<p class="ex-s">' + esc(sp.short || "") + '</p>' +
+      '<p class="ex-lvl mono">' + (lvl ? "Level " + lvl + " of " + sp.ladder.length + " · " + rungText(rung) : "no levels") + '</p>' +
+      '<p class="ex-last mono">' + (last ? "last " + Math.round(last.accuracy * 100) + "% · " + rows.length +
+                                    (rows.length === 1 ? " session" : " sessions") : "not tried yet") + '</p>' +
+      '<div class="ex-acts"><button class="btn" data-run="' + sp.id + '">Start</button>' +
+      (sp.options ? '<button class="btn-ghost" data-cfg="' + sp.id + '">Settings</button>' : "") +
+      '</div></div>';
+  }).join("");
+}
+function rungText(r){
+  if (!r) return "";
+  return Object.keys(r).filter(function(k){ return k !== "rounds"; }).map(function(k){
+    var v = r[k];
+    if (k === "speed" || k === "window") return (v/1000).toFixed(v % 1000 ? 1 : 0) + "s";
+    if (k === "size") return v + "×" + v;
+    if (k === "ops") return Array.isArray(v) ? v.join(" ") : String(v);
+    if (k === "mode") return v === "addsub" ? "+ and −" : "+ only";
+    return v + " " + k;
+  }).join(" · ");
+}
+
+/* -------------------------------------------------------- progress view */
+var METRICS = [
+  { k:"minutes", name:"Training minutes", unit:"min", kind:"bar",
+    day:function(rows, key){ var d = G.state.days[key]; return d ? Math.round(d.minutes) : 0; } },
+  { k:"anzan-acc", name:"Anzan accuracy", unit:"%", kind:"line",
+    pick:function(r){ return (r.exercise === "anzan" || r.exercise === "anzan-assisted") ? r.accuracy * 100 : null; } },
+  { k:"anzan-speed", name:"Anzan display speed", unit:"s", kind:"line", lower:true,
+    pick:function(r){ return r.exercise === "anzan" && r.metadata ? r.metadata.speed / 1000 : null; } },
+  { k:"schulte", name:"Schulte time", unit:"s", kind:"line", lower:true,
+    pick:function(r){ return r.exercise === "schulte" && r.metadata ? r.metadata.timeMs / 1000 : null; } },
+  { k:"reaction", name:"Reaction time", unit:"ms", kind:"line", lower:true,
+    pick:function(r){ return r.exercise === "reaction" && r.metadata ? r.metadata.avgMs : null; } },
+  { k:"arith", name:"Arithmetic accuracy", unit:"%", kind:"line",
+    pick:function(r){ return r.exercise === "arith" ? r.accuracy * 100 : null; } },
+  { k:"memory", name:"Memory span", unit:"tiles", kind:"line",
+    pick:function(r){ return r.exercise === "memory" && r.metadata ? r.metadata.best : null; } },
+  { k:"consistency", name:"Days trained", unit:"days", kind:"bar",
+    day:function(rows, key){ var d = G.state.days[key]; return d && d.exercises ? 1 : 0; } }
+];
+var metric = "minutes";
+
+function dayKeys(n){
+  var out = [], t = G.todayKey();
+  if (!n){
+    var keys = Object.keys(G.state.days).sort();
+    if (!keys.length) return [t];
+    var first = keys[0];
+    n = Math.max(1, Math.min(365, G.daysBetween(first, t) + 1));
+  }
+  for (var i = n - 1; i >= 0; i--) out.push(G.addDays(t, -i));
+  return out;
+}
+function series(m, n){
+  var keys = dayKeys(n);
+  return keys.map(function(k){
+    if (m.day) return { key:k, v:m.day(null, k) };
+    var vals = G.state.results.filter(function(r){ return r.day === k; })
+      .map(m.pick).filter(function(v){ return v !== null && isFinite(v); });
+    return { key:k, v: vals.length ? vals.reduce(function(a,b){ return a+b; },0) / vals.length : null };
+  });
+}
+
+function paintProgress(){
+  $("pr-metrics").innerHTML = METRICS.map(function(m){
+    return '<button class="chip' + (m.k === metric ? " on" : "") + '" data-metric="' + m.k +
+           '" aria-pressed="' + (m.k === metric ? "true" : "false") + '">' + esc(m.name) + '</button>';
+  }).join("");
+  [7,30,90,0].forEach(function(n){
+    var b = $("pr-r" + n);
+    if (b){ b.classList.toggle("on", range === n); b.setAttribute("aria-pressed", String(range === n)); }
+  });
+  var m = METRICS.filter(function(x){ return x.k === metric; })[0] || METRICS[0];
+  var data = series(m, range);
+  $("pr-chart").innerHTML = chart(data, m);
+  var vals = data.map(function(d){ return d.v; }).filter(function(v){ return v !== null; });
+  var avg = vals.length ? vals.reduce(function(a,b){ return a+b; },0)/vals.length : null;
+  $("pr-summary").textContent = vals.length
+    ? m.name + " · average " + fmt(avg, m) + " over " + data.length + " days · " +
+      vals.length + " days with data" + (m.lower ? " · lower is better" : "")
+    : "No sessions in this window yet.";
+  paintRecords();
+}
+function fmt(v, m){
+  if (v === null || v === undefined) return "—";
+  if (m.unit === "%") return Math.round(v) + "%";
+  if (m.unit === "ms") return Math.round(v) + "ms";
+  if (m.unit === "s") return v.toFixed(1) + "s";
+  return Math.round(v * 10) / 10 + (m.unit ? " " + m.unit : "");
+}
+/* the axis has room for a number, not a number and its unit — the unit is
+   named once, in the line under the chart */
+function axisFmt(v, m){
+  if (m.unit === "%") return Math.round(v) + "%";
+  if (m.unit === "ms") return Math.round(v);
+  if (m.unit === "s") return v.toFixed(1);
+  return Math.round(v * 10) / 10;
+}
+
+/* a small, plain chart — readable first, decorative never */
+function chart(data, m){
+  var W = 640, H = 190, padL = 46, padR = 10, padT = 12, padB = 22;
+  var vals = data.map(function(d){ return d.v; }).filter(function(v){ return v !== null; });
+  if (!vals.length){
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="ch" role="img" aria-label="No data yet">' +
+      '<text x="' + (W/2) + '" y="' + (H/2) + '" class="ch-empty" text-anchor="middle">Nothing recorded yet</text></svg>';
+  }
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  if (m.unit === "%"){ lo = Math.min(lo, 0); hi = 100; }
+  if (lo === hi){ lo = Math.max(0, lo - 1); hi = hi + 1; }
+  var pad = (hi - lo) * 0.12; lo = Math.max(0, lo - pad); hi = hi + pad;
+  var innerW = W - padL - padR, innerH = H - padT - padB;
+  function x(i){ return padL + (data.length === 1 ? innerW/2 : (i / (data.length - 1)) * innerW); }
+  function y(v){ return padT + innerH - ((v - lo) / (hi - lo)) * innerH; }
+
+  var out = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="ch" role="img" aria-label="' +
+            esc(m.name + ", " + data.length + " days, average " + fmt(vals.reduce(function(a,b){return a+b;},0)/vals.length, m)) + '">';
+  /* three gridlines and their labels */
+  [0, 0.5, 1].forEach(function(f){
+    var v = lo + (hi - lo) * (1 - f), yy = padT + innerH * f;
+    out += '<line class="ch-grid" x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '"/>';
+    out += '<text class="ch-lab" x="' + (padL - 7) + '" y="' + (yy + 3.5) + '" text-anchor="end">' + esc(axisFmt(v, m)) + '</text>';
+  });
+  if (m.kind === "bar"){
+    var bw = Math.max(1.5, innerW / data.length - 2);
+    data.forEach(function(d, i){
+      if (!d.v) return;
+      var yy = y(d.v);
+      out += '<rect class="ch-bar" x="' + (x(i) - bw/2) + '" y="' + yy + '" width="' + bw +
+             '" height="' + Math.max(1, padT + innerH - yy) + '" rx="1"/>';
+    });
+  } else {
+    var seg = [], path = "";
+    data.forEach(function(d, i){
+      if (d.v === null){ if (seg.length) { path += render(seg); seg = []; } return; }
+      seg.push([x(i), y(d.v)]);
+    });
+    if (seg.length) path += render(seg);
+    out += path;
+    data.forEach(function(d, i){
+      if (d.v === null) return;
+      out += '<circle class="ch-dot" cx="' + x(i) + '" cy="' + y(d.v) + '" r="2.6"/>';
+    });
+  }
+  function render(pts){
+    if (pts.length === 1){
+      return '<circle class="ch-dot" cx="' + pts[0][0] + '" cy="' + pts[0][1] + '" r="3"/>';
+    }
+    return '<polyline class="ch-line" points="' + pts.map(function(p){ return p[0] + "," + p[1]; }).join(" ") + '"/>';
+  }
+  /* first and last date */
+  out += '<text class="ch-lab" x="' + padL + '" y="' + (H - 6) + '">' + esc(shortKey(data[0].key)) + '</text>';
+  out += '<text class="ch-lab" x="' + (W - padR) + '" y="' + (H - 6) + '" text-anchor="end">' +
+         esc(shortKey(data[data.length-1].key)) + '</text>';
+  return out + '</svg>';
+}
+function shortKey(k){
+  var d = G.parseKey(k);
+  return d.getDate() + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+}
+
+function paintRecords(){
+  var ids = Object.keys(G.RECORDS);
+  var got = ids.filter(function(id){ return G.state.records[id]; });
+  $("pr-records").innerHTML = got.length ? got.map(function(id){
+    var r = G.state.records[id];
+    return '<div class="rec"><span class="rec-n">' + esc(G.RECORDS[id].name) + '</span>' +
+      '<span class="rec-v num">' + esc(G.recordText(id)) + '</span>' +
+      '<span class="rec-d mono">' + esc(shortKey(G.dkey(new Date(r.at)))) + '</span></div>';
+  }).join("") : '<p class="empty">No personal bests yet — they appear as you train.</p>';
+  $("pr-records-note").textContent = got.length
+    ? "Only ever measured against your own previous best."
+    : "";
+}
+
+window.GymViews = { switchView:switchView, render:render,
+                    get current(){ return current; },
+                    setMetric:function(k){ metric = k; paintProgress(); },
+                    setRange:function(n){ range = n; paintProgress(); } };
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   Mental Gym — onboarding, settings and wiring.
+   ========================================================================== */
+(function(){
+"use strict";
+var G = window.Gym, V = window.GymViews, R = window.GymRun, W = window.GymWorkout;
+function $(id){ return document.getElementById(id); }
+function show(el, on){ if (el) el.hidden = !on; }
+var esc = G.esc;
+
+/* --------------------------------------------------------------- theme */
+var THEME_KEY = "mentalgym.theme";
+function applyTheme(t){
+  if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+  else document.documentElement.removeAttribute("data-theme");
+}
+function readTheme(){ try { return localStorage.getItem(THEME_KEY) || "system"; } catch(e){ return "system"; } }
+function writeTheme(t){ try { localStorage.setItem(THEME_KEY, t); } catch(e){} }
+applyTheme(readTheme());
+
+/* ---------------------------------------------------------- onboarding */
+var ondlg = $("onboard");
+var chosenMinutes = 15;
+function openOnboarding(){
+  chosenMinutes = G.state.prefs.dailyMinutes || 15;
+  paintMinutes();
+  if (typeof ondlg.showModal === "function") ondlg.showModal();
+  else show(ondlg, true);
+}
+function paintMinutes(){
+  Array.prototype.forEach.call($("ob-minutes").children, function(b){
+    var on = +b.dataset.m === chosenMinutes;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+}
+$("ob-minutes").addEventListener("click", function(e){
+  var b = near(e, "[data-m]");
+  if (!b) return;
+  chosenMinutes = +b.dataset.m;
+  paintMinutes();
+});
+$("ob-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  G.state.prefs.dailyMinutes = chosenMinutes;
+  G.state.prefs.sound = $("ob-sound").checked;
+  G.state.onboarded = true;
+  G.save();
+  ondlg.close();
+  show($("app"), true);
+  V.switchView("today");
+  /* the recommended first thing to do, exactly as promised on the card */
+  setTimeout(function(){ R.start("soroban-lessons"); }, 300);
+});
+$("ob-skip").addEventListener("click", function(){
+  G.state.prefs.dailyMinutes = chosenMinutes;
+  G.state.onboarded = true;
+  G.save();
+  ondlg.close();
+  show($("app"), true);
+  V.switchView("today");
+});
+
+/* --------------------------------------------- per-exercise settings */
+var cfgdlg = $("cfg"), cfgFor = null;
+function openConfig(id){
+  var sp = G.spec(id);
+  if (!sp || !sp.options) return;
+  cfgFor = id;
+  var cur = Object.assign({}, G.rung(id));
+  $("cfg-title").textContent = sp.name;
+  $("cfg-sub").textContent = "These settings apply to this run only. Your level is not changed by a custom run.";
+  $("cfg-fields").innerHTML = sp.options.map(function(f){
+    var fid = "cfg-f-" + f.k;
+    return '<div class="fld"><label for="' + fid + '">' + esc(f.label) + '</label>' +
+      '<select id="' + fid + '" data-k="' + esc(f.k) + '">' + f.opts.map(function(o){
+        var val = JSON.stringify(o[0]);
+        var sel = JSON.stringify(cur[f.k]) === val ? " selected" : "";
+        return '<option value=\'' + esc(val) + '\'' + sel + '>' + esc(o[1]) + '</option>';
+      }).join("") + '</select></div>';
+  }).join("");
+  if (typeof cfgdlg.showModal === "function") cfgdlg.showModal();
+}
+$("cfg-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  var opts = { custom:true };
+  Array.prototype.forEach.call($("cfg-fields").querySelectorAll("select"), function(s){
+    try { opts[s.dataset.k] = JSON.parse(s.value); } catch(err){}
+  });
+  cfgdlg.close();
+  R.start(cfgFor, opts);
+});
+$("cfg-cancel").addEventListener("click", function(){ cfgdlg.close(); });
+
+/* ------------------------------------------------------------- actions */
+/* An event's target is not always an element — a keydown with nothing focused
+   can land on the document, which has neither closest() nor matches(). */
+function near(e, sel){
+  var t = e.target;
+  return (t && typeof t.closest === "function") ? t.closest(sel) : null;
+}
+function isField(e){
+  var t = e.target;
+  return !!(t && typeof t.matches === "function" && t.matches("input,select,textarea"));
+}
+document.addEventListener("click", function(e){
+  var run = near(e, "[data-run]");
+  if (run){ R.start(run.dataset.run); return; }
+  var cfg = near(e, "[data-cfg]");
+  if (cfg){ openConfig(cfg.dataset.cfg); return; }
+  var met = near(e, "[data-metric]");
+  if (met){ V.setMetric(met.dataset.metric); return; }
+  if (!near(e, ".acct") && !$("menu").hidden) toggleMenu(false);
+});
+
+["today","train","progress"].forEach(function(v){
+  var t = $("tab-" + v);
+  if (t) t.addEventListener("click", function(){ V.switchView(v); });
+});
+[7,30,90,0].forEach(function(n){
+  var b = $("pr-r" + n);
+  if (b) b.addEventListener("click", function(){ V.setRange(n); });
+});
+
+$("t-workout-go").addEventListener("click", function(){ W.start(G.state.prefs.dailyMinutes); });
+$("t-durations").addEventListener("click", function(e){
+  var b = near(e, "[data-min]");
+  if (!b) return;
+  var m = +b.dataset.min;
+  G.state.prefs.dailyMinutes = m;
+  G.save();
+  V.render();
+  W.start(m);
+});
+
+/* ---------------------------------------------------------- the menu */
+function toggleMenu(on){
+  var m = $("menu");
+  show(m, on === undefined ? m.hidden : on);
+  $("menu-btn").setAttribute("aria-expanded", String(!m.hidden));
+}
+$("menu-btn").addEventListener("click", function(e){ e.stopPropagation(); toggleMenu(); });
+$("m-sound").addEventListener("change", function(){
+  G.state.prefs.sound = this.checked; G.save();
+});
+$("m-motion").addEventListener("change", function(){
+  G.state.prefs.reduceMotion = this.checked; G.save();
+});
+$("m-minutes").addEventListener("change", function(){
+  G.state.prefs.dailyMinutes = +this.value || 15; G.save(); V.render();
+});
+$("m-theme").addEventListener("change", function(){
+  writeTheme(this.value); applyTheme(this.value);
+});
+$("m-export").addEventListener("click", function(){
+  toggleMenu(false);
+  $("dd-json").value = JSON.stringify(G.state, null, 2);
+  $("dd-msg").textContent = "Copy it out, or paste a saved file back in.";
+  if (typeof $("data").showModal === "function") $("data").showModal();
+});
+$("dd-close").addEventListener("click", function(){ $("data").close(); });
+$("dd-import").addEventListener("click", function(){
+  var parsed = null;
+  try { parsed = JSON.parse($("dd-json").value); } catch(err){ parsed = null; }
+  if (!parsed || typeof parsed !== "object"){
+    $("dd-msg").textContent = "That is not training data this page can read. Nothing was changed.";
+    return;
+  }
+  G.state = G.normalise(parsed);
+  G.save(); V.render();
+  $("dd-msg").textContent = "Imported.";
+});
+$("dd-reset").addEventListener("click", function(){
+  if ($("dd-reset").dataset.armed !== "1"){
+    $("dd-reset").dataset.armed = "1";
+    $("dd-reset").textContent = "Really erase everything?";
+    $("dd-msg").textContent = "This removes every session, record and streak on this device. Export first if you want a copy.";
+    return;
+  }
+  G.state = G.normalise(null);
+  G.state.onboarded = true;
+  G.save();
+  $("dd-reset").dataset.armed = "";
+  $("dd-reset").textContent = "Erase all training data";
+  $("dd-msg").textContent = "Erased.";
+  V.render();
+});
+function paintMenu(){
+  $("m-sound").checked = !!G.state.prefs.sound;
+  $("m-motion").checked = !!G.state.prefs.reduceMotion;
+  $("m-minutes").value = String(G.state.prefs.dailyMinutes || 15);
+  $("m-theme").value = readTheme();
+}
+
+/* ---------------------------------------------------- keyboard on the page */
+document.addEventListener("keydown", function(e){
+  if (!$("focus").hidden) return;                     /* Focus Mode owns the keys */
+  if (isField(e)) return;
+  if (e.code === "Space" && V.current === "today"){
+    e.preventDefault();
+    W.start(G.state.prefs.dailyMinutes);
+  }
+});
+
+/* ------------------------------------------------------------------ boot */
+G.load();
+paintMenu();
+G.on("gymdata", function(){ paintMenu(); });
+G.on("workoutdone", function(){ V.switchView("today"); });
+
+var hash = (location.hash || "").replace("#","");
+if (!G.state.onboarded){
+  show($("app"), false);
+  openOnboarding();
+} else {
+  show($("app"), true);
+  V.switchView(hash || "today");
+}
+window.addEventListener("hashchange", function(){
+  var h = (location.hash || "").replace("#","");
+  if (h && h !== V.current) V.switchView(h);
+});
+/* a day can turn over while the page is open */
+var today = G.todayKey();
+setInterval(function(){
+  if (G.todayKey() !== today){ today = G.todayKey(); V.render(); }
+}, 30000);
+
+window.GymBoot = { onboarding:openOnboarding, config:openConfig };
+})();
+</script>
+
+</body>
+</html>

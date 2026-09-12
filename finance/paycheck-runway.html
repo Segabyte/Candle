@@ -6,391 +6,405 @@
 <title>Paycheck Runway</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
+/* ---------------------------------------------------------------
+   Lime yellow & white, laid out on the BrightMoney recap spine:
+   one card, hairline-separated sections, a wash hero, a stat row
+   on dividers, and label / % / bar / amount budget rows.
+   --------------------------------------------------------------- */
 :root{
-  --ground:#ffffff;
-  --inset:#f5f8e8;
+  --ground:#f5fae2;
   --card:#ffffff;
-  --ink:#17190e;
-  --ink-2:#5a6049;
-  --ink-3:#8d9279;
-  --line:#e6e9d6;
-  --line-strong:#d3d9bc;
+  --wash:#e9f8a5;
+  --inset:#f7fbe8;
+  --ink:#1a1c12;
+  --ink-2:#535a44;
+  --ink-3:#8b9177;
+  --line:#e7ecd3;
+  --line-soft:#f1f4e4;
+  --line-strong:#d6ddbe;
   --lime:#d6f229;
-  --lime-press:#c2dd18;
+  --lime-press:#c6e410;
   --lime-deep:#6f8a00;
-  --lime-wash:#f1f9c8;
+  --lime-track:#edf2d8;
+  --up:#3f7d4e;
   --critical:#c43b22;
   --critical-wash:#fbeae6;
   --warn:#a97400;
-  --warn-wash:#fbf3dd;
-  --shadow:0 1px 2px rgba(23,25,14,.06), 0 8px 24px -16px rgba(23,25,14,.35);
-  --r:14px;
-  --maxw:1180px;
+  --warn-wash:#fbf4dc;
+  --shadow:0 1px 2px rgba(26,28,18,.05), 0 18px 44px -30px rgba(26,28,18,.45);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --ground:#14160f;
-    --inset:#1b1e14;
-    --card:#1a1d13;
-    --ink:#f1f4e3;
-    --ink-2:#b3baa0;
-    --ink-3:#7f8770;
-    --line:#2c3122;
-    --line-strong:#3c422e;
+    --ground:#101208;
+    --card:#191c11;
+    --wash:#2b3510;
+    --inset:#1f2315;
+    --ink:#f2f5e4;
+    --ink-2:#b6bda2;
+    --ink-3:#828970;
+    --line:#2b3020;
+    --line-soft:#232819;
+    --line-strong:#3d442e;
     --lime:#d6f229;
-    --lime-press:#e2fa55;
+    --lime-press:#e4fa60;
     --lime-deep:#b9db3a;
-    --lime-wash:#242a13;
+    --lime-track:#2c331b;
+    --up:#7dbb8b;
     --critical:#f08165;
-    --critical-wash:#2e1a14;
+    --critical-wash:#2f1a13;
     --warn:#dfae4a;
-    --warn-wash:#2b2312;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+    --warn-wash:#2c2312;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 20px 50px -34px rgba(0,0,0,1);
   }
 }
 :root[data-theme="dark"]{
-  --ground:#14160f;
-  --inset:#1b1e14;
-  --card:#1a1d13;
-  --ink:#f1f4e3;
-  --ink-2:#b3baa0;
-  --ink-3:#7f8770;
-  --line:#2c3122;
-  --line-strong:#3c422e;
+  --ground:#101208;
+  --card:#191c11;
+  --wash:#2b3510;
+  --inset:#1f2315;
+  --ink:#f2f5e4;
+  --ink-2:#b6bda2;
+  --ink-3:#828970;
+  --line:#2b3020;
+  --line-soft:#232819;
+  --line-strong:#3d442e;
   --lime:#d6f229;
-  --lime-press:#e2fa55;
+  --lime-press:#e4fa60;
   --lime-deep:#b9db3a;
-  --lime-wash:#242a13;
+  --lime-track:#2c331b;
+  --up:#7dbb8b;
   --critical:#f08165;
-  --critical-wash:#2e1a14;
+  --critical-wash:#2f1a13;
   --warn:#dfae4a;
-  --warn-wash:#2b2312;
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+  --warn-wash:#2c2312;
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 20px 50px -34px rgba(0,0,0,1);
 }
 
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:var(--ground);
-  color:var(--ink);
+  margin:0;background:var(--ground);color:var(--ink);
   font-family:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size:15px;
-  line-height:1.5;
-  -webkit-font-smoothing:antialiased;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:20px;padding-block:0 72px}
-h1,h2,h3{font-family:"Bricolage Grotesque", "IBM Plex Sans", sans-serif;margin:0;text-wrap:balance;letter-spacing:-.02em}
-.num{font-family:"IBM Plex Mono", ui-monospace, monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 button{font:inherit;color:inherit}
 input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--lime-deep);outline-offset:2px;border-radius:6px}
 
-/* ---------- masthead ---------- */
-.masthead{
-  border-bottom:1px solid var(--line);
-  background:var(--ground);
-  position:sticky;top:0;z-index:40;
+.page{padding-inline:16px;padding-block:22px 56px}
+.sheet{
+  max-width:1040px;margin:0 auto;background:var(--card);
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
 }
-.masthead-in{
-  max-width:var(--maxw);margin:0 auto;padding:14px 20px;
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-}
-.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
-.mark{
-  width:30px;height:30px;border-radius:9px;background:var(--lime);
-  display:grid;place-items:center;flex:none;
-}
-.mark svg{display:block}
-.brand h1{font-size:19px;font-weight:800;line-height:1}
-.brand .sub{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1}
-.saveflag{
-  display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);
-  padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);
-}
-.saveflag .dot{width:7px;height:7px;border-radius:50%;background:var(--lime-deep);flex:none}
-.saveflag[data-state="saving"] .dot{background:var(--warn)}
-.saveflag[data-state="local"] .dot{background:var(--ink-3)}
+section{padding:30px 40px;border-bottom:1px solid var(--line)}
+section:last-child{border-bottom:0}
+.sec-title{font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.sec-note{margin:0 0 18px;font-size:13px;color:var(--ink-3)}
+.sec-note:last-child{margin-bottom:0}
 
-.btn{
-  border:1px solid var(--line-strong);background:var(--card);color:var(--ink);
-  padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500;
-  transition:background .12s ease, border-color .12s ease;
+/* ---------- brand bar ---------- */
+.brandbar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:18px 40px;border-bottom:1px solid var(--line);background:var(--card);
 }
+.logo{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:800;letter-spacing:-.02em;
+  font-family:"Bricolage Grotesque",sans-serif;margin-right:auto}
+.logo .dot{width:11px;height:11px;border-radius:50%;background:var(--lime);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--lime) 26%, transparent)}
+.period{font-size:12px;color:var(--ink-3)}
+.saveflag{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);
+  padding:5px 11px;border:1px solid var(--line);border-radius:999px}
+.saveflag .pip{width:7px;height:7px;border-radius:50%;background:var(--lime-deep);flex:none}
+.saveflag[data-state="saving"] .pip{background:var(--warn)}
+.saveflag[data-state="local"] .pip{background:var(--ink-3)}
+
+.btn{border:1px solid var(--line-strong);background:var(--card);color:var(--ink);
+  padding:7px 13px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:500;
+  transition:background .12s ease,border-color .12s ease}
 .btn:hover{background:var(--inset)}
-.btn-primary{background:var(--lime);border-color:var(--lime);color:#17190e;font-weight:600}
+.btn-primary{background:var(--lime);border-color:var(--lime);color:#1a1c12;font-weight:600}
 .btn-primary:hover{background:var(--lime-press);border-color:var(--lime-press)}
 .btn-sm{padding:5px 10px;font-size:12.5px;border-radius:8px}
 .btn-ghost{border-color:transparent;background:transparent;color:var(--ink-3)}
 .btn-ghost:hover{background:var(--inset);color:var(--critical)}
 
-/* ---------- recap ---------- */
-.recap{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:1px;background:var(--line);
-  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:26px}
-.tile{background:var(--card);padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.tile .eyebrow{margin-bottom:2px}
-.tile .big{font-size:30px;font-weight:600;line-height:1.08;letter-spacing:-.035em}
-.tile.lead{background:var(--lime-wash)}
-.tile.lead .big{font-size:40px}
-.tile .foot{font-size:12.5px;color:var(--ink-2);line-height:1.35}
-.tile .big.neg{color:var(--critical)}
-.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;
-  padding:3px 9px;border-radius:999px;width:fit-content}
-.pill.ok{background:var(--lime-wash);color:var(--lime-deep);border:1px solid var(--lime-deep)}
-.pill.warn{background:var(--warn-wash);color:var(--warn);border:1px solid var(--warn)}
-.pill.bad{background:var(--critical-wash);color:var(--critical);border:1px solid var(--critical)}
+/* ---------- hero ---------- */
+.hero{background:var(--wash);padding:36px 40px 34px;border-bottom:1px solid var(--line)}
+.hero .greet{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
+.hero h1{font-size:34px;line-height:1.12;font-weight:800;letter-spacing:-.03em;margin:0 0 12px;max-width:22ch}
+.hero p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2);max-width:62ch}
+.hero p strong{color:var(--ink);font-weight:600}
 
-/* ---------- sections ---------- */
-section{margin-top:40px}
-.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-.sec-head h2{font-size:20px;font-weight:700}
-.sec-head p{margin:0;font-size:13px;color:var(--ink-3)}
-.sec-head .spacer{margin-left:auto}
-
-.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
-.panel-pad{padding:18px 20px}
+/* ---------- stat row ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);padding:26px 40px;border-bottom:1px solid var(--line)}
+.stat{padding:0 20px;border-left:1px solid var(--line);min-width:0}
+.stat:first-child{padding-left:0;border-left:0}
+.stat:last-child{padding-right:0}
+.stat .k{margin:0 0 6px;font-size:12px;color:var(--ink-3)}
+.stat .v{margin:0 0 3px;font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.stat .v.neg{color:var(--critical)}
+.stat .s{margin:0;font-size:12px;color:var(--ink-3)}
+.stat .s.up{color:var(--up)}
+.stat .s.down{color:var(--critical)}
+.stat .s.flag{color:var(--warn)}
 
 /* ---------- chart ---------- */
-.chartwrap{position:relative;padding:18px 12px 6px}
+.chartwrap{position:relative;margin:0 -8px}
 #chart{display:block;width:100%;height:auto;overflow:visible}
-.tt{
-  position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
-  background:var(--ink);color:var(--ground);padding:9px 11px;border-radius:9px;
-  font-size:12px;line-height:1.45;white-space:nowrap;box-shadow:var(--shadow);z-index:5;
-  transition:opacity .1s ease;
-}
+.tt{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
+  background:var(--ink);color:var(--card);padding:9px 11px;border-radius:9px;font-size:12px;
+  line-height:1.45;white-space:nowrap;box-shadow:var(--shadow);z-index:5;transition:opacity .1s ease}
 .tt b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
-.tt .tt-row{display:flex;gap:12px;justify-content:space-between}
-.tt .tt-row span:first-child{color:rgba(255,255,255,.62)}
-:root[data-theme="dark"] .tt .tt-row span:first-child{color:rgba(0,0,0,.55)}
+.tt .r{display:flex;gap:14px;justify-content:space-between}
+.tt .r span:first-child{opacity:.66}
+
+/* ---------- budget rows (label | % | bar | amount) ---------- */
+.budget{width:100%;border-collapse:collapse}
+.budget td{padding:10px 0;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.budget tr:last-child td{border-bottom:0}
+.budget .b-name{font-size:14px;width:34%}
+.budget .b-name .tag{font-size:10.5px;color:var(--ink-3);border:1px solid var(--line);
+  border-radius:5px;padding:1px 5px;margin-left:8px;white-space:nowrap}
+.budget .b-pct{width:12%;text-align:right;font-size:13px;color:var(--ink-3);
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.budget .b-bar{width:28%;padding-inline:16px}
+.budget .b-amt{width:26%;text-align:right;font-size:14px;font-weight:600;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.track{height:8px;background:var(--lime-track);border-radius:4px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:4px;background:var(--lime);min-width:3px}
+.track.big{height:10px;border-radius:5px}
+.track.big i{border-radius:5px}
+.track.alert i{background:var(--critical)}
+
+/* ---------- bills card ---------- */
+.bills{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.bill{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line-soft)}
+.bill:last-child{border-bottom:0}
+.bill .b-i{min-width:0;margin-right:auto}
+.bill .b-i b{display:block;font-size:14px;font-weight:500}
+.bill .b-i span{font-size:12px;color:var(--ink-3)}
+.bill .b-due{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.bill .b-amt{font-size:15px;font-weight:600;font-family:"IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.bill.soon .b-due{color:var(--warn);font-weight:600}
 
 /* ---------- ledger ---------- */
-.tablescroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:640px}
-th{
-  text-align:right;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--ink-3);padding:11px 16px;border-bottom:1px solid var(--line);white-space:nowrap;
-}
-th:first-child,td:first-child{text-align:left}
-td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
-tbody tr:last-child td{border-bottom:0}
-tbody tr.row-bad{background:var(--critical-wash)}
-tbody tr.row-warn{background:var(--warn-wash)}
-tbody tr.row-past td{color:var(--ink-3)}
-.date-cell{display:flex;flex-direction:column;gap:2px;text-align:left}
-.date-cell .d{font-weight:600;font-size:14px}
-.date-cell .rel{font-size:11.5px;color:var(--ink-3)}
+.tablescroll{overflow-x:auto;margin-inline:-4px;padding-inline:4px}
+table.ledger{border-collapse:collapse;width:100%;min-width:660px}
+.ledger th{text-align:right;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 14px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ledger th:first-child,.ledger td:first-child{text-align:left;padding-left:0}
+.ledger th:last-child,.ledger td:last-child{padding-right:0}
+.ledger td{padding:12px 14px;border-bottom:1px solid var(--line-soft);text-align:right}
+.ledger tbody tr:last-child td{border-bottom:0}
+.ledger tr.row-bad td{background:var(--critical-wash)}
+.ledger tr.row-warn td{background:var(--warn-wash)}
+.ledger tr.row-past td{color:var(--ink-3)}
+.d-cell{display:flex;flex-direction:column;gap:1px;text-align:left}
+.d-cell b{font-weight:600;font-size:14px}
+.d-cell span{font-size:11.5px;color:var(--ink-3)}
 td.money{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:13.5px}
 td.money.out{color:var(--ink-2)}
 td.bal{font-weight:600}
 td.bal.neg{color:var(--critical)}
-.keptbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;min-width:58px;margin-left:auto}
-.keptbar i{display:block;height:100%;border-radius:3px;background:var(--lime-deep)}
-.keptbar.empty i{background:var(--critical)}
-.detail-btn{background:none;border:0;cursor:pointer;color:var(--ink-3);font-size:12px;padding:2px 6px;border-radius:6px}
+.kept{min-width:64px;margin-left:auto}
+.detail-btn{background:none;border:0;cursor:pointer;color:var(--ink-3);font-size:12px;
+  padding:3px 7px;border-radius:6px;white-space:nowrap}
 .detail-btn:hover{background:var(--inset);color:var(--ink)}
-tr.detailrow td{padding:0 16px 14px;border-bottom:1px solid var(--line);text-align:left}
-.detail-list{display:flex;flex-wrap:wrap;gap:7px}
-.chip{
-  display:inline-flex;align-items:center;gap:7px;font-size:12px;background:var(--inset);
-  border:1px solid var(--line);border-radius:999px;padding:4px 11px;
-}
+tr.detailrow td{padding:0 0 14px;text-align:left;border-bottom:1px solid var(--line-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;background:var(--inset);
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px}
 .chip b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
 
-/* ---------- breakdown ---------- */
-.bkd{display:flex;flex-direction:column;gap:11px}
-.bkd-row{display:grid;grid-template-columns:1fr 96px;gap:14px;align-items:center}
-.bkd-label{font-size:13.5px;display:flex;align-items:center;gap:9px;min-width:0}
-.bkd-label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bkd-label .tag{font-size:10.5px;color:var(--ink-3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;flex:none}
-.bkd-track{height:9px;background:var(--inset);border-radius:4px;overflow:hidden;margin-top:6px}
-.bkd-track i{display:block;height:100%;border-radius:4px;background:var(--lime-deep)}
-.bkd-amt{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:13.5px}
-.bkd-amt small{display:block;color:var(--ink-3);font-size:11px}
+/* ---------- goals ---------- */
+.goal{padding-bottom:18px}
+.goal:last-child{padding-bottom:0}
+.goal-head{display:flex;align-items:baseline;gap:12px}
+.goal-head b{font-size:14px;font-weight:600;margin-right:auto}
+.goal-head span{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.goal .track{margin:8px 0 6px}
+.goal-foot{display:flex;gap:12px;align-items:baseline;font-size:12.5px;color:var(--ink-2)}
+.goal-foot .amt{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.goal-foot .pace{margin-left:auto;color:var(--ink-3);text-align:right}
+.goal-edit{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.empty{background:var(--inset);border:1px dashed var(--line-strong);border-radius:10px;
+  padding:20px 22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.empty p{margin:0;font-size:13.5px;color:var(--ink-2);max-width:52ch}
+
+/* ---------- insight ---------- */
+.insight{background:var(--inset);border-radius:10px;border-left:4px solid var(--lime);padding:20px 22px}
+.insight .eyebrow{margin-bottom:5px;display:block}
+.insight h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em}
+.insight p{margin:0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.insight.alert{border-left-color:var(--critical)}
 
 /* ---------- editors ---------- */
-.editors{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:start}
-.ed-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--inset)}
-.ed-head h3{font-size:15px;font-weight:700;margin-right:auto}
-.ed-list{display:flex;flex-direction:column}
-.ed-row{display:flex;align-items:center;gap:8px;padding:9px 14px 9px 18px;border-bottom:1px solid var(--line)}
-.ed-row:last-child{border-bottom:0}
-.f{border:1px solid transparent;background:transparent;border-radius:8px;padding:5px 8px;min-width:0;width:100%}
+.editors{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;align-items:start}
+.ed{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ed-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--inset);
+  border-bottom:1px solid var(--line)}
+.ed-head h3{font-size:14px;font-weight:700;margin-right:auto}
+.ed-row{display:flex;align-items:center;gap:6px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--line-soft)}
+.ed-row:last-of-type{border-bottom:0}
+.f{border:1px solid transparent;background:transparent;border-radius:8px;padding:5px 7px;min-width:0;width:100%}
 .f:hover{border-color:var(--line-strong)}
-.f:focus{border-color:var(--lime-deep);background:var(--ground)}
-.f.name{flex:1 1 90px;min-width:0}
-.f.amt{flex:0 0 84px;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
-.f.date{flex:0 0 128px;font-family:"IBM Plex Mono",monospace;font-size:13px}
-.f.freq{flex:0 0 112px;font-size:13px;border-color:var(--line)}
-.f.day{flex:0 0 66px;text-align:right;font-family:"IBM Plex Mono",monospace}
-.ed-foot{padding:12px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);background:var(--inset)}
+.f:focus{border-color:var(--lime-deep);background:var(--card)}
+.f.name{flex:1 1 110px}
+.f.amt{flex:0 0 74px;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.f.date{flex:0 0 120px;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+.f.freq{flex:0 0 100px;font-size:12.5px;border-color:var(--line)}
+.f.day{flex:0 0 60px;text-align:right;font-family:"IBM Plex Mono",monospace}
+.ed-foot{padding:11px 16px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;
+  border-top:1px solid var(--line);background:var(--inset)}
 .ed-foot .hint{font-size:12px;color:var(--ink-3)}
-.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-top:22px}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
-.field input,.field select{border:1px solid var(--line-strong);background:var(--ground);border-radius:9px;padding:9px 11px}
+.field label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.field input{border:1px solid var(--line-strong);background:var(--card);border-radius:9px;padding:9px 11px}
 .field input.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
 
-.note{
-  display:flex;gap:11px;align-items:flex-start;background:var(--lime-wash);
-  border:1px solid var(--lime-deep);border-radius:12px;padding:13px 15px;margin-top:22px;font-size:13px;color:var(--ink);
-}
-.note b{font-weight:600}
-.note button{margin-left:auto;flex:none}
-footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3);
-  display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+/* ---------- closing ---------- */
+.closing{text-align:center;padding:30px 40px 34px}
+.closing .tagline{margin:14px 0 0;font-size:13px;color:var(--ink-3)}
+.foot{background:var(--inset);border-top:1px solid var(--line);padding:22px 40px 26px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.foot p{margin:0;font-size:12px;line-height:1.6;color:var(--ink-3);max-width:60ch}
 
-@media (max-width:880px){
-  .recap{grid-template-columns:1fr 1fr}
+@media (max-width:820px){
+  section,.brandbar,.hero,.stats,.closing,.foot{padding-inline:24px}
+  .stats{grid-template-columns:1fr;gap:18px}
+  .stat{padding:0;border-left:0;border-top:1px solid var(--line);padding-top:16px}
+  .stat:first-child{border-top:0;padding-top:0}
   .editors{grid-template-columns:1fr}
+  .hero h1{font-size:28px}
+  .budget .b-bar{display:none}
+  .budget .b-name{width:48%}
+  .budget .b-amt{width:30%}
 }
-@media (max-width:560px){
-  .recap{grid-template-columns:1fr}
-  .tile.lead .big{font-size:34px}
-  .brand .sub{display:none}
+@media (max-width:520px){
+  section,.brandbar,.hero,.stats,.closing,.foot{padding-inline:18px}
+  .page{padding-inline:10px}
   .ed-row{flex-wrap:wrap}
-  .f.date,.f.freq{flex:1 1 130px}
+  .f.date,.f.freq{flex:1 1 120px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
-<header class="masthead">
-  <div class="masthead-in">
-    <div class="brand">
-      <div class="mark" aria-hidden="true">
-        <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
-          <path d="M1.5 12.5L5.5 7.5L9 10L15.5 2.5" stroke="#17190e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div>
-        <h1>Paycheck Runway</h1>
-        <div class="sub" id="brandSub">Cash flow, one payday at a time</div>
-      </div>
-    </div>
-    <div class="saveflag" id="saveFlag" data-state="idle"><span class="dot"></span><span id="saveText">Saved</span></div>
+<div class="page">
+<div class="sheet">
+
+  <div class="brandbar">
+    <div class="logo"><span class="dot"></span>Paycheck Runway</div>
+    <span class="period" id="period"></span>
+    <span class="saveflag" id="saveFlag" data-state="idle"><span class="pip"></span><span id="saveText">Saved</span></span>
     <button class="btn btn-sm" id="exportBtn">Export CSV</button>
-    <button class="btn btn-primary btn-sm" id="addExpenseTop">Add expense</button>
-  </div>
-</header>
-
-<div class="wrap">
-
-  <div class="recap" id="recap"></div>
-
-  <div class="note" id="importNote" hidden>
-    <div><b>Imported from MEXMGMT.xlsx.</b> <span id="importNoteText"></span></div>
-    <button class="btn btn-sm" id="dismissNote">Got it</button>
   </div>
 
+  <div class="hero">
+    <p class="greet" id="greet"></p>
+    <h1 id="heroHead"></h1>
+    <p id="heroBody"></p>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
   <section>
-    <div class="sec-head">
-      <h2>Balance projection</h2>
-      <p id="chartSub"></p>
-    </div>
-    <div class="panel">
-      <div class="chartwrap">
-        <svg id="chart" role="img" aria-label="Projected account balance after each payday and expense"></svg>
-        <div class="tt" id="tt"></div>
-      </div>
+    <h2 class="sec-title">Balance projection</h2>
+    <p class="sec-note" id="chartNote"></p>
+    <div class="chartwrap">
+      <svg id="chart" role="img" aria-label="Projected balance after each payday"></svg>
+      <div class="tt" id="tt"></div>
     </div>
   </section>
 
   <section>
-    <div class="sec-head">
-      <h2>Payday ledger</h2>
-      <p>What lands, what leaves, what's left — in date order.</p>
-    </div>
-    <div class="panel">
-      <div class="tablescroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Payday</th>
-              <th>Pay in</th>
-              <th>Out</th>
-              <th>Left over</th>
-              <th>Kept</th>
-              <th>Balance after</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="ledgerBody"></tbody>
-        </table>
-      </div>
+    <h2 class="sec-title">Where it goes</h2>
+    <p class="sec-note" id="budgetNote"></p>
+    <table class="budget"><tbody id="budgetBody"></tbody></table>
+  </section>
+
+  <section>
+    <h2 class="sec-title">Bills due soon</h2>
+    <p class="sec-note" id="billsNote"></p>
+    <div class="bills" id="bills"></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">Payday ledger</h2>
+    <p class="sec-note">What lands, what leaves, what's left — in date order.</p>
+    <div class="tablescroll">
+      <table class="ledger">
+        <thead><tr>
+          <th>Payday</th><th>Pay in</th><th>Out</th><th>Left over</th>
+          <th>Kept</th><th>Balance after</th><th></th>
+        </tr></thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
     </div>
   </section>
 
   <section>
-    <div class="sec-head">
-      <h2>Where it goes</h2>
-      <p id="bkdSub"></p>
-    </div>
-    <div class="panel panel-pad">
-      <div class="bkd" id="breakdown"></div>
-    </div>
+    <h2 class="sec-title">Savings goals</h2>
+    <p class="sec-note" id="goalsNote"></p>
+    <div id="goals"></div>
   </section>
 
   <section>
-    <div class="sec-head"><h2>Your plan</h2><p>Everything below is editable. Changes save as you type.</p></div>
+    <div class="insight" id="insight"></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">Your plan</h2>
+    <p class="sec-note">Everything here is editable. Changes save as you type.</p>
     <div class="editors">
-
-      <div class="panel">
-        <div class="ed-head">
-          <h3>Expenses</h3>
-          <span class="eyebrow" id="expCount"></span>
-        </div>
-        <div class="ed-list" id="expenseList"></div>
+      <div class="ed">
+        <div class="ed-head"><h3>Expenses</h3><span class="eyebrow" id="expCount"></span></div>
+        <div id="expenseList"></div>
         <div class="ed-foot">
           <button class="btn btn-sm btn-primary" id="addExpense">Add expense</button>
           <span class="hint">Every payday · Monthly · One time</span>
         </div>
       </div>
-
-      <div class="panel">
-        <div class="ed-head">
-          <h3>Paydays</h3>
-          <span class="eyebrow" id="payCount"></span>
-        </div>
-        <div class="ed-list" id="paydayList"></div>
+      <div class="ed">
+        <div class="ed-head"><h3>Paydays</h3><span class="eyebrow" id="payCount"></span></div>
+        <div id="paydayList"></div>
         <div class="ed-foot">
           <button class="btn btn-sm btn-primary" id="addPayday">Add payday</button>
           <button class="btn btn-sm" id="extendPaydays">+6 more, every 14 days</button>
         </div>
       </div>
-
     </div>
-
-    <div class="panel panel-pad" style="margin-top:20px">
-      <div class="settings-grid">
-        <div class="field">
-          <label for="openingBalance">Balance in hand today</label>
-          <input class="num" type="number" step="0.01" id="openingBalance" />
-        </div>
-        <div class="field">
-          <label for="openingDate">As of</label>
-          <input type="date" id="openingDate" />
-        </div>
-        <div class="field">
-          <label for="currency">Currency symbol</label>
-          <input type="text" id="currency" maxlength="3" />
-        </div>
-        <div class="field">
-          <label for="buffer">Low-balance warning under</label>
-          <input class="num" type="number" step="1" id="buffer" />
-        </div>
-      </div>
+    <div class="settings">
+      <div class="field"><label for="name">Your name</label><input type="text" id="name" /></div>
+      <div class="field"><label for="openingBalance">Balance in hand</label><input class="num" type="number" step="0.01" id="openingBalance" /></div>
+      <div class="field"><label for="openingDate">As of</label><input type="date" id="openingDate" /></div>
+      <div class="field"><label for="currency">Currency</label><input type="text" id="currency" maxlength="3" /></div>
+      <div class="field"><label for="buffer">Warn under</label><input class="num" type="number" step="1" id="buffer" /></div>
     </div>
   </section>
 
-  <footer>
-    <span>Private to you. Nothing here is shared.</span>
-    <span id="storageNote"></span>
+  <div class="closing">
+    <button class="btn btn-primary" id="addExpenseCta">Add an expense</button>
+    <p class="tagline">Plan the payday you're in, not the month you hope for.</p>
+  </div>
+
+  <div class="foot">
+    <p>
+      Private to you — nothing on this page is shared.
+      <span id="storageNote"></span>
+      <span id="importNote"></span>
+    </p>
     <button class="btn btn-sm btn-ghost" id="resetBtn" style="margin-left:auto">Reset to imported sheet</button>
-  </footer>
+  </div>
+
+</div>
 </div>
 
 <script>
@@ -398,42 +412,42 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-si
 "use strict";
 
 /* ============================================================
-   Seed — imported from MEXMGMT.xlsx
-   Salary 3,069 + 500 = 3,569 per payday. Opening balance 648.81.
-   The sheet carried no names for its expense rows, so they are
-   labelled by when they land and are yours to rename.
+   Seed — imported from MEXMGMT.xlsx.
+   Salary 3,069 + 500 = 3,569 a payday; opening balance 648.81.
+   Four expense rows came across without names in the sheet.
    ============================================================ */
 const SEED = {
-  version: 1,
+  version: 2,
+  name: "Sharv",
   currency: "$",
   openingBalance: 648.81,
   openingDate: "2026-09-12",
   buffer: 500,
   imported: true,
   paydays: [
-    { id: "p1", date: "2026-09-18", amount: 3569, label: "Salary" },
-    { id: "p2", date: "2026-10-02", amount: 3569, label: "Salary" },
-    { id: "p3", date: "2026-10-16", amount: 3569, label: "Salary" },
-    { id: "p4", date: "2026-10-30", amount: 3569, label: "Salary" },
-    { id: "p5", date: "2026-11-03", amount: 3569, label: "Salary" },
-    { id: "p6", date: "2026-11-27", amount: 3569, label: "Salary" },
-    { id: "p7", date: "2026-12-11", amount: 3569, label: "Salary" },
-    { id: "p8", date: "2026-12-23", amount: 3569, label: "Salary" }
+    { id:"p1", date:"2026-09-18", amount:3569, label:"Salary" },
+    { id:"p2", date:"2026-10-02", amount:3569, label:"Salary" },
+    { id:"p3", date:"2026-10-16", amount:3569, label:"Salary" },
+    { id:"p4", date:"2026-10-30", amount:3569, label:"Salary" },
+    { id:"p5", date:"2026-11-03", amount:3569, label:"Salary" },
+    { id:"p6", date:"2026-11-27", amount:3569, label:"Salary" },
+    { id:"p7", date:"2026-12-11", amount:3569, label:"Salary" },
+    { id:"p8", date:"2026-12-23", amount:3569, label:"Salary" }
   ],
   expenses: [
-    { id: "e1", name: "Fixed expenses", amount: 2000, freq: "payday" },
-    { id: "e2", name: "Unlabelled — rename me", amount: 800, freq: "once", date: "2026-09-18" },
-    { id: "e3", name: "Unlabelled — rename me", amount: 220, freq: "once", date: "2026-09-18" },
-    { id: "e4", name: "Unlabelled — rename me", amount: 5000, freq: "once", date: "2026-10-30" },
-    { id: "e5", name: "Unlabelled — rename me", amount: 800, freq: "once", date: "2026-10-30" }
-  ]
+    { id:"e1", name:"Fixed expenses", amount:2000, freq:"payday" },
+    { id:"e2", name:"Unlabelled — rename me", amount:800, freq:"once", date:"2026-09-18" },
+    { id:"e3", name:"Unlabelled — rename me", amount:220, freq:"once", date:"2026-09-18" },
+    { id:"e4", name:"Unlabelled — rename me", amount:5000, freq:"once", date:"2026-10-30" },
+    { id:"e5", name:"Unlabelled — rename me", amount:800, freq:"once", date:"2026-10-30" }
+  ],
+  goals: []
 };
 
 const KEY = "paycheck-runway-v1";
-const DB_COLLECTION = "plan";
-const DB_DOC = "current";
+const BILL_WINDOW = 14;
 let state = clone(SEED);
-let db = null, dbDoc = null, saveTimer = null, expandedRow = null;
+let dbDoc = null, saveTimer = null, liveTimer = null, expandedRow = null;
 
 /* ---------- utils ---------- */
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
@@ -445,84 +459,72 @@ function parseDate(s){
   if(p.length !== 3 || !p[0]) return null;
   return new Date(p[0], p[1]-1, p[2]);
 }
-function iso(d){
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-}
+function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function today(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
-function money(v, opts){
-  const neg = v < 0;
+function money(v, cents){
   const s = Math.abs(v).toLocaleString("en-US", {
-    minimumFractionDigits: (opts && opts.cents === false) ? 0 : 2,
-    maximumFractionDigits: (opts && opts.cents === false) ? 0 : 2
+    minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0
   });
-  return (neg ? "−" : "") + state.currency + s;
+  return (v < 0 ? "−" : "") + state.currency + s;
 }
-function money0(v){ return money(v, {cents:false}); }
-function fmtDate(d){ return d.toLocaleDateString("en-US", {month:"short", day:"numeric"}); }
-function fmtDateLong(d){ return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"}); }
-function daysBetween(a,b){ return Math.round((b - a) / 86400000); }
-function relDays(d){
-  const k = daysBetween(today(), d);
+function money0(v){ return money(v, false); }
+function fmtDate(d){ return d.toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
+function fmtDateFull(d){ return d.toLocaleDateString("en-US",{day:"numeric",month:"short",year:"numeric"}); }
+function fmtMonth(d){ return d.toLocaleDateString("en-US",{month:"long"}); }
+function days(a,b){ return Math.round((b - a) / 86400000); }
+function rel(d){
+  const k = days(today(), d);
   if(k === 0) return "today";
   if(k === 1) return "tomorrow";
-  if(k > 0) return "in " + k + " days";
+  if(k > 0) return "in " + k + " day" + (k===1?"":"s");
   if(k === -1) return "yesterday";
   return Math.abs(k) + " days ago";
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function pct(a,b){ return b > 0 ? Math.round(a / b * 100) : 0; }
 
-/* ---------- the model ----------
-   Build one date-ordered list of events. Paydays add, expenses
-   subtract, and the balance is carried forward between them. */
+/* ---------- the model ---------- */
 function buildLedger(){
   const start = parseDate(state.openingDate) || today();
-  const paydays = state.paydays
-    .map(p => ({ ...p, d: parseDate(p.date) }))
-    .filter(p => p.d)
-    .sort((a,b) => a.d - b.d);
-
+  const paydays = state.paydays.map(p => ({ ...p, d: parseDate(p.date) }))
+    .filter(p => p.d).sort((a,b) => a.d - b.d);
   const horizon = paydays.length ? paydays[paydays.length-1].d : start;
-  const hits = [];   // every individual expense hit, with a date
+  const hits = [];
 
   state.expenses.forEach(e => {
     const amt = n(e.amount);
     if(!amt) return;
     if(e.freq === "once"){
       const d = parseDate(e.date);
-      if(d && d >= start && d <= horizon) hits.push({ name: e.name, amount: amt, d, freq: e.freq });
+      if(d && d >= start && d <= horizon) hits.push({ name:e.name, amount:amt, d, freq:e.freq });
     } else if(e.freq === "payday"){
-      paydays.forEach(p => hits.push({ name: e.name, amount: amt, d: p.d, freq: e.freq }));
+      paydays.forEach(p => hits.push({ name:e.name, amount:amt, d:p.d, freq:e.freq }));
     } else if(e.freq === "monthly"){
       const day = Math.min(Math.max(parseInt(e.day,10) || 1, 1), 31);
       let cur = new Date(start.getFullYear(), start.getMonth(), 1);
       while(cur <= horizon){
         const last = new Date(cur.getFullYear(), cur.getMonth()+1, 0).getDate();
-        const d = new Date(cur.getFullYear(), cur.getMonth(), Math.min(day, last));
-        if(d >= start && d <= horizon) hits.push({ name: e.name, amount: amt, d, freq: e.freq });
+        const d = new Date(cur.getFullYear(), cur.getMonth(), Math.min(day,last));
+        if(d >= start && d <= horizon) hits.push({ name:e.name, amount:amt, d, freq:e.freq });
         cur = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
       }
     }
   });
 
-  // Each payday owns the expenses that land on it or before the next one.
   const rows = [];
   let balance = n(state.openingBalance);
-  const preStart = hits.filter(h => paydays.length && h.d < paydays[0].d);
+  const preStart = paydays.length ? hits.filter(h => h.d < paydays[0].d) : [];
   balance -= preStart.reduce((s,h) => s + h.amount, 0);
 
-  paydays.forEach((p, i) => {
+  paydays.forEach((p,i) => {
     const next = paydays[i+1] ? paydays[i+1].d : null;
     const mine = hits.filter(h => h.d >= p.d && (next ? h.d < next : true))
                      .sort((a,b) => a.d - b.d || b.amount - a.amount);
     const income = n(p.amount);
     const out = mine.reduce((s,h) => s + h.amount, 0);
-    const before = balance;
     balance = balance + income - out;
-    rows.push({
-      id: p.id, date: p.d, label: p.label || "Salary",
-      income, out, leftover: income - out,
-      before, balance, items: mine
-    });
+    rows.push({ id:p.id, date:p.d, label:p.label || "Salary", income, out,
+                leftover: income - out, balance, items: mine });
   });
 
   return { rows, paydays, preStart, hits, start, horizon };
@@ -532,111 +534,139 @@ function summarise(led){
   const t = today();
   const past = led.rows.filter(r => r.date <= t);
   const upcoming = led.rows.filter(r => r.date > t);
-  const balanceNow = past.length ? past[past.length-1].balance
-    : n(state.openingBalance) - led.preStart.reduce((s,h) => s + h.amount, 0);
+  const opening = n(state.openingBalance) - led.preStart.reduce((s,h) => s + h.amount, 0);
+  const balanceNow = past.length ? past[past.length-1].balance : opening;
   const next = upcoming[0] || null;
 
-  // Money that must survive until the next payday lands.
   const dueBeforeNext = led.hits
     .filter(h => h.d > t && (next ? h.d < next.date : true))
     .reduce((s,h) => s + h.amount, 0);
-  const safeToSpend = balanceNow - dueBeforeNext;
+
+  const billWindowEnd = new Date(t); billWindowEnd.setDate(billWindowEnd.getDate() + BILL_WINDOW);
+  const bills = led.hits.filter(h => h.d >= t && h.d <= billWindowEnd).sort((a,b) => a.d - b.d);
 
   let low = null;
   led.rows.forEach(r => { if(!low || r.balance < low.balance) low = r; });
 
   const totalIn = led.rows.reduce((s,r) => s + r.income, 0);
   const totalOut = led.rows.reduce((s,r) => s + r.out, 0);
-  return { balanceNow, next, dueBeforeNext, safeToSpend, low, totalIn, totalOut, upcoming, past };
+  const kept = totalIn - totalOut;
+  const perPayday = led.rows.length ? kept / led.rows.length : 0;
+  const endBal = led.rows.length ? led.rows[led.rows.length-1].balance : balanceNow;
+
+  return { opening, balanceNow, next, dueBeforeNext, safe: balanceNow - dueBeforeNext,
+           bills, low, totalIn, totalOut, kept, perPayday, endBal, past, upcoming };
 }
 
-/* ---------- recap ---------- */
-function renderRecap(led, sum){
-  const el = document.getElementById("recap");
+/* ---------- hero + stats ---------- */
+function renderHero(led, sum){
+  const hour = new Date().getHours();
+  const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const nm = (state.name || "").trim();
+  document.getElementById("greet").textContent = part + (nm ? ", " + nm : "") + "!";
+
+  const head = document.getElementById("heroHead");
+  const body = document.getElementById("heroBody");
   const buf = n(state.buffer);
-  let stateCls = "ok", stateText = "On track";
-  if(sum.low && sum.low.balance < 0){ stateCls = "bad"; stateText = "Runs out " + fmtDate(sum.low.date); }
-  else if(sum.low && sum.low.balance < buf){ stateCls = "warn"; stateText = "Gets tight " + fmtDate(sum.low.date); }
 
-  const endBal = led.rows.length ? led.rows[led.rows.length-1].balance : sum.balanceNow;
-  const nextTxt = sum.next
-    ? fmtDate(sum.next.date) + " · " + relDays(sum.next.date)
-    : "No payday scheduled";
+  if(!led.rows.length){
+    head.textContent = "Let's map your paydays.";
+    body.innerHTML = "Add the dates you get paid and what leaves your account, and this page will show you the balance between every one of them.";
+  } else if(sum.low && sum.low.balance < 0){
+    head.textContent = "You run short on " + fmtDate(sum.low.date) + ".";
+    body.innerHTML = "The " + esc(fmtDate(sum.low.date)) + " payday leaves you <strong>" + esc(money0(sum.low.balance)) +
+      "</strong> — " + esc(money0(Math.abs(sum.low.balance))) + " short. Everything before it holds up, so this is one payday to fix, not a whole plan.";
+  } else if(sum.low && sum.low.balance < buf){
+    head.textContent = "It gets tight in " + fmtMonth(sum.low.date) + ".";
+    body.innerHTML = "You keep <strong>" + esc(pct(sum.kept, sum.totalIn)) + "% of what you earn</strong> across these " +
+      led.rows.length + " paydays — " + esc(money0(sum.kept)) + " after every bill. The thin point is " +
+      esc(fmtDate(sum.low.date)) + " at <strong>" + esc(money0(sum.low.balance)) + "</strong>, under your " +
+      esc(money0(buf)) + " cushion.";
+  } else {
+    head.textContent = "You're making progress.";
+    body.innerHTML = "You keep <strong>" + esc(pct(sum.kept, sum.totalIn)) + "% of what you earn</strong> across these " +
+      led.rows.length + " paydays — " + esc(money0(sum.kept)) + " set aside. You never drop below " +
+      esc(money0(sum.low.balance)) + ". Stay consistent.";
+  }
 
-  el.innerHTML = `
-    <div class="tile lead">
-      <div class="eyebrow">Balance in hand</div>
-      <div class="big num ${sum.balanceNow < 0 ? "neg" : ""}">${esc(money(sum.balanceNow))}</div>
-      <div class="pill ${stateCls}">${esc(stateText)}</div>
-      <div class="foot">${sum.past.length ? "After " + sum.past.length + " payday" + (sum.past.length>1?"s":"") + " already banked" : "Starting point, as of " + fmtDate(parseDate(state.openingDate) || today())}</div>
+  const first = led.rows.length ? led.rows[0].date : null;
+  const last = led.rows.length ? led.rows[led.rows.length-1].date : null;
+  document.getElementById("period").textContent = first
+    ? first.toLocaleDateString("en-US",{month:"short"}) + "–" + last.toLocaleDateString("en-US",{month:"short",year:"numeric"}) + " plan"
+    : "";
+
+  // stat row — three, on hairline dividers
+  const delta = sum.balanceNow - sum.opening;
+  const deltaCls = Math.abs(delta) < 0.005 ? "" : (delta > 0 ? "up" : "down");
+  const deltaTxt = Math.abs(delta) < 0.005
+    ? "Starting point, " + fmtDate(parseDate(state.openingDate) || today())
+    : (delta > 0 ? "▲ " : "▼ ") + money0(Math.abs(delta)) + " since " + fmtDate(parseDate(state.openingDate) || today());
+
+  const lowCls = !sum.low ? "" : sum.low.balance < 0 ? "down" : sum.low.balance < buf ? "flag" : "up";
+
+  document.getElementById("stats").innerHTML = `
+    <div class="stat">
+      <p class="k">Balance in hand</p>
+      <p class="v num ${sum.balanceNow < 0 ? "neg" : ""}">${esc(money(sum.balanceNow, true))}</p>
+      <p class="s ${deltaCls}">${esc(deltaTxt)}</p>
     </div>
-    <div class="tile">
-      <div class="eyebrow">Safe to spend now</div>
-      <div class="big num ${sum.safeToSpend < 0 ? "neg" : ""}">${esc(money0(sum.safeToSpend))}</div>
-      <div class="foot">${esc(money0(sum.dueBeforeNext))} is already spoken for before the next payday.</div>
+    <div class="stat">
+      <p class="k">Safe to spend now</p>
+      <p class="v num ${sum.safe < 0 ? "neg" : ""}">${esc(money0(sum.safe))}</p>
+      <p class="s">${sum.next
+        ? esc(money0(sum.dueBeforeNext)) + " is spoken for before " + esc(fmtDate(sum.next.date))
+        : "No payday scheduled ahead"}</p>
     </div>
-    <div class="tile">
-      <div class="eyebrow">Next payday</div>
-      <div class="big num">${sum.next ? esc(money0(sum.next.income)) : "—"}</div>
-      <div class="foot">${esc(nextTxt)}</div>
-    </div>
-    <div class="tile">
-      <div class="eyebrow">Lowest point ahead</div>
-      <div class="big num ${sum.low && sum.low.balance < 0 ? "neg" : ""}">${sum.low ? esc(money0(sum.low.balance)) : "—"}</div>
-      <div class="foot">${sum.low ? "On " + fmtDateLong(sum.low.date) : "Add a payday to project ahead."}</div>
+    <div class="stat">
+      <p class="k">Lowest point ahead</p>
+      <p class="v num ${sum.low && sum.low.balance < 0 ? "neg" : ""}">${sum.low ? esc(money0(sum.low.balance)) : "—"}</p>
+      <p class="s ${lowCls}">${sum.low ? esc(fmtDateFull(sum.low.date)) : "Add a payday to project ahead"}</p>
     </div>`;
 
-  const endTxt = led.rows.length
-    ? "Through " + fmtDate(led.rows[led.rows.length-1].date) + " · ends at " + money0(endBal)
-    : "";
-  document.getElementById("chartSub").textContent = endTxt;
-  document.getElementById("brandSub").textContent =
-    led.rows.length ? led.rows.length + " paydays planned · " + money0(sum.totalIn - sum.totalOut) + " projected to keep" : "Cash flow, one payday at a time";
+  document.getElementById("chartNote").textContent = led.rows.length
+    ? "Your balance between now and " + fmtDateFull(last) + ", stepping at each payday."
+    : "Add a payday to see the projection.";
 }
 
-/* ---------- chart ----------
-   One scale, one hue. A stepped balance line: the balance holds
-   flat between paydays and moves on each one. */
+/* ---------- chart ---------- */
 function renderChart(led, sum){
-  const svg = document.getElementById("chart");
-  const tt = document.getElementById("tt");
+  const svg = document.getElementById("chart"), tt = document.getElementById("tt");
   svg.innerHTML = "";
   if(!led.rows.length){
-    svg.setAttribute("viewBox","0 0 720 120");
-    svg.innerHTML = '<text x="360" y="64" text-anchor="middle" style="fill:var(--ink-3)" font-family="IBM Plex Sans" font-size="14">Add a payday to see the projection.</text>';
+    svg.setAttribute("viewBox","0 0 720 110");
+    svg.innerHTML = '<text x="360" y="60" text-anchor="middle" style="fill:var(--ink-3)" font-family="IBM Plex Sans" font-size="14">Nothing to project yet.</text>';
     return;
   }
 
-  const W = 960, H = 320, PAD = { t: 26, r: 74, b: 40, l: 62 };
+  const W = 960, H = 300, PAD = { t:24, r:74, b:38, l:64 };
   const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
 
-  const opening = n(state.openingBalance) - led.preStart.reduce((s,h) => s + h.amount, 0);
-  const pts = [{ d: led.start, v: opening }];
-  led.rows.forEach(r => pts.push({ d: r.date, v: r.balance, row: r }));
+  const pts = [{ d: led.start, v: sum.opening }];
+  led.rows.forEach(r => pts.push({ d:r.date, v:r.balance, row:r }));
 
   const t0 = pts[0].d.getTime(), t1 = pts[pts.length-1].d.getTime();
   const span = Math.max(t1 - t0, 86400000);
   const vals = pts.map(p => p.v);
   const dataMin = Math.min(...vals);
   let vmax = Math.max(...vals, 0), vmin = Math.min(...vals, 0);
-  const padv = Math.max((vmax - vmin) * 0.14, 100);
+  const padv = Math.max((vmax - vmin) * .14, 100);
   vmax += padv; vmin -= padv;
 
   const X = d => PAD.l + ((d.getTime() - t0) / span) * iw;
   const Y = v => PAD.t + ih - ((v - vmin) / (vmax - vmin)) * ih;
 
-  // var() inside an SVG presentation attribute is not reliable across browsers,
-  // so any themed colour is routed into the element's style instead.
+  // var() in an SVG presentation attribute is unreliable, so themed
+  // colours are routed into the element's style instead.
   const ns = "http://www.w3.org/2000/svg";
-  const COLOR_ATTRS = { fill: 1, stroke: 1, "stop-color": 1 };
+  const COLOR = { fill:1, stroke:1 };
   const add = (tag, attrs, text) => {
     const e = document.createElementNS(ns, tag);
     let style = attrs && attrs.style ? attrs.style + ";" : "";
     for(const k in attrs){
       if(k === "style") continue;
       const v = attrs[k];
-      if(COLOR_ATTRS[k] && String(v).indexOf("var(") === 0) style += k + ":" + v + ";";
+      if(COLOR[k] && String(v).indexOf("var(") === 0) style += k + ":" + v + ";";
       else e.setAttribute(k, v);
     }
     if(style) e.setAttribute("style", style);
@@ -645,146 +675,164 @@ function renderChart(led, sum){
     return e;
   };
 
-  // ticks: 4 rounded steps across the value range
   const step = niceStep((vmax - vmin) / 4);
-  const tickStart = Math.ceil(vmin / step) * step;
-  for(let v = tickStart; v <= vmax; v += step){
+  for(let v = Math.ceil(vmin/step)*step; v <= vmax; v += step){
     const y = Y(v);
-    add("line", { x1: PAD.l, x2: W - PAD.r, y1: y, y2: y,
-      stroke: "var(--line)", "stroke-width": 1 });
-    add("text", { x: PAD.l - 12, y: y + 4, "text-anchor": "end", fill: "var(--ink-3)",
-      "font-family": "IBM Plex Mono, monospace", "font-size": 11 }, money0(v));
+    add("line", { x1:PAD.l, x2:W-PAD.r, y1:y, y2:y, stroke:"var(--line)", "stroke-width":1 });
+    add("text", { x:PAD.l-12, y:y+4, "text-anchor":"end", fill:"var(--ink-3)",
+      "font-family":"IBM Plex Mono, monospace", "font-size":11 }, money0(v));
   }
-  // zero line, only when the balance actually crosses it
   if(dataMin < 0){
-    add("line", { x1: PAD.l, x2: W - PAD.r, y1: Y(0), y2: Y(0),
-      stroke: "var(--critical)", "stroke-width": 1.5, "stroke-dasharray": "5 4", opacity: .75 });
+    add("line", { x1:PAD.l, x2:W-PAD.r, y1:Y(0), y2:Y(0), stroke:"var(--critical)",
+      "stroke-width":1.5, "stroke-dasharray":"5 4", opacity:.75 });
   }
 
-  // stepped path
   let dPath = "", aPath = "";
-  pts.forEach((p, i) => {
+  pts.forEach((p,i) => {
     const x = X(p.d), y = Y(p.v);
     if(i === 0){ dPath += `M${x} ${y}`; aPath += `M${x} ${Y(Math.max(vmin,0))} L${x} ${y}`; }
-    else {
-      const prevY = Y(pts[i-1].v);
-      dPath += ` L${x} ${prevY} L${x} ${y}`;
-      aPath += ` L${x} ${prevY} L${x} ${y}`;
-    }
+    else { const py = Y(pts[i-1].v); dPath += ` L${x} ${py} L${x} ${y}`; aPath += ` L${x} ${py} L${x} ${y}`; }
   });
-  const lastX = X(pts[pts.length-1].d);
-  aPath += ` L${lastX} ${Y(Math.max(vmin,0))} Z`;
+  aPath += ` L${X(pts[pts.length-1].d)} ${Y(Math.max(vmin,0))} Z`;
 
-  const grad = document.createElementNS(ns, "linearGradient");
-  grad.setAttribute("id","limeFade"); grad.setAttribute("x1","0"); grad.setAttribute("y1","0");
+  const grad = document.createElementNS(ns,"linearGradient");
+  grad.setAttribute("id","limeFade");
+  grad.setAttribute("x1","0"); grad.setAttribute("y1","0");
   grad.setAttribute("x2","0"); grad.setAttribute("y2","1");
-  grad.innerHTML = '<stop offset="0%" style="stop-color:var(--lime-deep)" stop-opacity="0.26"/><stop offset="100%" style="stop-color:var(--lime-deep)" stop-opacity="0.02"/>';
+  grad.innerHTML = '<stop offset="0%" style="stop-color:var(--lime-deep)" stop-opacity="0.24"/>' +
+                   '<stop offset="100%" style="stop-color:var(--lime-deep)" stop-opacity="0.02"/>';
   svg.appendChild(grad);
 
-  add("path", { d: aPath, fill: "url(#limeFade)", stroke: "none" });
-  add("path", { d: dPath, fill: "none", stroke: "var(--lime-deep)", "stroke-width": 2,
-    "stroke-linejoin": "round", "stroke-linecap": "round" });
+  add("path", { d:aPath, fill:"url(#limeFade)", stroke:"none" });
+  add("path", { d:dPath, fill:"none", stroke:"var(--lime-deep)", "stroke-width":2,
+    "stroke-linejoin":"round", "stroke-linecap":"round" });
 
-  // x labels — every payday when they fit, otherwise every other
   const every = pts.length > 9 ? 2 : 1;
-  let lastLabelX = -Infinity;
-  pts.forEach((p, i) => {
-    const wanted = (i === 0 || i % every === 0 || i === pts.length-1);
+  let lastX = -Infinity;
+  pts.forEach((p,i) => {
     const x = X(p.d);
-    if(wanted && (x - lastLabelX > 46 || i === pts.length-1)){
-      lastLabelX = x;
-      add("text", { x, y: H - 14, "text-anchor": "middle", fill: "var(--ink-3)",
-        "font-family": "IBM Plex Sans", "font-size": 11 }, fmtDate(p.d));
+    if((i === 0 || i % every === 0 || i === pts.length-1) && (x - lastX > 46 || i === pts.length-1)){
+      lastX = x;
+      add("text", { x, y:H-14, "text-anchor":"middle", fill:"var(--ink-3)",
+        "font-family":"IBM Plex Sans", "font-size":11 }, fmtDate(p.d));
     }
   });
 
-  // markers
-  pts.forEach((p, i) => {
+  pts.forEach((p,i) => {
     if(i === 0) return;
-    const bad = p.v < 0;
-    add("circle", { cx: X(p.d), cy: Y(p.v), r: 4.5,
-      fill: bad ? "var(--critical)" : "var(--lime-deep)",
-      stroke: "var(--card)", "stroke-width": 2 });
+    add("circle", { cx:X(p.d), cy:Y(p.v), r:4.5,
+      fill: p.v < 0 ? "var(--critical)" : "var(--lime-deep)",
+      stroke:"var(--card)", "stroke-width":2 });
   });
 
-  // direct labels: the lowest point and the endpoint
   const lowPt = pts.slice(1).reduce((a,b) => b.v < a.v ? b : a, pts[1]);
   const endPt = pts[pts.length-1];
-  labelPoint(add, X, Y, endPt, W, PAD, money0(endPt.v), "end");
-  if(lowPt !== endPt){
-    labelPoint(add, X, Y, lowPt, W, PAD, money0(lowPt.v) + " low", "low");
-  }
+  label(add, X, Y, endPt, W, PAD, money0(endPt.v), false);
+  if(lowPt !== endPt) label(add, X, Y, lowPt, W, PAD, money0(lowPt.v) + " low", true);
 
-  // hover layer
-  const hoverLine = add("line", { x1:0, x2:0, y1:PAD.t, y2:PAD.t+ih, stroke:"var(--ink-3)",
+  const hLine = add("line", { x1:0, x2:0, y1:PAD.t, y2:PAD.t+ih, stroke:"var(--ink-3)",
     "stroke-width":1, "stroke-dasharray":"3 3", opacity:0 });
-  const hoverDot = add("circle", { cx:0, cy:0, r:6, fill:"var(--lime-deep)",
+  const hDot = add("circle", { cx:0, cy:0, r:6, fill:"var(--lime-deep)",
     stroke:"var(--card)", "stroke-width":2.5, opacity:0 });
   const hit = add("rect", { x:PAD.l, y:PAD.t, width:iw, height:ih, fill:"transparent",
     style:"cursor:crosshair" });
 
-  function onMove(ev){
+  function move(ev){
     const box = svg.getBoundingClientRect();
     const cx = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - box.left) / box.width * W;
-    let best = pts[1] || pts[0], bd = Infinity;
-    pts.forEach((p,i) => { if(i===0) return; const dd = Math.abs(X(p.d) - cx); if(dd < bd){ bd = dd; best = p; } });
-    if(!best.row) return;
-    const px = X(best.d), py = Y(best.v);
-    hoverLine.setAttribute("x1", px); hoverLine.setAttribute("x2", px); hoverLine.setAttribute("opacity", .55);
-    hoverDot.setAttribute("cx", px); hoverDot.setAttribute("cy", py); hoverDot.setAttribute("opacity", 1);
-    const r = best.row;
-    tt.innerHTML =
-      `<div style="font-weight:600;margin-bottom:4px">${esc(fmtDateLong(r.date))}</div>` +
-      `<div class="tt-row"><span>Pay in</span><b>${esc(money0(r.income))}</b></div>` +
-      `<div class="tt-row"><span>Out</span><b>−${esc(money0(r.out))}</b></div>` +
-      `<div class="tt-row"><span>Balance</span><b>${esc(money0(r.balance))}</b></div>`;
-    const wrapBox = tt.parentElement.getBoundingClientRect();
-    const offX = box.left - wrapBox.left, offY = box.top - wrapBox.top;
-    const half = tt.offsetWidth / 2 + 6;
-    const rawX = offX + px / W * box.width;
-    tt.style.left = Math.max(half, Math.min(wrapBox.width - half, rawX)) + "px";
-    tt.style.top = Math.max(tt.offsetHeight + 4, offY + py / H * box.height - 12) + "px";
+    let best = pts[1], bd = Infinity;
+    pts.forEach((p,i) => { if(i===0) return; const dd = Math.abs(X(p.d)-cx); if(dd < bd){ bd = dd; best = p; } });
+    if(!best || !best.row) return;
+    const px = X(best.d), py = Y(best.v), r = best.row;
+    hLine.setAttribute("x1",px); hLine.setAttribute("x2",px); hLine.setAttribute("opacity",.55);
+    hDot.setAttribute("cx",px); hDot.setAttribute("cy",py); hDot.setAttribute("opacity",1);
+    tt.innerHTML = `<div style="font-weight:600;margin-bottom:4px">${esc(fmtDateFull(r.date))}</div>` +
+      `<div class="r"><span>Pay in</span><b>${esc(money0(r.income))}</b></div>` +
+      `<div class="r"><span>Out</span><b>−${esc(money0(r.out))}</b></div>` +
+      `<div class="r"><span>Balance</span><b>${esc(money0(r.balance))}</b></div>`;
+    const wb = tt.parentElement.getBoundingClientRect();
+    const half = tt.offsetWidth / 2 + 4;
+    const rawX = (box.left - wb.left) + px / W * box.width;
+    tt.style.left = Math.max(half, Math.min(wb.width - half, rawX)) + "px";
+    tt.style.top = Math.max(tt.offsetHeight + 4, (box.top - wb.top) + py / H * box.height - 12) + "px";
     tt.style.opacity = 1;
   }
-  function onLeave(){
-    tt.style.opacity = 0;
-    hoverLine.setAttribute("opacity", 0);
-    hoverDot.setAttribute("opacity", 0);
-  }
-  hit.addEventListener("mousemove", onMove);
-  hit.addEventListener("mouseleave", onLeave);
-  hit.addEventListener("touchstart", onMove, {passive:true});
-  hit.addEventListener("touchmove", onMove, {passive:true});
-  hit.addEventListener("touchend", onLeave);
+  function leave(){ tt.style.opacity = 0; hLine.setAttribute("opacity",0); hDot.setAttribute("opacity",0); }
+  hit.addEventListener("mousemove", move);
+  hit.addEventListener("mouseleave", leave);
+  hit.addEventListener("touchstart", move, {passive:true});
+  hit.addEventListener("touchmove", move, {passive:true});
+  hit.addEventListener("touchend", leave);
 }
-
-function labelPoint(add, X, Y, p, W, PAD, text, kind){
-  const x = X(p.d), y = Y(p.v);
-  const right = x > W - PAD.r - 90;
-  add("text", {
-    x: right ? x - 10 : x + 10,
-    y: kind === "low" ? y + 20 : y - 12,
+function label(add, X, Y, p, W, PAD, text, below){
+  const x = X(p.d), right = x > W - PAD.r - 90;
+  add("text", { x: right ? x-10 : x+10, y: below ? Y(p.v)+20 : Y(p.v)-12,
     "text-anchor": right ? "end" : "start",
     fill: p.v < 0 ? "var(--critical)" : "var(--ink)",
-    "font-family": "IBM Plex Mono, monospace",
-    "font-size": 12, "font-weight": 600
-  }, text);
+    "font-family":"IBM Plex Mono, monospace", "font-size":12, "font-weight":600 }, text);
 }
-
 function niceStep(raw){
   const mag = Math.pow(10, Math.floor(Math.log10(Math.max(raw,1))));
   const norm = raw / mag;
-  const s = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
-  return s * mag;
+  return (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
+}
+
+/* ---------- budget rows ---------- */
+function renderBudget(led, sum){
+  const totals = new Map();
+  led.hits.forEach(h => {
+    const k = h.name + "||" + h.freq;
+    totals.set(k, (totals.get(k) || 0) + h.amount);
+  });
+  const rows = [...totals.entries()]
+    .map(([k,v]) => ({ name:k.split("||")[0], freq:k.split("||")[1], total:v }))
+    .sort((a,b) => b.total - a.total);
+  if(sum.kept > 0) rows.push({ name:"Left in your pocket", freq:"kept", total:sum.kept });
+
+  const max = rows.length ? Math.max(...rows.map(r => r.total)) : 1;
+  const label = { payday:"every payday", monthly:"monthly", once:"one time", kept:"what's left" };
+
+  document.getElementById("budgetNote").textContent = sum.totalIn
+    ? money0(sum.totalOut) + " out against " + money0(sum.totalIn) + " in over " + led.rows.length + " paydays."
+    : "Add an expense and it will show up here.";
+
+  document.getElementById("budgetBody").innerHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td class="b-name">${esc(r.name)}<span class="tag">${esc(label[r.freq] || r.freq)}</span></td>
+      <td class="b-pct">${pct(r.total, sum.totalIn)}%</td>
+      <td class="b-bar"><div class="track"><i style="width:${(r.total/max*100).toFixed(1)}%"></i></div></td>
+      <td class="b-amt">${esc(money0(r.total))}</td>
+    </tr>`).join("")
+    : '<tr><td style="color:var(--ink-3);font-size:13.5px">Nothing scheduled yet.</td></tr>';
+}
+
+/* ---------- bills due soon ---------- */
+function renderBills(sum){
+  const el = document.getElementById("bills");
+  const total = sum.bills.reduce((s,b) => s + b.amount, 0);
+  document.getElementById("billsNote").textContent = sum.bills.length
+    ? money0(total) + " across " + sum.bills.length + " bill" + (sum.bills.length===1?"":"s") + " in the next " + BILL_WINDOW + " days."
+    : "Nothing leaves your account in the next " + BILL_WINDOW + " days.";
+
+  if(!sum.bills.length){
+    el.innerHTML = '<div class="bill"><div class="b-i"><b>All clear</b><span>Your next charge is further out than ' + BILL_WINDOW + ' days.</span></div></div>';
+    return;
+  }
+  el.innerHTML = sum.bills.map(b => {
+    const k = days(today(), b.d);
+    return `<div class="bill ${k <= 3 ? "soon" : ""}">
+      <div class="b-i"><b>${esc(b.name)}</b><span>${esc(fmtDateFull(b.d))}</span></div>
+      <span class="b-due">${esc(rel(b.d))}</span>
+      <span class="b-amt">${esc(money0(b.amount))}</span>
+    </div>`;
+  }).join("");
 }
 
 /* ---------- ledger ---------- */
 function renderLedger(led){
-  const body = document.getElementById("ledgerBody");
-  const t = today();
-  const buf = n(state.buffer);
+  const body = document.getElementById("ledgerBody"), t = today(), buf = n(state.buffer);
   if(!led.rows.length){
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ink-3);padding:28px">No paydays yet. Add one below.</td></tr>';
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ink-3);padding:26px">No paydays yet.</td></tr>';
     return;
   }
   body.innerHTML = led.rows.map(r => {
@@ -793,68 +841,138 @@ function renderLedger(led){
     const cls = r.balance < 0 ? "row-bad" : (r.balance < buf ? "row-warn" : "");
     const past = r.date <= t ? "row-past" : "";
     const open = expandedRow === r.id;
-    const detail = open ? `<tr class="detailrow ${cls}"><td colspan="7"><div class="detail-list">${
+    const detail = open ? `<tr class="detailrow"><td colspan="7"><div class="chips">${
       r.items.length
         ? r.items.map(h => `<span class="chip">${esc(h.name)} <b>−${esc(money0(h.amount))}</b> <span style="color:var(--ink-3)">${esc(fmtDate(h.d))}</span></span>`).join("")
-        : '<span style="color:var(--ink-3);font-size:12.5px">Nothing scheduled against this payday.</span>'
+        : '<span style="color:var(--ink-3);font-size:12.5px">Nothing charged against this payday.</span>'
     }</div></td></tr>` : "";
     return `<tr class="${cls} ${past}">
-      <td><div class="date-cell"><span class="d">${esc(fmtDate(r.date))}</span><span class="rel">${esc(relDays(r.date))}</span></div></td>
+      <td><div class="d-cell"><b>${esc(fmtDate(r.date))}</b><span>${esc(rel(r.date))}</span></div></td>
       <td class="money">${esc(money0(r.income))}</td>
       <td class="money out">${r.out ? "−" + esc(money0(r.out)) : "—"}</td>
-      <td class="money ${r.leftover < 0 ? "" : ""}" style="${r.leftover < 0 ? "color:var(--critical)" : ""}">${esc(money0(r.leftover))}</td>
-      <td><div class="keptbar ${over || kept === 0 ? "empty" : ""}" title="${over ? "Spends " + esc(money0(-r.leftover)) + " more than this payday brings in" : Math.round(kept*100) + "% of this payday kept"}"><i style="width:${(kept*100).toFixed(1)}%"></i></div></td>
+      <td class="money" style="${over ? "color:var(--critical)" : ""}">${esc(money0(r.leftover))}</td>
+      <td><div class="track kept ${over ? "alert" : ""}" title="${over
+        ? "Spends " + esc(money0(-r.leftover)) + " more than this payday brings in"
+        : Math.round(kept*100) + "% of this payday kept"}"><i style="width:${(kept*100).toFixed(1)}%"></i></div></td>
       <td class="money bal ${r.balance < 0 ? "neg" : ""}">${esc(money0(r.balance))}</td>
       <td><button class="detail-btn" data-row="${esc(r.id)}">${open ? "Hide" : r.items.length + " item" + (r.items.length===1?"":"s")}</button></td>
     </tr>${detail}`;
   }).join("");
 
-  body.querySelectorAll(".detail-btn").forEach(b => {
-    b.addEventListener("click", () => {
-      expandedRow = expandedRow === b.dataset.row ? null : b.dataset.row;
-      renderLedger(buildLedger());
+  body.querySelectorAll(".detail-btn").forEach(b => b.addEventListener("click", () => {
+    expandedRow = expandedRow === b.dataset.row ? null : b.dataset.row;
+    renderLedger(buildLedger());
+  }));
+}
+
+/* ---------- goals ---------- */
+function renderGoals(sum){
+  const el = document.getElementById("goals");
+  const note = document.getElementById("goalsNote");
+
+  if(!state.goals.length){
+    const suggested = Math.round(Math.max(sum.perPayday * 6, 1000) / 500) * 500;
+    note.textContent = "Nothing set aside for yet.";
+    el.innerHTML = `<div class="empty">
+      <p>You're keeping about <strong>${esc(money0(sum.perPayday))}</strong> a payday. Point some of it at something —
+      a goal here tracks what you've saved against a target and tells you when you'd get there at that pace.</p>
+      <button class="btn btn-primary btn-sm" id="seedGoal">Start one at ${esc(money0(suggested))}</button>
+    </div>`;
+    const b = document.getElementById("seedGoal");
+    if(b) b.addEventListener("click", () => {
+      state.goals.push({ id:uid(), name:"Emergency fund", saved:0, target:suggested, targetDate:"" });
+      refresh();
     });
+    return;
+  }
+
+  const totalSaved = state.goals.reduce((s,g) => s + n(g.saved), 0);
+  const totalTarget = state.goals.reduce((s,g) => s + n(g.target), 0);
+  note.textContent = money0(totalSaved) + " of " + money0(totalTarget) + " across " +
+    state.goals.length + " goal" + (state.goals.length===1?"":"s") + " — " + pct(totalSaved, totalTarget) + "% of the way.";
+
+  el.innerHTML = state.goals.map(g => {
+    const saved = n(g.saved), target = n(g.target);
+    const p = target > 0 ? Math.min(100, saved / target * 100) : 0;
+    const gap = Math.max(0, target - saved);
+    const paydaysNeeded = sum.perPayday > 0 ? Math.ceil(gap / sum.perPayday) : null;
+    let pace = "Set a target to see your pace.";
+    if(target > 0 && gap === 0) pace = "Funded.";
+    else if(paydaysNeeded !== null){
+      pace = paydaysNeeded + " payday" + (paydaysNeeded===1?"":"s") + " away at what you keep now";
+      if(sum.next){
+        const eta = new Date(sum.next.date);
+        eta.setDate(eta.getDate() + (paydaysNeeded - 1) * 14);
+        pace += " · about " + eta.toLocaleDateString("en-US",{month:"short",year:"numeric"});
+      }
+    } else if(target > 0) pace = "You're not keeping anything per payday yet.";
+
+    return `<div class="goal" data-id="${esc(g.id)}">
+      <div class="goal-head">
+        <b>${esc(g.name || "Untitled goal")}</b>
+        <span>${Math.round(p)}%${g.targetDate ? " · target " + esc(fmtDateFull(parseDate(g.targetDate) || today())) : ""}</span>
+      </div>
+      <div class="track big"><i style="width:${p.toFixed(1)}%"></i></div>
+      <div class="goal-foot">
+        <span class="amt">${esc(money0(saved))} of ${esc(money0(target))}</span>
+        <span class="pace">${esc(pace)}</span>
+      </div>
+      <div class="goal-edit">
+        <input class="f name" data-k="name" value="${esc(g.name)}" aria-label="Goal name" style="max-width:200px" />
+        <input class="f amt" data-k="saved" type="number" step="1" value="${esc(g.saved)}" aria-label="Saved so far" />
+        <input class="f amt" data-k="target" type="number" step="1" value="${esc(g.target)}" aria-label="Target" />
+        <input class="f date" data-k="targetDate" type="date" value="${esc(g.targetDate||"")}" aria-label="Target date" />
+        <button class="btn btn-sm btn-ghost" data-del="1" aria-label="Delete goal">✕</button>
+      </div>
+    </div>`;
+  }).join("") + '<button class="btn btn-sm" id="addGoal" style="margin-top:4px">Add a goal</button>';
+
+  wireRows(el, state.goals, ".goal");
+  const ag = document.getElementById("addGoal");
+  if(ag) ag.addEventListener("click", () => {
+    state.goals.push({ id:uid(), name:"New goal", saved:0, target:1000, targetDate:"" });
+    refresh();
   });
 }
 
-/* ---------- breakdown ---------- */
-function renderBreakdown(led, sum){
-  const el = document.getElementById("breakdown");
-  const totals = new Map();
-  led.hits.forEach(h => {
-    const k = h.name + "||" + h.freq;
-    totals.set(k, (totals.get(k) || 0) + h.amount);
-  });
-  const rows = [...totals.entries()]
-    .map(([k,v]) => ({ name: k.split("||")[0], freq: k.split("||")[1], total: v }))
-    .sort((a,b) => b.total - a.total);
+/* ---------- insight ---------- */
+function renderInsight(led, sum){
+  const el = document.getElementById("insight");
+  const buf = n(state.buffer);
+  let eyebrow = "This stretch's practice", title, body, alert = false;
 
-  const max = rows.length ? rows[0].total : 1;
-  const grand = rows.reduce((s,r) => s + r.total, 0);
-  const freqLabel = { payday: "every payday", monthly: "monthly", once: "one time" };
-
-  document.getElementById("bkdSub").textContent = grand
-    ? money0(grand) + " out against " + money0(sum.totalIn) + " in — " + Math.round(grand / Math.max(sum.totalIn,1) * 100) + "% of everything you earn this stretch."
-    : "No expenses yet.";
-
-  if(!rows.length){
-    el.innerHTML = '<p style="color:var(--ink-3);margin:0;font-size:13.5px">Add an expense and it will show up here.</p>';
-    return;
+  if(!led.rows.length){
+    title = "Start with the dates";
+    body = "Everything on this page is built from when you get paid. Add those first, then the bills that land between them.";
+  } else if(sum.low.balance < buf){
+    alert = sum.low.balance < 0;
+    const need = buf - sum.low.balance;
+    const worst = sum.low.items.slice().sort((a,b) => b.amount - a.amount)[0];
+    eyebrow = "This stretch's watch-out";
+    title = fmtDate(sum.low.date) + " is your pinch point";
+    body = money0(sum.low.out) + " leaves on that one payday" +
+      (worst ? ", " + money0(worst.amount) + " of it on “" + worst.name + "”" : "") +
+      ". Moving " + money0(need) + " of it to a different payday keeps you above your " +
+      money0(buf) + " cushion the whole way through.";
+  } else if(sum.totalIn > 0 && sum.kept / sum.totalIn >= 0.3) {
+    title = "Give the surplus a job";
+    body = "You're keeping " + money0(sum.perPayday) + " a payday and never dipping below " +
+      money0(sum.low.balance) + ". Money without a name tends to get spent — point it at a goal above before it drifts.";
+  } else {
+    title = "Watch the payday you're in";
+    body = "You clear every payday, but only by " + money0(sum.perPayday) +
+      " on average. One unplanned bill is the difference — keep the next " + BILL_WINDOW + " days in view.";
   }
-  el.innerHTML = rows.map(r => `
-    <div class="bkd-row">
-      <div>
-        <div class="bkd-label"><span>${esc(r.name)}</span><span class="tag">${esc(freqLabel[r.freq] || r.freq)}</span></div>
-        <div class="bkd-track"><i style="width:${(r.total/max*100).toFixed(1)}%"></i></div>
-      </div>
-      <div class="bkd-amt">${esc(money0(r.total))}<small>${Math.round(r.total/grand*100)}% of spend</small></div>
-    </div>`).join("");
+
+  el.className = "insight" + (alert ? " alert" : "");
+  el.innerHTML = `<span class="eyebrow">${esc(eyebrow)}</span>
+    <h3>${esc(title)}</h3><p>${esc(body)}</p>`;
 }
 
 /* ---------- editors ---------- */
 function renderEditors(){
-  const exp = document.getElementById("expenseList");
   const freqs = [["payday","Every payday"],["monthly","Monthly"],["once","One time"]];
+  const exp = document.getElementById("expenseList");
   exp.innerHTML = state.expenses.map(e => `
     <div class="ed-row" data-id="${esc(e.id)}">
       <input class="f name" data-k="name" value="${esc(e.name)}" aria-label="Expense name" />
@@ -866,7 +984,7 @@ function renderEditors(){
         ? `<input class="f date" data-k="date" type="date" value="${esc(e.date||"")}" aria-label="Date" />`
         : e.freq === "monthly"
           ? `<input class="f day" data-k="day" type="number" min="1" max="31" value="${esc(e.day||1)}" aria-label="Day of month" />`
-          : `<span style="flex:0 0 128px"></span>`}
+          : `<span style="flex:0 0 120px"></span>`}
       <button class="btn btn-sm btn-ghost" data-del="1" aria-label="Delete expense">✕</button>
     </div>`).join("") || '<div class="ed-row" style="color:var(--ink-3);font-size:13px">No expenses yet.</div>';
 
@@ -881,41 +999,38 @@ function renderEditors(){
 
   document.getElementById("expCount").textContent = state.expenses.length + " lines";
   document.getElementById("payCount").textContent = state.paydays.length + " dates";
-
-  wireRows(exp, state.expenses);
-  wireRows(pay, state.paydays);
+  wireRows(exp, state.expenses, ".ed-row");
+  wireRows(pay, state.paydays, ".ed-row");
 }
 
-function wireRows(container, list){
-  container.querySelectorAll(".ed-row").forEach(row => {
+function wireRows(container, list, sel){
+  container.querySelectorAll(sel).forEach(row => {
     const item = list.find(x => x.id === row.dataset.id);
     if(!item) return;
     row.querySelectorAll("[data-k]").forEach(f => {
-      const handler = () => {
+      const apply = () => {
         const k = f.dataset.k;
-        item[k] = (k === "amount" || k === "day") ? n(f.value) : f.value;
-        if(k === "freq"){ renderEditors(); }
-        refresh(k === "freq");
+        item[k] = (k === "amount" || k === "day" || k === "saved" || k === "target") ? n(f.value) : f.value;
+        if(k === "freq") renderEditors();
+        refresh();
       };
-      f.addEventListener("change", handler);
-      if(f.tagName === "INPUT" && f.type !== "date") f.addEventListener("input", debounceLive(handler));
+      f.addEventListener("change", apply);
+      if(f.tagName === "INPUT" && f.type !== "date"){
+        f.addEventListener("input", () => { clearTimeout(liveTimer); liveTimer = setTimeout(apply, 340); });
+      }
     });
     const del = row.querySelector("[data-del]");
     if(del) del.addEventListener("click", () => {
       const i = list.indexOf(item);
-      if(i > -1) list.splice(i, 1);
+      if(i > -1) list.splice(i,1);
       renderEditors();
       refresh();
     });
   });
 }
 
-let liveTimer = null;
-function debounceLive(fn){
-  return () => { clearTimeout(liveTimer); liveTimer = setTimeout(fn, 320); };
-}
-
 function renderSettings(){
+  document.getElementById("name").value = state.name || "";
   document.getElementById("openingBalance").value = state.openingBalance;
   document.getElementById("openingDate").value = state.openingDate;
   document.getElementById("currency").value = state.currency;
@@ -927,177 +1042,140 @@ function flag(text, st){
   document.getElementById("saveText").textContent = text;
   document.getElementById("saveFlag").dataset.state = st;
 }
-function saveLocal(){
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(_){}
-}
+function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(_){} }
 function loadLocal(){
-  try {
-    const raw = localStorage.getItem(KEY);
-    if(raw) return JSON.parse(raw);
-  } catch(_){}
+  try { const raw = localStorage.getItem(KEY); if(raw) return JSON.parse(raw); } catch(_){}
   return null;
 }
 function scheduleSave(){
   saveLocal();
-  if(!dbDoc){ flag("Saved on this device", "local"); return; }
-  flag("Saving…", "saving");
+  if(!dbDoc){ flag("Saved on this device","local"); return; }
+  flag("Saving…","saving");
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
-    try {
-      await dbDoc.set({ plan: state, updatedAt: Date.now() });
-      flag("Saved", "idle");
-    } catch(_){
-      flag("Saved on this device", "local");
-    }
+    try { await dbDoc.set({ plan: state, updatedAt: Date.now() }); flag("Saved","idle"); }
+    catch(_){ flag("Saved on this device","local"); }
   }, 600);
 }
-
+function migrate(s){
+  const out = Object.assign(clone(SEED), s);
+  out.paydays = (s.paydays||[]).map(p => ({ id:p.id||uid(), date:p.date, amount:n(p.amount), label:p.label||"Salary" }));
+  out.expenses = (s.expenses||[]).map(e => ({ id:e.id||uid(), name:e.name||"Expense", amount:n(e.amount),
+    freq:e.freq||"once", date:e.date, day:e.day }));
+  out.goals = (s.goals||[]).map(g => ({ id:g.id||uid(), name:g.name||"Goal", saved:n(g.saved),
+    target:n(g.target), targetDate:g.targetDate||"" }));
+  return out;
+}
 async function connect(){
+  const note = document.getElementById("storageNote");
   if(!window.claude || typeof window.claude.use !== "function"){
-    flag("Saved on this device", "local");
-    document.getElementById("storageNote").textContent = "Saved in this browser.";
+    flag("Saved on this device","local");
+    note.textContent = "Saved in this browser.";
     return;
   }
-  try { db = await window.claude.use("db"); } catch(_){ db = null; }
+  let db = null;
+  try { db = await window.claude.use("db"); } catch(_){}
   if(!db){
-    flag("Saved on this device", "local");
-    document.getElementById("storageNote").textContent = "Saved in this browser.";
+    flag("Saved on this device","local");
+    note.textContent = "Saved in this browser.";
     return;
   }
-  dbDoc = db.doc(DB_COLLECTION + "/" + DB_DOC);
-  document.getElementById("storageNote").textContent = "Synced to your account.";
+  dbDoc = db.doc("plan/current");
+  note.textContent = "Synced to your account.";
   try {
     const snap = await dbDoc.get();
-    const remote = snap && (snap.data ? snap.data : snap);
+    const remote = snap && snap.exists ? snap.data : null;
     if(remote && remote.plan && remote.plan.paydays){
       state = migrate(remote.plan);
       renderAll();
-      flag("Saved", "idle");
     } else {
       await dbDoc.set({ plan: state, updatedAt: Date.now() });
-      flag("Saved", "idle");
     }
-  } catch(_){
-    flag("Saved on this device", "local");
-  }
-}
-
-function migrate(s){
-  const out = Object.assign(clone(SEED), s);
-  out.paydays = (s.paydays || []).map(p => ({ id: p.id || uid(), date: p.date, amount: n(p.amount), label: p.label || "Salary" }));
-  out.expenses = (s.expenses || []).map(e => ({ id: e.id || uid(), name: e.name || "Expense", amount: n(e.amount), freq: e.freq || "once", date: e.date, day: e.day }));
-  return out;
+    flag("Saved","idle");
+  } catch(_){ flag("Saved on this device","local"); }
 }
 
 /* ---------- CSV ---------- */
 async function exportCSV(){
   const led = buildLedger();
   const lines = [["Date","Label","Pay in","Out","Left over","Balance after","Items"]];
-  led.rows.forEach(r => lines.push([
-    iso(r.date), r.label, r.income.toFixed(2), r.out.toFixed(2),
-    r.leftover.toFixed(2), r.balance.toFixed(2),
-    r.items.map(h => h.name + " " + h.amount.toFixed(2)).join("; ")
-  ]));
+  led.rows.forEach(r => lines.push([ iso(r.date), r.label, r.income.toFixed(2), r.out.toFixed(2),
+    r.leftover.toFixed(2), r.balance.toFixed(2), r.items.map(h => h.name + " " + h.amount.toFixed(2)).join("; ") ]));
   const csv = lines.map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
   const filename = "paycheck-runway-" + iso(today()) + ".csv";
-  let saved = false;
+  let done = false;
   if(window.claude && typeof window.claude.use === "function"){
-    try {
-      const dl = await window.claude.use("downloads");
-      if(dl){ await dl.save({ filename, data: csv }); saved = true; }
-    } catch(_){}
+    try { const dl = await window.claude.use("downloads"); if(dl){ await dl.save({ filename, data: csv }); done = true; } }
+    catch(_){}
   }
-  if(!saved){
+  if(!done){
     try {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
       a.download = filename; a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    } catch(_){
-      flag("Export unavailable here", "local");
-    }
+    } catch(_){ flag("Export unavailable here","local"); }
   }
 }
 
 /* ---------- wiring ---------- */
-function refresh(skipEditors){
-  const led = buildLedger();
-  const sum = summarise(led);
-  renderRecap(led, sum);
+function refresh(){
+  const led = buildLedger(), sum = summarise(led);
+  renderHero(led, sum);
   renderChart(led, sum);
+  renderBudget(led, sum);
+  renderBills(sum);
   renderLedger(led);
-  renderBreakdown(led, sum);
+  renderGoals(sum);
+  renderInsight(led, sum);
   scheduleSave();
 }
 function renderAll(){
   renderSettings();
   renderEditors();
   refresh();
-  const note = document.getElementById("importNote");
-  if(state.imported){
-    note.hidden = false;
-    document.getElementById("importNoteText").textContent =
-      "Salary of " + money0(3569) + " a payday and " + state.expenses.length +
-      " expense lines came across. The sheet had no names on four of them — rename them under Your plan.";
-  } else {
-    note.hidden = true;
-  }
+  document.getElementById("importNote").textContent = state.imported
+    ? " Seeded from MEXMGMT.xlsx — four expense rows came across unnamed, so they're yours to rename."
+    : "";
 }
-
 function addExpense(){
-  state.expenses.push({ id: uid(), name: "New expense", amount: 0, freq: "payday" });
+  state.expenses.push({ id:uid(), name:"New expense", amount:0, freq:"payday" });
   state.imported = false;
-  renderEditors();
-  refresh();
-  const rows = document.getElementById("expenseList").querySelectorAll(".ed-row input.name");
-  if(rows.length) { const last = rows[rows.length-1]; last.focus(); last.select(); }
+  renderEditors(); refresh();
+  const rows = document.getElementById("expenseList").querySelectorAll("input.name");
+  if(rows.length){ const last = rows[rows.length-1]; last.focus(); last.select(); }
 }
-
 function addPayday(){
   const last = state.paydays.length ? parseDate(state.paydays[state.paydays.length-1].date) : today();
   const d = new Date(last); d.setDate(d.getDate() + 14);
   const amt = state.paydays.length ? n(state.paydays[state.paydays.length-1].amount) : 0;
-  state.paydays.push({ id: uid(), date: iso(d), amount: amt, label: "Salary" });
-  renderEditors();
-  refresh();
-}
-
-function extendPaydays(){
-  for(let i = 0; i < 6; i++) addPayday();
+  state.paydays.push({ id:uid(), date:iso(d), amount:amt, label:"Salary" });
+  renderEditors(); refresh();
 }
 
 document.getElementById("addExpense").addEventListener("click", addExpense);
-document.getElementById("addExpenseTop").addEventListener("click", () => {
+document.getElementById("addExpenseCta").addEventListener("click", () => {
   addExpense();
-  document.getElementById("expenseList").scrollIntoView({ behavior: "smooth", block: "center" });
+  document.getElementById("expenseList").scrollIntoView({ behavior:"smooth", block:"center" });
 });
 document.getElementById("addPayday").addEventListener("click", addPayday);
-document.getElementById("extendPaydays").addEventListener("click", extendPaydays);
+document.getElementById("extendPaydays").addEventListener("click", () => { for(let i=0;i<6;i++) addPayday(); });
 document.getElementById("exportBtn").addEventListener("click", exportCSV);
-document.getElementById("dismissNote").addEventListener("click", () => {
-  state.imported = false;
-  document.getElementById("importNote").hidden = true;
-  scheduleSave();
-});
-document.getElementById("resetBtn").addEventListener("click", () => {
-  state = clone(SEED);
-  renderAll();
-});
-["openingBalance","openingDate","currency","buffer"].forEach(id => {
+document.getElementById("resetBtn").addEventListener("click", () => { state = clone(SEED); renderAll(); });
+["name","openingBalance","openingDate","currency","buffer"].forEach(id => {
   const el = document.getElementById(id);
   const apply = () => {
-    state[id] = (id === "openingDate" || id === "currency") ? el.value : n(el.value);
+    state[id] = (id === "openingBalance" || id === "buffer") ? n(el.value) : el.value;
     refresh();
   };
   el.addEventListener("change", apply);
-  el.addEventListener("input", debounceLive(apply));
+  el.addEventListener("input", () => { clearTimeout(liveTimer); liveTimer = setTimeout(apply, 340); });
 });
 window.addEventListener("resize", () => {
   clearTimeout(window.__rz);
   window.__rz = setTimeout(() => { const led = buildLedger(); renderChart(led, summarise(led)); }, 160);
 });
 
-/* boot: local first so the page is never empty, then the account copy */
 const local = loadLocal();
 if(local && local.paydays) state = migrate(local);
 renderAll();

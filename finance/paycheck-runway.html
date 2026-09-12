@@ -16,7 +16,7 @@
 :root{
   --ground:#f5fae2;
   --card:#ffffff;
-  --wash:#e9f8a5;
+  --wash:#eefaa6;
   --inset:#f7fbe8;
   --ink:#1a1c12;
   --ink-2:#535a44;
@@ -24,10 +24,19 @@
   --line:#e7ecd3;
   --line-soft:#f1f4e4;
   --line-strong:#d6ddbe;
-  --lime:#d6f229;
-  --lime-press:#c6e410;
-  --lime-deep:#6f8a00;
+  /* the five-step ramp, yellow to green — a SEQUENTIAL scale.
+     Every step is 1.2–2.1:1 on white, so it fills shapes and never
+     draws text or hairlines; --deep is the stroke/text-safe anchor. */
+  --c1:#f2f000;
+  --c2:#c4ee00;
+  --c3:#82e800;
+  --c4:#46df00;
+  --c5:#22ce00;
+  --lime:var(--c2);
+  --lime-press:#b2d800;
+  --lime-deep:#2e7d00;
   --lime-track:#edf2d8;
+  --fill-a:.50;--fill-b:.30;--fill-c:.05;
   --up:#3f7d4e;
   --critical:#c43b22;
   --critical-wash:#fbeae6;
@@ -47,10 +56,16 @@
     --line:#2b3020;
     --line-soft:#232819;
     --line-strong:#3d442e;
-    --lime:#d6f229;
-    --lime-press:#e4fa60;
-    --lime-deep:#b9db3a;
+    --c1:#f2f000;
+    --c2:#c4ee00;
+    --c3:#82e800;
+    --c4:#46df00;
+    --c5:#22ce00;
+    --lime:var(--c2);
+    --lime-press:#d8f53a;
+    --lime-deep:#a8e000;
     --lime-track:#2c331b;
+    --fill-a:.34;--fill-b:.19;--fill-c:.04;
     --up:#7dbb8b;
     --critical:#f08165;
     --critical-wash:#2f1a13;
@@ -70,10 +85,16 @@
   --line:#2b3020;
   --line-soft:#232819;
   --line-strong:#3d442e;
-  --lime:#d6f229;
-  --lime-press:#e4fa60;
-  --lime-deep:#b9db3a;
+  --c1:#f2f000;
+  --c2:#c4ee00;
+  --c3:#82e800;
+  --c4:#46df00;
+  --c5:#22ce00;
+  --lime:var(--c2);
+  --lime-press:#d8f53a;
+  --lime-deep:#a8e000;
   --lime-track:#2c331b;
+  --fill-a:.34;--fill-b:.19;--fill-c:.04;
   --up:#7dbb8b;
   --critical:#f08165;
   --critical-wash:#2f1a13;
@@ -106,6 +127,15 @@ section:last-child{border-bottom:0}
 .sec-note{margin:0 0 18px;font-size:13px;color:var(--ink-3)}
 .sec-note:last-child{margin-bottom:0}
 
+/* ---------- ramp rule: the scale itself, as the card's edge ---------- */
+.rampbar{display:flex;height:6px}
+.rampbar i{flex:1}
+.rampbar i:nth-child(1){background:var(--c1)}
+.rampbar i:nth-child(2){background:var(--c2)}
+.rampbar i:nth-child(3){background:var(--c3)}
+.rampbar i:nth-child(4){background:var(--c4)}
+.rampbar i:nth-child(5){background:var(--c5)}
+
 /* ---------- brand bar ---------- */
 .brandbar{
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -113,8 +143,9 @@ section:last-child{border-bottom:0}
 }
 .logo{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:800;letter-spacing:-.02em;
   font-family:"Bricolage Grotesque",sans-serif;margin-right:auto}
-.logo .dot{width:11px;height:11px;border-radius:50%;background:var(--lime);flex:none;
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--lime) 26%, transparent)}
+.logo .dot{width:11px;height:11px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,var(--c1),var(--c5));
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--c3) 24%, transparent)}
 .period{font-size:12px;color:var(--ink-3)}
 .saveflag{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);
   padding:5px 11px;border:1px solid var(--line);border-radius:999px}
@@ -175,7 +206,7 @@ section:last-child{border-bottom:0}
 .budget .b-amt{width:26%;text-align:right;font-size:14px;font-weight:600;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
 .track{height:8px;background:var(--lime-track);border-radius:4px;overflow:hidden}
-.track i{display:block;height:100%;border-radius:4px;background:var(--lime);min-width:3px}
+.track i{display:block;height:100%;border-radius:4px;background:var(--c3);min-width:3px}
 .track.big{height:10px;border-radius:5px}
 .track.big i{border-radius:5px}
 .track.alert i{background:var(--critical)}
@@ -299,6 +330,8 @@ tr.detailrow td{padding:0 0 14px;text-align:left;border-bottom:1px solid var(--l
 
 <div class="page">
 <div class="sheet">
+
+  <div class="rampbar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
   <div class="brandbar">
     <div class="logo"><span class="dot"></span>Paycheck Runway</div>
@@ -482,6 +515,12 @@ function rel(d){
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function pct(a,b){ return b > 0 ? Math.round(a / b * 100) : 0; }
+/* The ramp is sequential: darker green = more. Map any 0–1 share onto
+   one of its five steps, independent of how many rows there are. */
+function step(frac){
+  if(!Number.isFinite(frac) || frac <= 0) return "var(--c1)";
+  return "var(--c" + Math.min(5, Math.max(1, Math.ceil(frac * 5))) + ")";
+}
 
 /* ---------- the model ---------- */
 function buildLedger(){
@@ -699,8 +738,9 @@ function renderChart(led, sum){
   grad.setAttribute("id","limeFade");
   grad.setAttribute("x1","0"); grad.setAttribute("y1","0");
   grad.setAttribute("x2","0"); grad.setAttribute("y2","1");
-  grad.innerHTML = '<stop offset="0%" style="stop-color:var(--lime-deep)" stop-opacity="0.24"/>' +
-                   '<stop offset="100%" style="stop-color:var(--lime-deep)" stop-opacity="0.02"/>';
+  grad.innerHTML = '<stop offset="0%" style="stop-color:var(--c1);stop-opacity:var(--fill-a)"/>' +
+                   '<stop offset="55%" style="stop-color:var(--c3);stop-opacity:var(--fill-b)"/>' +
+                   '<stop offset="100%" style="stop-color:var(--c5);stop-opacity:var(--fill-c)"/>';
   svg.appendChild(grad);
 
   add("path", { d:aPath, fill:"url(#limeFade)", stroke:"none" });
@@ -785,22 +825,23 @@ function renderBudget(led, sum){
     totals.set(k, (totals.get(k) || 0) + h.amount);
   });
   const rows = [...totals.entries()]
-    .map(([k,v]) => ({ name:k.split("||")[0], freq:k.split("||")[1], total:v }))
-    .sort((a,b) => b.total - a.total);
+    .map(([k,v]) => ({ name:k.split("||")[0], freq:k.split("||")[1], total:v }));
   if(sum.kept > 0) rows.push({ name:"Left in your pocket", freq:"kept", total:sum.kept });
+  rows.sort((a,b) => b.total - a.total);
 
   const max = rows.length ? Math.max(...rows.map(r => r.total)) : 1;
   const label = { payday:"every payday", monthly:"monthly", once:"one time", kept:"what's left" };
 
   document.getElementById("budgetNote").textContent = sum.totalIn
-    ? money0(sum.totalOut) + " out against " + money0(sum.totalIn) + " in over " + led.rows.length + " paydays."
+    ? money0(sum.totalOut) + " out against " + money0(sum.totalIn) + " in over " + led.rows.length +
+      " paydays. Bars deepen from yellow to green with size."
     : "Add an expense and it will show up here.";
 
   document.getElementById("budgetBody").innerHTML = rows.length ? rows.map(r => `
     <tr>
       <td class="b-name">${esc(r.name)}<span class="tag">${esc(label[r.freq] || r.freq)}</span></td>
       <td class="b-pct">${pct(r.total, sum.totalIn)}%</td>
-      <td class="b-bar"><div class="track"><i style="width:${(r.total/max*100).toFixed(1)}%"></i></div></td>
+      <td class="b-bar"><div class="track"><i style="width:${(r.total/max*100).toFixed(1)}%;background:${step(r.total/max)}"></i></div></td>
       <td class="b-amt">${esc(money0(r.total))}</td>
     </tr>`).join("")
     : '<tr><td style="color:var(--ink-3);font-size:13.5px">Nothing scheduled yet.</td></tr>';
@@ -853,7 +894,8 @@ function renderLedger(led){
       <td class="money" style="${over ? "color:var(--critical)" : ""}">${esc(money0(r.leftover))}</td>
       <td><div class="track kept ${over ? "alert" : ""}" title="${over
         ? "Spends " + esc(money0(-r.leftover)) + " more than this payday brings in"
-        : Math.round(kept*100) + "% of this payday kept"}"><i style="width:${(kept*100).toFixed(1)}%"></i></div></td>
+        : Math.round(kept*100) + "% of this payday kept"}"><i style="width:${(kept*100).toFixed(1)}%${
+        over ? "" : ";background:" + step(kept)}"></i></div></td>
       <td class="money bal ${r.balance < 0 ? "neg" : ""}">${esc(money0(r.balance))}</td>
       <td><button class="detail-btn" data-row="${esc(r.id)}">${open ? "Hide" : r.items.length + " item" + (r.items.length===1?"":"s")}</button></td>
     </tr>${detail}`;
@@ -889,7 +931,8 @@ function renderGoals(sum){
   const totalSaved = state.goals.reduce((s,g) => s + n(g.saved), 0);
   const totalTarget = state.goals.reduce((s,g) => s + n(g.target), 0);
   note.textContent = money0(totalSaved) + " of " + money0(totalTarget) + " across " +
-    state.goals.length + " goal" + (state.goals.length===1?"":"s") + " — " + pct(totalSaved, totalTarget) + "% of the way.";
+    state.goals.length + " goal" + (state.goals.length===1?"":"s") + " — " + pct(totalSaved, totalTarget) +
+    "% of the way. Each bar greens as it fills.";
 
   el.innerHTML = state.goals.map(g => {
     const saved = n(g.saved), target = n(g.target);
@@ -912,7 +955,7 @@ function renderGoals(sum){
         <b>${esc(g.name || "Untitled goal")}</b>
         <span>${Math.round(p)}%${g.targetDate ? " · target " + esc(fmtDateFull(parseDate(g.targetDate) || today())) : ""}</span>
       </div>
-      <div class="track big"><i style="width:${p.toFixed(1)}%"></i></div>
+      <div class="track big"><i style="width:${p.toFixed(1)}%;background:${step(p/100)}"></i></div>
       <div class="goal-foot">
         <span class="amt">${esc(money0(saved))} of ${esc(money0(target))}</span>
         <span class="pace">${esc(pace)}</span>

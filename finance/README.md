@@ -15,6 +15,24 @@ dividers, `label / % / bar / amount` budget rows, a bills card, goal
 progress bars, and an accent-bordered insight callout. Palette is lime
 yellow and white rather than the reference's cream and gold.
 
+### The colour ramp
+
+`--c1` `#f2f000` → `--c2` `#c4ee00` → `--c3` `#82e800` → `--c4` `#46df00`
+→ `--c5` `#22ce00`, taken from the supplied swatch. Lightness falls
+monotonically across the five steps (0.81 → 0.45), so it is a valid
+**sequential** scale: deeper green means more. It encodes share of income
+in the budget bars, share of a payday kept in the ledger, and completion
+on goal bars; the ramp rule along the top edge of the card shows the
+scale itself.
+
+Each step measures only 1.2–2.1:1 against white, so the ramp fills shapes
+and never draws text or hairlines. Two anchors cover those:
+`--lime-deep` is `#2e7d00` in light (5.19:1 on white) and `#a8e000` in
+dark (12:1), used for the chart line, markers and any coloured text. The
+page ink `#1a1c12` clears 8:1 on every step, so it is what sits on top of
+a ramp fill in buttons. Area-fill opacities are tokens (`--fill-a/b/c`)
+so each theme sets its own weight.
+
 ## What it does
 
 - **Hero + stat row** — a plain-language read on the stretch, then balance

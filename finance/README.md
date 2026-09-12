@@ -61,8 +61,9 @@ so each theme sets its own weight.
 
 ## Seed data
 
-`SEED` in the HTML holds the figures imported from the spreadsheet: opening
-balance 648.81, eight paydays of 3,569 (3,069 + 500) from 2026-09-18 to
+`SEED` in the HTML holds the figures imported from the spreadsheet, with the
+opening balance replaced by the real account balance (198.12; the sheet's
+648.81 was stale). Eight paydays of 3,569 (3,069 + 500) from 2026-09-18 to
 2026-12-23, a 2,000 per-payday expense block, and four one-off expenses. The
 sheet carried no names on those four, so they are labelled for renaming.
 Goals start empty — the section offers a computed first target rather than

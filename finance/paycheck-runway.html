@@ -446,14 +446,15 @@ tr.detailrow td{padding:0 0 14px;text-align:left;border-bottom:1px solid var(--l
 
 /* ============================================================
    Seed — imported from MEXMGMT.xlsx.
-   Salary 3,069 + 500 = 3,569 a payday; opening balance 648.81.
+   Salary 3,069 + 500 = 3,569 a payday. Opening balance is the real
+   PC Money balance (198.12), not the sheet's stale 648.81.
    Four expense rows came across without names in the sheet.
    ============================================================ */
 const SEED = {
   version: 2,
   name: "Sharv",
   currency: "$",
-  openingBalance: 648.81,
+  openingBalance: 198.12,
   openingDate: "2026-09-12",
   buffer: 500,
   imported: true,
